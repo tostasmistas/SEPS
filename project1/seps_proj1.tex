@@ -199,7 +199,7 @@ a_{k_{15}} = \text{round}\left(a_{k} \times 2^{15} \right),
 
 sendo assim criada a LUT pretendida.
 
-Apresenta-se de seguida o excerto de código onde é declarada a LUT com os valores de meio período da função seno, no vector \texttt{sine} que tem 33 posições, cada uma de 16 \textit{bits}. \todo{se calhar explicar porquê 33 valores e nao os 32 pedidos - david}
+Apresenta-se de seguida o excerto de código onde é declarada a LUT com os valores de meio período da função seno, no vector \texttt{sine} que tem 33 posições, cada uma de 16 \textit{bits}. 
 
 \begin{lstlisting}[language=C]
 	...
@@ -207,6 +207,20 @@ Apresenta-se de seguida o excerto de código onde é declarada a LUT com os valo
 		short sine[33] = {0,3212,6393,9512,12540,15447,18205,20788,23170,25330,27246,28899,30274,31357,		32138,32610,32767,32610,32138,31357,30274,28899,27246,25330,23170,20788,18205,	15447,12540,9512,6393,3212,0}; 
 	...
 \end{lstlisting}
+
+Como se pode constatar, a LUT é declarada com 33 valores, o que se deve ao facto de ser necessário garantir que, quando o valor de \texttt{i} for igual a \texttt{31}, seja possível aceder ao valor da função seno correspondente, o que não seria possível caso a LUT fosse apenas declarada com 32 valores.
+ 
+É possível implementar uma solução diferente, em que é realizada a operação lógica \texttt{AND} de \texttt{i} e \texttt{i+1} para o valor de \texttt{y1} e \texttt{y2} (necessário para o caso  da interpolação), 
+respectivamente, com a máscara \texttt{31}, com as seguintes linhas de código:
+
+\begin{lstlisting}[language=C]
+	...
+		y1 = sine[i&31];
+		y2 = sine[(i+1)&31];
+	...
+\end{lstlisting}
+
+Esta solução faz com que não seja necessário mais memória para criar a LUT, embora seja realizado um maior número de operações.  
 
 \subsection{} %pergunta 3
 
@@ -326,98 +340,98 @@ Na Figura \ref{fig:variavelestado}, onde se encontra representada a variável de
 
 \section{Projecto $\#$2 - Transmissor BPSK}
 
-Neste projecto, pretende-se implementar o codificador de um transmissor BPSK (Binary Phase-shift Keying), representado na Figura X.
+Neste projecto, pretende-se implementar o codificador de um transmissor BPSK (binary phase-shift keying), representado na Figura \ref{fig:BPSK}.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=1.0]{teoricas/bpsk}
+	\includegraphics[keepaspectratio=true, scale=0.5]{teoricas/bpsk}
 	\caption{Esquema de um transmissor BPSK.}
 	\vspace{-0.8em}
+	\label{fig:BPSK}
 \end{figure}
 
-
-O codificador tem como entrada os bits bn, que se trata de uma sequência que vai alternando entre o valor lógico \texttt{'0'} e o valor lógico \texttt{'1'} ($b_n$ = 1, 0, 1, 0,….) e como saída os valores $d_n$, que podem ser $-1$ ou $+1$. O codificador realiza a operação $c_n = c_{n-1} \oplus b_n$, considerando $c_0$ = ‘0’, para que depois possam ser determinados a sequência dn, de acordo com o mapeamento:
+O codificador tem como entrada os \textit{bits} $b_n$, uma sequência que vai alternando entre o valor lógico \texttt{0} e o valor lógico \texttt{1} ($b_n$ = 1, 0, 1, 0, \ldots) e como saída os valores $d_n$, que podem ser -1 ou +1. O codificador realiza a operação $c_n = c_{n-1} \oplus b_n$, considerando $c_0 = 0$, para que depois possam ser determinados os \textit{bits} da sequência $d_n$, de acordo com o mapeamento:
 
 \vspace{-3mm}
 \begin{equation}
-	c_{n} = \text{'}0\text{'}\to d_{n} = +1;   
-\end{equation} 
-\begin{equation}
-c_{n} = \text{'}1\text{'}\to d_{n} = -1;
+	c_{n} = \text{'}0\text{'}\to d_{n} = +1;
 \end{equation}
+\begin{equation}	
+	c_{n} = \text{'}1\text{'}\to d_{n} = -1.  
+\end{equation} 
 
 Assim, o sinal modulado BPSK é dado por:
 
 \vspace{-3mm}
 \begin{equation}
-	s(t) = \sin (2 \pi f_0 t + \pi c_n) = d_n \sin (2 \pi f_0 t) 
+	s(t) = \sin (2 \pi f_0 t + \pi c_n) = d_n \sin (2 \pi f_0 t).
 \end{equation} 
 
 Ou, usando tempo discreto:
 
 \vspace{-3mm}
 \begin{equation}
-	s_{n} = s(n T_s) = d_n \sin (2\pi f_0 T_s n)
+	s_{n} = s(n T_s) = d_n \sin (2\pi f_0 T_s n).
 \end{equation} 
 
-É utilizada uma frequência de amostragem, $f_s=1/T_s$ , de 16 \textit{kHz} e uma frequência da portadora, $f_0$, de 4 \textit{kHz}. A taxa de bits é de $f_b$ = 1\textit{kbps}, por isso por cada bit, há 4 períodos da portadora.  
-
+É utilizada uma frequência de amostragem, $f_s=1/T_s$ , de 16 kHz e uma frequência da portadora, $f_0$, de 4 kHz. A taxa de bits é de $f_b$ = 1 kbps, por isso, por cada \textit{bit}, há 4 períodos da portadora.  
 
 \subsection{} %pergunta 1
 
-Os bits da sequência $b_n$ são implementados recorrendo a um contador, uma vez que a cada 16 amostras do sinal de entrada, é necessário que haja uma alteração do bit seguinte da sequência $b_n$, passando de \texttt{'0'} para \texttt{'1'} ou vice-versa. Para que seja realizada essa alteração, é utilizada a função XOR do bit $b_n$ anterior com \texttt{'1'}. É assim apresentado o excerto de código que implementa a sequência de bits $b_n$. 
+Os \textit{bits} da sequência $b_n$ são implementados recorrendo a um contador, uma vez que a cada 16 amostras do sinal de entrada, é necessário que haja uma alteração do \textit{bit} seguinte da sequência $b_n$, passando de \texttt{0} para \texttt{1} ou vice-versa. Para que seja realizada essa alteração, é utilizada a função \texttt{XOR} do bit $b_n$ anterior com \texttt{1}. Apresenta-se de seguida o excerto de código que implementa a sequência de bits $b_n$. 
 
 \begin{lstlisting}[language=C]
 	...
-	if(b_i>15){
-		b_i=0;
-		b_n=(b_n^1); 
-	...
-	}
-	b_i++; 
+		if(b_i>15){
+			b_i=0;
+			b_n=(b_n^1); //xor entre valor anterior de bn e o valor logico 1
+			...
+		}
+		b_i++;
+	... 
 \end{lstlisting}
 
-Foi criado outra solução para a obtenção da sequência $b_n$ com objectivo de não utilizar a instrução condicional, \texttt{if}. Seguiu-se o conselho do enunciado de usar um contador que quando ocorre o \textit{overflow} gera um novo \textit{bit} alternado. Está representado de seguida o excerto de código:
+Foi criada outra solução para a obtenção da sequência $b_n$ com objectivo de não utilizar a instrução condicional, \texttt{if}. Seguiu-se o conselho do enunciado de usar um contador que quando ocorre \textit{overflow} gera um novo \textit{bit} alternado. Está representado de seguida no excerto de código:
 
 \begin{lstlisting}[language=C]
 	...
-	 b_i++;			
-	 b=(b_i&16)>>4; // mascara para obter o bit de overflow
-	 b_n=(b_n^b);	// xor para alternar o bit bn
-	 b_i=(b_i&15);  // obtencao dos 4 bits menos significativos
+		b_i++;			
+		b=(b_i&16)>>4;  //mascara para obter o bit de overflow
+		b_n=(b_n^b);   //xor para alternar o bit bn
+		b_i=(b_i&15); //obtencao dos 4 bits menos significativos
 	...
 \end{lstlisting}
 
-Como se pode observar, a ocorrência de \textit{overflow} acontece quando o contador atinge 16, \texttt{b\_i} (O valor 16 deve-se ao facto que a frequência de amostragem, de 16 \textit{kHz}, ser divida por esse mesmo valor deforma a obter o resultado de 1 \textit{kbps}). Para detectar esta ocorrência aplica-se a máscara 16 (o quinto \textit{bit} menos significativo com o valor lógico 1) e efectua-se um \textit{shift} 4 posições para a direita. De seguida, aplica-se a função XOR com o resultado anterior com a variável \texttt{b\_n} de forma a obter uma sequência $b_n$ que varia alternadamente entre \texttt{'0'} e \texttt{'1'} ou vice-versa a uma taxa de $f_b$ = 1 \textit{kbps}.
+Como se pode observar, ocorre \textit{overflow} quando o contador, \texttt{b\_i}, atinge o valor 16, sendo utilizado este valor porque a frequência de amostragem, de 16 kHz, é divida por esse valor de forma a obter o resultado desejado de uma taxa de transmissão de 1 kbps. Para detectar esta ocorrência aplica-se a máscara \texttt{16} (o quinto \textit{bit} menos significativo com o valor lógico \texttt{1}) e efectua-se um \textit{shift} de 4 posições para a direita. 
 
-
-Com o \textit{bit-rate}, $b_n$, criado aplica-se o codificador diferencial de forma a gerar o sinal $c_n$, pela seguinte equação:
+De seguida, aplica-se a função \texttt{XOR} entre o resultado anterior e a variável \texttt{b\_n}, de forma a obter uma sequência $b_n$ que varia alternadamente entre \texttt{0} e \texttt{1}, ou vice-versa, a uma taxa de $f_b$ = 1 kbps. Com o \textit{bit-rate}, $b_n$, criado aplica-se o codificador diferencial de forma a gerar o sinal $c_n$, de acordo com seguinte equação:
 
 \vspace{-3mm}
 \begin{equation}
-		c_n = c_{n-1} \oplus b_n
+	c_n = c_{n-1} \oplus b_n
 \end{equation} 
 
-A equação anterior foi implementada no ciclo de criação do \textit{bit-rate}, $b_n$,  Aplicando a função XOR do bit $c_{n-1}$ com $b_n$, de seguida mostra-se o código;
+A equação anterior foi implementada no ciclo de criação do \textit{bit-rate}, $b_n$,  aplicando a função \texttt{XOR} entre o bit $c_{n-1}$ e $b_n$, como se mostra no seguinte excerto de código:
+
 \begin{lstlisting}[language=C]
-	c_n = 0;
 	...
-	if(b_i>15){
-		b_i=0;
-		b_n=(b_n^1);
-		c_n=c_n^b_n; //codificador diferencial
+		c_n = 0;
 		...
-	}
-	b_i++;
+		if(b_i>15){
+			b_i=0;
+			b_n=(b_n^1);
+			c_n=c_n^b_n; //codificador diferencial
+			...
+		}
+		b_i++;
 	...
 \end{lstlisting}
 
-
-
+\todo{acabar dn (mapeamento) - teddy}
 		
 \subsection{} %pergunta 2
 
-
+\todo{david}
 
 \subsection{} %pergunta 3
 
