@@ -340,8 +340,11 @@ O codificador tem como entrada os bits bn, que se trata de uma sequência que va
 
 \vspace{-3mm}
 \begin{equation}
-	c_{n} = \text{'}0\text{'}\to d_{n} = +1;     c_{n} = \text{'}1\text{'}\to d_{n} = -1;
+	c_{n} = \text{'}0\text{'}\to d_{n} = +1;   
 \end{equation} 
+\begin{equation}
+c_{n} = \text{'}1\text{'}\to d_{n} = -1;
+\end{equation}
 
 Assim, o sinal modulado BPSK é dado por:
 
@@ -385,11 +388,36 @@ Foi criado outra solução para a obtenção da sequência $b_n$ com objectivo d
 	...
 \end{lstlisting}
 
-Como se pode observar, a ocorrência de \textit{overflow} acontece quando a variável, \texttt{b\_i} que é incrementada a cada ciclo, atinja o valor 16. Para detectar esta ocorrência aplica-se a máscara 16 (o quinto \textit{bit} menos significativo com o valor lógico 1) e efectua-se um \textit{shift} 4 posições para a direita. De seguida, aplica-se a função XOR com o resultado anterior com a variável \texttt{b\_n} de forma a obter uma sequência $b_n$ que varia alternadamente entre \texttt{'0'} e \texttt{'1'} ou vice-versa a uma taxa de $f_b$ = 1 \textit{kbps}.
+Como se pode observar, a ocorrência de \textit{overflow} acontece quando o contador atinge 16, \texttt{b\_i} (O valor 16 deve-se ao facto que a frequência de amostragem, de 16 \textit{kHz}, ser divida por esse mesmo valor deforma a obter o resultado de 1 \textit{kbps}). Para detectar esta ocorrência aplica-se a máscara 16 (o quinto \textit{bit} menos significativo com o valor lógico 1) e efectua-se um \textit{shift} 4 posições para a direita. De seguida, aplica-se a função XOR com o resultado anterior com a variável \texttt{b\_n} de forma a obter uma sequência $b_n$ que varia alternadamente entre \texttt{'0'} e \texttt{'1'} ou vice-versa a uma taxa de $f_b$ = 1 \textit{kbps}.
 
+
+Com o \textit{bit-rate}, $b_n$, criado aplica-se o codificador diferencial de forma a gerar o sinal $c_n$, pela seguinte equação:
+
+\vspace{-3mm}
+\begin{equation}
+		c_n = c_{n-1} \oplus b_n
+\end{equation} 
+
+A equação anterior foi implementada no ciclo de criação do \textit{bit-rate}, $b_n$,  Aplicando a função XOR do bit $c_{n-1}$ com $b_n$, de seguida mostra-se o código;
+\begin{lstlisting}[language=C]
+	c_n = 0;
+	...
+	if(b_i>15){
+		b_i=0;
+		b_n=(b_n^1);
+		c_n=c_n^b_n; //codificador diferencial
+		...
+	}
+	b_i++;
+	...
+\end{lstlisting}
+
+
+
+		
 \subsection{} %pergunta 2
 
-\todo{teddy}
+
 
 \subsection{} %pergunta 3
 
