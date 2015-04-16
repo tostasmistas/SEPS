@@ -117,8 +117,6 @@ As características do NCO são apresentadas na seguinte tabela.
 	\includegraphics[keepaspectratio=true, scale=0.45]{tabelas/tabela1}
 \end{table}
 
-\subsection{} %pergunta 1
-
 Pretende-se primeiramente desenvolver um oscilador de relaxação utilizando uma variável inteira com sinal de 16 \textit{bits} e a circularidade da representação em complemento para dois. Na figura abaixo encontra-se uma representação do sinal a obter.
 
 \begin{figure}[H]
@@ -128,22 +126,20 @@ Pretende-se primeiramente desenvolver um oscilador de relaxação utilizando uma
 	\vspace{-0.8em}
 \end{figure}
 
-\pagebreak
-
 Com recurso à Figura 1 pode-se deduzir que
 
 \vspace{-3mm}
 \begin{equation}
-f_{0} = \frac{\bigtriangleup}{2^{16}} \times f_{s} \leftrightarrow \bigtriangleup = \frac{f_{0}}{f_{s}} \times 2^{16}.
+f_{0} = \frac{\Delta}{2^{16}} \times f_{s} \leftrightarrow \Delta = \frac{f_{0}}{f_{s}} \times 2^{16}.
 \end{equation}
 
-Existe uma variável de estado da rampa que a cada $T_{s}$, período de amostragem, é incrementada de $\bigtriangleup$, como se pode ver na Figura 1. A variável de estado da rampa é de 16 \textit{bits} com representação em $Q_{15}$ e, sabendo que o maior número positivo que se pode representar em $Q_{15}$ é $2^{15} - 1 = 32767$ e o menor número negativo que se pode representar é  $-(2^{15} - 1) = -32767$, a variável de estado começa com o valor -32767 e vai até um máximo de 32767. Quando é atingido o valor máximo, 32767, entra em efeito a circularidade da representação em complemento para dois e, assim, a variável de estado não atinge o valor de $2^{15}$, ``dando a volta'' para -32767. 
+Existe uma variável de estado da rampa que a cada $T_{s}$, período de amostragem, é incrementada de $\Delta$, como se pode ver na Figura 1. A variável de estado da rampa é de 16 \textit{bits} com representação em $Q_{15}$ e, sabendo que o maior número positivo que se pode representar em $Q_{15}$ é $2^{15} - 1 = 32767$ e o menor número negativo que se pode representar é  $-(2^{15} - 1) = -32767$, a variável de estado começa com o valor -32767 e vai até um máximo de 32767. Quando é atingido o valor máximo, 32767, entra em efeito a circularidade da representação em complemento para dois e, assim, a variável de estado não atinge o valor de $2^{15}$, ``dando a volta'' para -32767. 
 
-Relativamente à variável $\bigtriangleup$ esta encontra-se também representada em $Q_{15}$. O NCO tem como característica uma frequência $f_{0}$ que varia entre 2 kHz e 6 kHz. Estes valores são controlados a partir da amplitude do sinal de entrada. Quando esta for minima, a frequência $f_{0}$ é de 2 kHz e quando for máxima, a frequência $f_{0}$ é de 6 kHz. Com estas especificações pode-se calcular três valores de $\bigtriangleup$ com recurso à equação (2.1), para a frequência mínima, a frequência média e a frequência máxima.
+Relativamente à variável $\Delta$ esta encontra-se também representada em $Q_{15}$. O NCO tem como característica uma frequência $f_{0}$ que varia entre 2 kHz e 6 kHz. Estes valores são controlados a partir da amplitude do sinal de entrada. Quando esta for minima, a frequência $f_{0}$ é de 2 kHz e quando for máxima, a frequência $f_{0}$ é de 6 kHz. Com estas especificações pode-se calcular três valores de $\Delta$ com recurso à equação (2.1), para a frequência mínima, a frequência média e a frequência máxima.
 
 \begin{table}[H]
 	\centering
-	\caption{Valores de $\bigtriangleup$ para as três frequências especificadas.}
+	\caption{Valores de $\Delta$ para as três frequências especificadas.}
 	\vspace{-1.5mm}
 	\includegraphics[keepaspectratio=true, scale=0.45]{tabelas/tabela2}
 \end{table}
@@ -179,11 +175,9 @@ Nas figuras da próxima página pode-se ver o sinal obtido experimentalmente que
 	\vspace{-0.8em}
 \end{figure}
 
-Como se pode ver na Figura 2(c), por comparação com o esperado teoricamente da Figura 1, o oscilador de relaxação implementado funciona de acordo com o previsto.
+Como se pode ver na Figura 2(c), por comparação com o esperado teoricamente da Figura 1, o oscilador de relaxação implementado funciona de acordo com o previsto. De notar que o sinal que se observa está invertido relativamente ao teórico, o que é esperado, quando se considera que antes de ser observado no osciloscópio passa por um inversor.
 
-\subsection{} %pergunta 2
-
-De forma a criar a \textit{look-up-table} (LUT) com 32 valores positivos de meio período da função seno, é necessário começar por determinar esses valores, para que, posteriormente, os mesmos sejam convertidos para o formato mais preciso de representação, $Q_{15}$, uma vez que se encontram no intervalo [-1, 1]. Assim, tendo em conta que meio período da função seno é $\pi$, podemos calcular os valores da seguinte maneira:
+Com o oscilador implementado pretende-se agora criar uma \textit{look-up-table} (LUT) com 32 valores positivos de meio período da função seno. É necessário começar por determinar esses valores, para que, posteriormente, os mesmos sejam convertidos para o formato mais preciso de representação, $Q_{15}$, uma vez que se encontram no intervalo [-1, 1]. Assim, tendo em conta que meio período da função seno é $\pi$, podemos calcular os valores da seguinte maneira:
 
 \vspace{-3mm}
 \begin{equation}
@@ -222,9 +216,7 @@ respectivamente, com a máscara \texttt{31}, com as seguintes linhas de código:
 
 Esta solução faz com que não seja necessário mais memória para criar a LUT, embora seja realizado um maior número de operações.  
 
-\subsection{} %pergunta 3
-
-Para que se possa aceder aos valores da função seno, é utilizada a variável de estado do oscilador, \texttt{status}, como índice da LUT. Apenas 5 \textit{bits} da variável são utilizados para endereçar a LUT, sendo criada a variável \texttt{i}, tal como especificado na Figura 3, onde a variável de estado do oscilador é representada por \texttt{x}.
+Para que se possa agora aceder aos valores da função seno, é utilizada a variável de estado do oscilador, \texttt{status}, como índice da LUT. Apenas 5 \textit{bits} da variável são utilizados para endereçar a LUT, sendo criada a variável \texttt{i}, tal como especificado na Figura 3, onde a variável de estado do oscilador é representada por \textit{x}.
 
 \begin{figure}[H]
 	\centering
@@ -239,15 +231,12 @@ De modo a aceder aos 5 \textit{bits} pretendidos da variável de estado, é real
 \begin{lstlisting}[language=C]
 	...
 		//indexar a LUT e obter os valores do seno
-		i = status >> 10;
-		i = i & 31;
+		i = (status>>10)&31;
 		y1 = sine[i]; 
 	...
 \end{lstlisting}
 
-\subsection*{2.4 e 2.5} %perguntas 4 e 5
-
-Foram criadas duas variáveis com o objectivo de controlar a amplitude e frequência do sinal sinusoidal. A variável \texttt{delta} representa o controlo da frequência e a variável \texttt{amp} representa o controlo da amplitude. O código que permite implementar este controlo é apresentado de seguida.  
+Foram depois criadas duas variáveis com o objectivo de controlar a amplitude e frequência do sinal sinusoidal. A variável \texttt{delta} representa o controlo da frequência e a variável \texttt{amp} representa o controlo da amplitude. O código que permite implementar este controlo é apresentado de seguida.  
 
 \begin{lstlisting}[language=C]
 void main(){
@@ -277,11 +266,11 @@ void main(){
 }
 \end{lstlisting}
 
-Analisando a Tabela 2 verifica-se que o valor de \texttt{delta} oscila com uma amplitude de 8192 em torno de 16384, $\bigtriangleup_{0}$ . Ou seja, $f_{0}$ tem uma frequência central em 4 kHz, oscilando com uma amplitude de 2 kHz. O incremento do oscilador é obtido de acordo com a seguinte equação, onde $x$ é a amplitude do sinal de entrada: 
+Analisando a Tabela 2 verifica-se que o valor de \texttt{delta} oscila com uma amplitude de 8192 em torno de 16384, $\Delta_{0}$ . Ou seja, $f_{0}$ tem uma frequência central em 4 kHz, oscilando com uma amplitude de 2 kHz. O incremento do oscilador é obtido de acordo com a seguinte equação, onde $x$ é a amplitude do sinal de entrada: 
 
 \vspace{-3mm}
 \begin{equation}
-\bigtriangleup = \bigtriangleup_{0} + kx.
+\Delta = \Delta_{0} + kx.
 \end{equation}
 
 Com esta conclusão, teve de se garantir que o valor da amplitude do sinal de entrada não ultrapassa 8192, mantendo a relação entre cada amostra. Optou-se por dividir o valor de cada amostra por 4, $k = 1/4$, pois a amplitude máxima é de 32767, o equivalente a um \textit{shift} de 2 \textit{bits} para a direita. 
@@ -317,24 +306,66 @@ O código apresentado de seguida demonstra a explicação referida.
 	...
 \end{lstlisting}
 
-\subsection*{2.6} %pergunta 6
+\todo{explicar status < 0) e que depois colocamos o sinal no canal esquerdo - teddy}
+
+Com o oscilador controlado já implementado procede-se à fase de testes.
 
 \todo{teddy}
 
-\subsection*{2.7} %pergunta 7
-
-Pretende-se agora melhorar a qualidade do oscilador sinusoidal utilizando interpolação linear. Esta interpolação é feita lendo dois valores consecutivos, $y_{1}$ e $y_{2}$, da LUT do seno e depois obter o valor sinusoidal interpolado com recurso à seguinte equação
+Pretende-se agora melhorar a qualidade do oscilador sinusoidal utilizando interpolação linear. Esta interpolação é feita lendo dois valores consecutivos, $y_{1}$ e $y_{2}$, da LUT do seno e depois obtém-se o valor sinusoidal interpolado com recurso à seguinte equação
 
 \vspace{-3mm}
 \begin{equation}
-y = y_{1} + (y_{2} - y_{1})
+	y = y_{1} + (y_{2} - y_{1})\Delta x.
+	\label{eq:interpol}
 \end{equation}
 
-Na Figura \ref{fig:variavelestado}, onde se encontra representada a variável de estado da rampa, pode-se ver que os 10 \textit{bits} menos significativos 
+Na Figura \ref{fig:variavelestado}, onde se encontra representada a variável de estado da rampa, pode-se ver que os 10 \textit{bits} menos significativos desta correspondem à variável $\Delta x$ da equação (\ref{eq:interpol}), que está representada no formato $Q_{15}$.
+
+Para se obter o valor de $\Delta x$ é utilizada a função lógica \texttt{AND} com a máscara \texttt{1023} (10 \textit{bits} menos significativos com o valor lógico \texttt{1}), sendo de seguida necessário efectuar um \textit{shift} de 5 posições para a esquerda para que a variável seja representada em $Q_{15}$.
+
+Com acesso a esse parâmetro, falta ler dois valores consecutivos da função seno, o que pode ser feito endereçando a LUT com recurso à variável \texttt{i} que foi anteriormente definida.
+
+O excerto de código seguinte demonstra a obtenção do valor de $\Delta x$, armazenado na variável \texttt{delta\_x} e dois valores consecutivos da função seno, \texttt{y1} e \texttt{y2}.
+
+\begin{lstlisting}[language=C]
+	...
+		//obtencao do valor de delta_x
+		delta_x = (status&1023)<<5;
+		i = (status >> 10) & 31;
+		y1 = sine[i];
+		y2 = sine[i+1];
+	...
+\end{lstlisting}
+
+Pode-se agora computar \textit{y} de acordo com a equação (\ref{eq:interpol}). Quando se faz a subtracção entre \texttt{y2} ($Q_{15}$) e \texttt{y1} ($Q_{15}$), o resultado fica no formato $Q_{14}$ que quando é multiplicado com \texttt{delta\_x} 
 
 \todo{margarida}
 
-\subsection*{2.8} %pergunta 8
+O excerto de código apresentado de seguida demonstra a obtenção do valor interpolado, que é armazenado na variável \texttt{y}. 
+
+\begin{lstlisting}[language=C]
+	...
+		//obtencao do valor sinusoidal interpolado 
+		y = (amp*(y1 + ((y2-y1)*delta_x>>15))>>15);
+	...
+\end{lstlisting}
+
+Como se viu, foram desenvolvidos dois osciladores sinusoidais - com e sem interpolação - sendo agora importante compará-los, comparação feita inicialmente ao nível dos espectros. Quando TAL
+
+Assim, para se poder obter resultados mais conclusivos sobre qual o melhor método recorreu-se ao modo persistência do osciloscópio. Este modo sobrepõe múltiplas formas de onda no mesmo \textit{display}, com as formas de onda mais recentes a serem enfatizadas com uma saturação mais profunda ou cores mais quentes. 
+
+Na Figura \ref{fig:AE1} apresenta-se as formas de onda obtidas para as sinusoides geradas de acordo com os dois métodos.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.33]{exps/diferenca1}
+	\caption{Onda sinusoidal obtida sem interpolação (a verde) e com interpolação (a amarelo).}
+	\vspace{-0.8em}
+	\label{fig:AE1}
+\end{figure}
+
+Como se pode ver, o sinal representado a verde apresenta maior dispersão relativamente 
 
 \todo{margarida}
 
@@ -375,8 +406,6 @@ Ou, usando tempo discreto:
 \end{equation} 
 
 É utilizada uma frequência de amostragem, $f_s=1/T_s$ , de 16 kHz e uma frequência da portadora, $f_0$, de 4 kHz. A taxa de bits é de $f_b$ = 1 kbps, por isso, por cada \textit{bit}, há 4 períodos da portadora.  
-
-\subsection{} %pergunta 1
 
 Os \textit{bits} da sequência $b_n$ são implementados recorrendo a um contador, uma vez que a cada 16 amostras do sinal de entrada, é necessário que haja uma alteração do \textit{bit} seguinte da sequência $b_n$, passando de \texttt{0} para \texttt{1} ou vice-versa. Para que seja realizada essa alteração, é utilizada a função \texttt{XOR} do bit $b_n$ anterior com \texttt{1}. Apresenta-se de seguida o excerto de código que implementa a sequência de bits $b_n$. 
 
@@ -429,13 +458,19 @@ A equação anterior foi implementada no ciclo de criação do \textit{bit-rate}
 
 \todo{acabar dn (mapeamento) - teddy}
 		
-\subsection{} %pergunta 2
+Pretende-se agora gerar a portadora com frequência $f_0 = 4$ kHz. De forma a implementar a portadora, que vai ser multiplicada pela sequência $d_n$, originando o sinal modulado, é criada uma LUT idêntica à do Projecto \#1. Neste caso, uma vez que só há 4 amostras por período, já que a frequência de amostragem é 
+$f_0 = 16$ kHz, basta especificar 4 valores da onda sinusoidal. Assim, é declarada a LUT com os valores 0, 1, 0 e -1, representados no formato mais preciso, $Q_{15}$:
 
-\todo{david}
+\begin{lstlisting}[language=C]
+	...
+		//LUT do seno com 4 amostras
+		short sine[4] = {0,32767,0,-32767};
+	...
+\end{lstlisting}
 
-\subsection{} %pergunta 3
+\todo{acabar pergunta 2 - teddy}
 
-\todo{margarida}
+\todo{pergunta 3 - margarida}
 
 \section{Conclusões}
 
