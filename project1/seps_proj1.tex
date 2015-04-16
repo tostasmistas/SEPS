@@ -386,9 +386,11 @@ O codificador tem como entrada os \textit{bits} $b_n$, uma sequência que vai al
 \vspace{-3mm}
 \begin{equation}
 	c_{n} = \text{'}0\text{'}\to d_{n} = +1;
+	\label{eq:cn0}
 \end{equation}
 \begin{equation}	
-	c_{n} = \text{'}1\text{'}\to d_{n} = -1.  
+	c_{n} = \text{'}1\text{'}\to d_{n} = -1.
+	\label{eq:cn1}  
 \end{equation} 
 
 Assim, o sinal modulado BPSK é dado por:
@@ -455,9 +457,13 @@ A equação anterior foi implementada no ciclo de criação do \textit{bit-rate}
 		b_i++;
 	...
 \end{lstlisting}
-
-\todo{acabar dn (mapeamento) - teddy}
 		
+De seguida, aplica-se o mapeamento aos \textit{bits} do sinal $c_n$ na constelação BPSK, de forma a obter o sinal $d_n$. O mapeamento segue as expressões da equação (\ref{eq:cn0}) e (\ref{eq:cn1}).
+	 
+A solução computacional mais eficiente que se encontrou consiste em três fases. Na primeira, é efectuado um \textit{shift} de 15 posições para a esquerda, no intuito de o \textit{bit} mais significativo ter o valor do sinal $c_n$. Em segundo, nega-se o vector. E em último, é efectuado um \textit{shift} de 15 posições para a direita. De seguida encontra-se um esquema que demonstra a solução encontrada para a obtenção do  $d_n$.
+
+\todo{figura}
+
 Pretende-se agora gerar a portadora com frequência $f_0 = 4$ kHz. De forma a implementar a portadora, que vai ser multiplicada pela sequência $d_n$, originando o sinal modulado, é criada uma LUT idêntica à do Projecto \#1. Neste caso, uma vez que só há 4 amostras por período, já que a frequência de amostragem é 
 $f_0 = 16$ kHz, basta especificar 4 valores da onda sinusoidal. Assim, é declarada a LUT com os valores 0, 1, 0 e -1, representados no formato mais preciso, $Q_{15}$:
 
