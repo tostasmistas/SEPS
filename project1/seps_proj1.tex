@@ -427,8 +427,18 @@ A equação anterior foi implementada no ciclo de criação do \textit{bit-rate}
 	...
 \end{lstlisting}
 
-\todo{acabar dn (mapeamento) - teddy}
-		
+De seguida, aplica-se o mapeamento aos \textit{bits} do sinal $c_n$ na constelação BPSK, de forma a obter o sinal $d_n$. O mapeamento segue as seguintes expressões:
+	  
+		\vspace{-3mm}
+		\begin{equation}
+		c_{n} = \text{'}0\text{'}\to d_{n} = +1;
+		\end{equation}
+		\begin{equation}	
+		c_{n} = \text{'}1\text{'}\to d_{n} = -1.  
+		\end{equation}
+
+A solução computacional mais eficiente que encontrá-mos consiste em três fases. Na primeira, é efectuado um \textit{shift} de 15 posições para a esquerda, no intuito de o \textit{bit} mais significativo ter o valor do sinal $c_n$. Em segundo, nega-se o vector. E em ultimo, é efectuado um \textit{shift} de 15 posições para a direita. De seguida encontra-se um esquema que demonstra a solução encontrada para a obtenção do  $d_n$:
+
 \subsection{} %pergunta 2
 
 \todo{david}
