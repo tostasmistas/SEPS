@@ -338,9 +338,13 @@ O excerto de código seguinte demonstra a obtenção do valor de $\Delta x$, arm
 	...
 \end{lstlisting}
 
-Pode-se agora computar \textit{y} de acordo com a equação (\ref{eq:interpol}). Quando se faz a subtracção entre \texttt{y2} ($Q_{15}$) e \texttt{y1} ($Q_{15}$), o resultado fica no formato $Q_{14}$ que quando é multiplicado com \texttt{delta\_x} 
+Pode-se agora computar $y$ de acordo com a equação (\ref{eq:interpol}). Quando se faz a subtracção entre $y_2$ ($Q_{15}$) e $y_1$ ($Q_{15}$), o resultado ficaria no formato $Q_{14}$. No entanto, dado que se subtraiem dois valores positivos em $Q_{15}$, tem-se a garantia de que o resultado é sempre correctamente armazenado em $Q_{15}$, o que é preferível face à opção de $Q_{14}$, pois garante mais resolução. 
 
-\todo{margarida}
+O resultado desta subtracção é então multiplicado com $\Delta x$, que toma sempre valores entre 0 e 1, ou seja, está-se a multiplicar dois valores no formato $Q_{15}$, que origina um valor no formato $Q_{30}$ com replicação do \textit{bit} de sinal. Assim, é necessário efectuar um \textit{shift} para a esquerda para remover o \textit{bit} de sinal replicado, resultando num formato final de $Q_{31}$, para 32 bits. Para se poder armazenar numa variável de 16 \textit{bits}, no formato $Q_{15}$, é necessário efectuar um \textit{shift} de 16 posições para a direita, permitindo armazenar os 16 \textit{bits} mais significativos do resultado de 32 \textit{bits}.
+
+O valor da subtracção que é seguida de uma multiplicação é agora somado ao valor de $y_1$, ou seja, está-se a somar dois números no formato $Q_{15}$, o que dá um resultado que seria no formato $Q_{14}$. No entanto, quando se analisa o pior caso \todo{teddy explicar pior caso}
+
+O valor do sinal interpolado é agora multiplicado pelo sinal \texttt{amp}, ou seja, é efectuada mais uma multiplicação entre dois números no formato $Q_{15}$, sendo necessário efectuar o \textit{shift} para esquerda e os 116 \textit{shifts} para a direita explicados anteriormente.
 
 O excerto de código apresentado de seguida demonstra a obtenção do valor interpolado, que é armazenado na variável \texttt{y}. 
 
@@ -353,7 +357,7 @@ O excerto de código apresentado de seguida demonstra a obtenção do valor inte
 
 Como se viu, foram desenvolvidos dois osciladores sinusoidais - com e sem interpolação - sendo agora importante compará-los, comparação feita inicialmente ao nível dos espectros. Quando TAL
 
-Assim, para se poder obter resultados mais conclusivos sobre qual o melhor método recorreu-se ao modo persistência do osciloscópio. Este modo sobrepõe múltiplas formas de onda no mesmo \textit{display}, com as formas de onda mais recentes a serem enfatizadas com uma saturação mais profunda ou cores mais quentes. 
+Assim, para se poder obter resultados mais conclusivos sobre qual o melhor método recorreu-se ao modo persistência do osciloscópio. Este modo sobrepõe múltiplas formas de onda no mesmo \textit{display}, com as formas de onda mais recentes a serem enfatizadas com uma saturação mais profunda. 
 
 Na Figura \ref{fig:AE1} apresenta-se as formas de onda obtidas para as sinusoides geradas de acordo com os dois métodos.
 
@@ -462,7 +466,19 @@ De seguida, aplica-se o mapeamento aos \textit{bits} do sinal $c_n$ na constela�
 	 
 A solução computacional mais eficiente que se encontrou consiste em três fases. Na primeira, é efectuado um \textit{shift} de 15 posições para a esquerda, no intuito de o \textit{bit} mais significativo ter o valor do sinal $c_n$. Em segundo, nega-se o vector. E em último, é efectuado um \textit{shift} de 15 posições para a direita. De seguida encontra-se um esquema que demonstra a solução encontrada para a obtenção do  $d_n$.
 
-\todo{figura}
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/esquema2}
+	\caption{Representação da situação em que $c_{n} = 0$, resultando num mapeamento de $d_{n} = +1$.}
+	\vspace{-0.8em}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/esquema1}
+	\caption{Representação da situação em que $c_{n} = 1$, resultando num mapeamento de $d_{n} = -1$.}
+	\vspace{-0.8em}
+\end{figure}
 
 Pretende-se agora gerar a portadora com frequência $f_0 = 4$ kHz. De forma a implementar a portadora, que vai ser multiplicada pela sequência $d_n$, originando o sinal modulado, é criada uma LUT idêntica à do Projecto \#1. Neste caso, uma vez que só há 4 amostras por período, já que a frequência de amostragem é 
 $f_0 = 16$ kHz, basta especificar 4 valores da onda sinusoidal. Assim, é declarada a LUT com os valores 0, 1, 0 e -1, representados no formato mais preciso, $Q_{15}$:
