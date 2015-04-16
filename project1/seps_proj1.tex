@@ -306,7 +306,24 @@ O código apresentado de seguida demonstra a explicação referida.
 	...
 \end{lstlisting}
 
-\todo{explicar status < 0) e que depois colocamos o sinal no canal esquerdo - teddy}
+Os valores da LUT permitem aceder as arcadas positivas do seno. Quando a variável de estado da rampa é negativa, \texttt{status} < 0, o sinal de saída tem que ser negado. Em seguida está representado o código referente à explicação anterior:
+
+\begin{lstlisting}[language=C]
+	...
+	if(status < 0){
+		y = -y;
+	}
+	...
+\end{lstlisting}
+
+
+O sinal de saída pode ser observado no canal esquerdo da DSP.
+
+\begin{lstlisting}[language=C]
+	...
+	AIC_buffer.channel[LEFT] = y;
+	...
+\end{lstlisting}
 
 Com o oscilador controlado já implementado procede-se à fase de testes.
 
@@ -460,7 +477,21 @@ A equação anterior foi implementada no ciclo de criação do \textit{bit-rate}
 		
 De seguida, aplica-se o mapeamento aos \textit{bits} do sinal $c_n$ na constelação BPSK, de forma a obter o sinal $d_n$. O mapeamento segue as expressões da equação (\ref{eq:cn0}) e (\ref{eq:cn1}).
 	 
-A solução computacional mais eficiente que se encontrou consiste em três fases. Na primeira, é efectuado um \textit{shift} de 15 posições para a esquerda, no intuito de o \textit{bit} mais significativo ter o valor do sinal $c_n$. Em segundo, nega-se o vector. E em último, é efectuado um \textit{shift} de 15 posições para a direita. De seguida encontra-se um esquema que demonstra a solução encontrada para a obtenção do  $d_n$.
+A solução computacional mais eficiente que se encontrou consiste em três fases. Na primeira, é efectuado um \textit{shift} de 15 posições para a esquerda, no intuito de o \textit{bit} mais significativo ter o valor do sinal $c_n$. Em segundo, nega-se o vector. E em último, é efectuado um \textit{shift} de 15 posições para a direita. De seguida encontra-se um esquema que demonstra a solução encontrada para a obtenção do  $d_n$ como também o código.
+
+
+\begin{lstlisting}[language=C]
+	if(b_i>15){
+		...
+		c_n = c_n^b_n;
+		shift15_cn = c_n<<15;	   // shift de 15 posicoes para a esquerda
+		not_shift15 = ~shift15_cn; // negacao do sinal anterior 
+		d_n = not_shift15 >>14;    // shift de 14 posicoes para a direita
+		...
+	}
+\end{lstlisting}
+
+
 
 \todo{figura}
 
