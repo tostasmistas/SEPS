@@ -306,28 +306,34 @@ O código apresentado de seguida demonstra a explicação referida.
 	...
 \end{lstlisting}
 
-Os valores da LUT permitem aceder as arcadas positivas do seno. Quando a variável de estado da rampa é negativa, \texttt{status} < 0, o sinal de saída tem que ser negado. Em seguida está representado o código referente à explicação anterior:
+Sabendo que os valores da LUT permitem aceder às arcadas positivas do seno, quando a variável de estado da rampa é negativa, \texttt{status} $<$ 0, o sinal de saída tem que ser negado. Em seguida está representado o código referente à explicação anterior:
 
 \begin{lstlisting}[language=C]
 	...
-	if(status < 0){
-		y = -y;
-	}
+		if(status < 0){
+			y = -y;
+		}
 	...
 \end{lstlisting}
-
 
 O sinal de saída pode ser observado no canal esquerdo da DSP.
 
 \begin{lstlisting}[language=C]
 	...
-	AIC_buffer.channel[LEFT] = y;
+		AIC_buffer.channel[LEFT] = y;
 	...
 \end{lstlisting}
 
 Com o oscilador controlado já implementado procede-se à fase de testes.
 
 \todo{teddy}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.10]{exps/200Hz_2_6}
+	\caption{Saída modulada na frequência do oscilador controlado com \textit{input} de uma onda quadrada de 200 Hz.}
+	\vspace{-0.8em}
+\end{figure}
 
 Pretende-se agora melhorar a qualidade do oscilador sinusoidal utilizando interpolação linear. Esta interpolação é feita lendo dois valores consecutivos, $y_{1}$ e $y_{2}$, da LUT do seno e depois obtém-se o valor sinusoidal interpolado com recurso à seguinte equação
 
@@ -374,11 +380,13 @@ O excerto de código apresentado de seguida demonstra a obtenção do valor inte
 	...
 \end{lstlisting}
 
-Como se viu, foram desenvolvidos dois osciladores sinusoidais - com e sem interpolação - sendo agora importante compará-los, comparação feita inicialmente ao nível dos espectros. Quando TAL
+Como se viu, foram desenvolvidos dois osciladores sinusoidais - com e sem interpolação - sendo agora importante compará-los, comparação feita inicialmente ao nível dos espectros. De referir que para comparar os sinais fixou-se o valor de $\Delta$, ou seja, não se incluiu a modulação, optando por $\Delta = 16384$, ou seja, uma frequência de 4 kHz. 
 
-Assim, para se poder obter resultados mais conclusivos sobre qual o melhor método recorreu-se ao modo persistência do osciloscópio. Este modo sobrepõe múltiplas formas de onda no mesmo \textit{display}, com as formas de onda mais recentes a serem enfatizadas com uma saturação mais profunda. 
+Quando se analisou os espectros das sinusoides não se verificou qualquer diferença entre eles e não foi possível concluir sobre qual seria o melhor método.
 
-Na Figura \ref{fig:AE1} apresenta-se as formas de onda obtidas para as sinusoides geradas de acordo com os dois métodos.
+Assim, para se poder obter resultados mais conclusivos sobre qual o melhor método recorreu-se ao modo persistência do osciloscópio. Este modo sobrepõe múltiplas formas de onda no mesmo \textit{display}, com as formas de onda mais recentes a serem enfatizadas com uma saturação mais profunda. De referir que para comparar os sinais fixou-se agora o valor de $\Delta$ a 16380, ou seja, uma frequência que não é um múltiplo da frequência de amostragem. Isto é feito porque, quando a frequência é múltiplo da frequência de amostragem, não se ganha nada em implementar o método da interpolação. No entanto, na maioria das vezes a frequência não será múltiplo de $f_s$ e assim, tem-se a ganhar quase sempre. 
+
+Na Figura \ref{fig:AE1} apresenta-se as formas de onda obtidas para as sinusoides geradas de acordo com os dois métodos, com $\Delta$ a 16380.
 
 \begin{figure}[H]
 	\centering
@@ -388,9 +396,9 @@ Na Figura \ref{fig:AE1} apresenta-se as formas de onda obtidas para as sinusoide
 	\label{fig:AE1}
 \end{figure}
 
-Como se pode ver, o sinal representado a verde apresenta maior dispersão relativamente 
+Como se pode ver, o sinal representado a verde, implementação sem interpolação, apresenta maior dispersão em torno dos valores pretendidos para a forma de onda. O sinal representado a amarelo, implementação com interpolação, não tem tanta dispersão, estando a gama de valores mais próxima do pretendido. 
 
-\todo{margarida}
+Assim se pode concluir que o método da interpolação compensa na maioria das vezes, pois fornece um oscilador de melhor qualidade.
 
 \section{Projecto $\#$2 - Transmissor BPSK}
 
