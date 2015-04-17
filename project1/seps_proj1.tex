@@ -380,7 +380,9 @@ O excerto de código apresentado de seguida demonstra a obtenção do valor inte
 
 Como se viu, foram desenvolvidos dois osciladores sinusoidais - com e sem interpolação - sendo agora importante compará-los, comparação feita inicialmente ao nível dos espectros. De referir que para comparar os sinais fixou-se o valor de $\Delta$, ou seja, não se incluiu a modulação, optando por $\Delta = 16384$, ou seja, uma frequência de 4 kHz. 
 
-Quando se analisou os espectros das sinusoides não se verificou qualquer diferença entre eles e não foi possível concluir sobre qual seria o melhor método.
+Quando se analisou os espectros das sinusoides não se verificou qualquer diferença entre eles e não foi possível concluir sobre qual seria o melhor método, como se pode ver nas figuras da próxima página.
+
+\todo{inserir imagens dos espectros}
 
 Assim, para se poder obter resultados mais conclusivos sobre qual o melhor método recorreu-se ao modo persistência do osciloscópio. Este modo sobrepõe múltiplas formas de onda no mesmo \textit{display}, com as formas de onda mais recentes a serem enfatizadas com uma saturação mais profunda. De referir que para comparar os sinais fixou-se agora o valor de $\Delta$ a 16380, ou seja, uma frequência que não é um múltiplo da frequência de amostragem. Isto é feito porque, quando a frequência é múltiplo da frequência de amostragem, não se ganha nada em implementar o método da interpolação. No entanto, na maioria das vezes a frequência não será múltiplo de $f_s$ e assim, tem-se a ganhar quase sempre. 
 
@@ -473,11 +475,7 @@ Como se pode observar, ocorre \textit{overflow} quando o contador, \texttt{b\_i}
 	\vspace{-0.8em}
 \end{figure} 
 
-Na figura anterior pode-se analisar o resultado do sinal $b_n$, verifica-se que é um sinal binário porque só toma valores 0 ou 1 com um ritmo de transmissão de 1 \textit{kbps}, pois cada bit(o valor máximo ou mínimo do sinal a amarelo) tem 4 ciclos da onda quadrada a verde ( onda quadrada com frequência de 4 kHz), 4\textit{kHz}/4 = 1 \textit{kHz}. Sabendo que um período do sinal $b_n$ é composto por dois \textit{bits} (valor máximo e mínimo ) conclui-se que se tem um sinal com frequência igual a 500 \textit{Hz}, 4 \textit{kHz}/8 = 500 \textit{Hz}.
-
-
-
-\todo{explicar freq de 500HZ e imagem} 
+Na figura anterior pode-se analisar o resultado do sinal $b_n$, verificando-se que é um sinal binário, uma vez que só toma o valor 0 ou 1, com um ritmo de transmissão de 1 kbps. Cada \textit{bit} (quando o sinal representada a amarelo toma o valor máximo ou mínimo) contém 4 ciclos da onda quadrada (onda representada a verde que tem uma frequência de 4 kHz), o que resulta numa frequência de \textit{bit} de 4 kHz/4 = 1 kHz. Sabendo que um período do sinal $b_n$ é composto por dois \textit{bits} (valor máximo e mínimo da onda representada a amarelo) conclui-se que se tem um sinal com frequência de 500 Hz, ou seja, 4 kHz/8 = 500 Hz.
 
 De seguida, aplica-se a função \texttt{XOR} entre o resultado anterior e a variável \texttt{b\_n}, de forma a obter uma sequência $b_n$ que varia alternadamente entre \texttt{0} e \texttt{1}, ou vice-versa, a uma taxa de $f_b$ = 1 kbps. Com o \textit{bit-rate}, $b_n$, criado aplica-se o codificador diferencial de forma a gerar o sinal $c_n$, de acordo com seguinte equação:
 
@@ -566,7 +564,18 @@ Com a primeira parte do modulador criado, geração da portadora, pode-se aplica
 
 Com o modulador criado procede-se à fase de testes. Sabe-se que o sinal $d_n$ tem uma frequência de 500 Hz com um ritmo de transmissão de 1 kbps, e é modulado por uma portadora de 4 kHz. Assim, existe uma inversão de fase a cada 4000/500 ciclos, ou seja, a cada 8 ciclos.
 
-Analisando a figura seguinte verifica-se que o modulador está a funcionar correctamente, invertendo a fase no zero da portadora e a cada 8 ciclos.
+Analisando a figuras seguinte verifica-se que o modulador está a funcionar correctamente, invertendo a fase no zero da portadora e a cada 8 ciclos.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.10]{exps/dn_com_y}
+	\caption{Sobreposição do sinal modulado (a amarelo) com o sinal $d_n$ (a verde).}
+	\vspace{-0.8em}
+\end{figure}
+
+\todo{comentar imagem de cima}
+
+Apresenta-se também uma imagem em que se encontra apenas representado o sinal modulado, com um \textit{zoom} sobre uma altura em que ocorrem duas inversões de fase. 
 
 \begin{figure}[H]
 	\centering
@@ -575,7 +584,7 @@ Analisando a figura seguinte verifica-se que o modulador está a funcionar corre
 	\vspace{-0.8em}
 \end{figure}
 
-\todo{comentar esta imagem e repetir imagem no lab com o dn}
+
 
 \begin{figure}[H]
 	\centering
