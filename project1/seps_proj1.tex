@@ -324,8 +324,10 @@ O sinal de saída pode ser observado no canal esquerdo da DSP.
 	...
 \end{lstlisting}
 
-Com o oscilador controlado já implementado procede-se à fase de testes. 
-A verificação de funcionamento pode ser vista na figura seguinte, utilizou-se um sinal de entrada, a verde, definido como uma onda quadrada com uma frequência de 200\textit{Hz} e uma amplitude próxima de 1\textit{V} no intuito de poder verificar o controlo da frequência do sinal de saída, a amarelo, a partir da amplitude do sinal de entrada. Quando a amplitude do sinal de entrada é máximo pode-se visualizar um aumento da frequência do sinal de saída, para o mesmo tempo há um maior número de ciclos. Quando amplitude do sinal de entrada é mínimo a frequência do sinal de saída diminui, um menor número de ciclos para o mesmo intervalo de tempo. Com estes resultados, pode-se concluir que o método de controlo utilizado funciona de modo adequado.
+Com o oscilador controlado já implementado procede-se à fase de testes. A verificação de funcionamento pode ser vista na Figura 4, onde se utilizou um sinal de entrada, a verde, definido como uma onda quadrada com uma frequência de 200 Hz e uma amplitude próxima de 1 V, no intuito de poder verificar o controlo da frequência do sinal de saída, a amarelo, a partir da amplitude do sinal de entrada. 
+
+Quando a amplitude do sinal de entrada é máxima pode-se visualizar um aumento da frequência do sinal de saída, ou seja, para um mesmo intervalo de tempo há um maior número de ciclos. Quando a amplitude do sinal de entrada é mínima, a frequência do sinal de saída diminui, ou seja, há um menor número de ciclos para o mesmo intervalo de tempo. Com estes resultados, pode-se concluir que o método de controlo utilizado funciona de modo adequado.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.10]{exps/200Hz_2_6}
@@ -398,7 +400,7 @@ Assim se pode concluir que o método da interpolação compensa na maioria das v
 
 \section{Projecto $\#$2 - Transmissor BPSK}
 
-Neste projecto, pretende-se implementar o codificador de um transmissor BPSK (binary phase-shift keying), representado na Figura \ref{fig:BPSK}.
+Neste projecto, pretende-se implementar o codificador de um transmissor BPSK (\textit{binary phase-shift keying)}, representado na Figura \ref{fig:BPSK}.
 
 \begin{figure}[H]
 	\centering
@@ -407,6 +409,8 @@ Neste projecto, pretende-se implementar o codificador de um transmissor BPSK (bi
 	\vspace{-0.8em}
 	\label{fig:BPSK}
 \end{figure}
+
+A modulação BPSK faz o mapeamento de uma mudança na fase de $0\,^{\circ}$ ou $180\,^{\circ}$ para um valor de \textit{bit} de 0 ou 1, respectivamente. Para que não haja ambiguidade na fase, que ocorre quando se utilizam fases absolutas, aplica-se codificação diferencial. Assim, quando o canal introduz uma mudança de fase desconhecida é possível recuperar a sequência de \textit{bits}.
 
 O codificador tem como entrada os \textit{bits} $b_n$, uma sequência que vai alternando entre o valor lógico \texttt{0} e o valor lógico \texttt{1} ($b_n$ = 1, 0, 1, 0, \ldots) e como saída os valores $d_n$, que podem ser -1 ou +1. O codificador realiza a operação $c_n = c_{n-1} \oplus b_n$, considerando $c_0 = 0$, para que depois possam ser determinados os \textit{bits} da sequência $d_n$, de acordo com o mapeamento:
 
@@ -485,23 +489,22 @@ A equação anterior foi implementada no ciclo de criação do \textit{bit-rate}
 	...
 \end{lstlisting}
 		
-De seguida, aplica-se o mapeamento aos \textit{bits} do sinal $c_n$ na constelação BPSK, de forma a obter o sinal $d_n$. O mapeamento segue as expressões da equação (\ref{eq:cn0}) e (\ref{eq:cn1}).
+De seguida, aplica-se o mapeamento aos \textit{bits} do sinal $c_n$ na constelação BPSK, de forma a obter o sinal $d_n$, ou seja, os dois símbolos da constelação: 1 e $-1$. O mapeamento segue as expressões da equação (\ref{eq:cn0}) e (\ref{eq:cn1}).
 	 
 A solução computacional mais eficiente que se encontrou consiste em três fases. Na primeira, é efectuado um \textit{shift} de 15 posições para a esquerda, no intuito de o \textit{bit} mais significativo ter o valor do sinal $c_n$. Em segundo, nega-se o vector. E em último, é efectuado um \textit{shift} de 15 posições para a direita. De seguida encontra-se um esquema que demonstra a solução encontrada para a obtenção do $d_n$ como também o código.
 
 
 \begin{lstlisting}[language=C]
-	if(b_i>15){
-		...
-		c_n = c_n^b_n;
-		shift15_cn = c_n<<15;	   // shift de 15 posicoes para a esquerda
-		not_shift15 = ~shift15_cn; // negacao do sinal anterior 
-		d_n = not_shift15 >>14;    // shift de 14 posicoes para a direita
-		...
-	}
+	...
+		if(b_i>15){
+			...
+				c_n = c_n^b_n;
+				shift15_cn = c_n<<15;	   // shift de 15 posicoes para a esquerda
+				not_shift15 = ~shift15_cn; // negacao do sinal anterior 
+				d_n = not_shift15 >>14;    // shift de 14 posicoes para a direita
+		}
+	...
 \end{lstlisting}
-
-
 
 \begin{figure}[H]
 	\centering
@@ -517,7 +520,7 @@ A solução computacional mais eficiente que se encontrou consiste em três fase
 	\vspace{-0.8em}
 \end{figure}
 
-Pretende-se agora gerar a portadora com frequência $f_0 = 4$ kHz. De forma a implementar a portadora, que vai ser multiplicada pela sequência $d_n$, originando o sinal modulado, é criada uma LUT idêntica à do Projecto \#1. Neste caso, uma vez que só há 4 amostras por período, já que a frequência de amostragem é 
+Pretende-se agora gerar a portadora com frequência $f_0$  a 4 kHz. De forma a implementar a portadora, que vai ser multiplicada pela sequência $d_n$, originando o sinal modulado, é criada uma LUT idêntica à do Projecto \#1. Neste caso, uma vez que só há 4 amostras por período, já que a frequência de amostragem é 
 $f_0 = 16$ kHz, basta especificar 4 valores da onda sinusoidal. Assim, é declarada a LUT com os valores 0, 1, 0 e -1, representados no formato mais preciso, $Q_{15}$:
 
 \begin{lstlisting}[language=C]
@@ -527,30 +530,41 @@ $f_0 = 16$ kHz, basta especificar 4 valores da onda sinusoidal. Assim, é declar
 	...
 \end{lstlisting}
 
-Com a LUT declarada, usou-se o seguinte código para poder gerar a portadora de $f_0$ = 4\textit{kHz}. O código encontra-se no \textit{loop} da rotina principal de forma a obter um valor da LUT a cada 16 \textit{kHz} incrementando  o index da LUT a cada passagem do \textit{loop}. Obtendo assim um sinal sinusoidal de 4 \textit{kHz}.
+Com a LUT declarada, usou-se o excerto de código seguinte para poder gerar a portadora de frequência $f_0$ a 4 kHz. O código encontra-se no \textit{loop} da rotina principal de forma a obter um valor da LUT a cada 16 kHz, incrementando a variável de indexação da LUT a cada passagem do \textit{loop}.
 
 \begin{lstlisting}[language=C]
 	while(1){	
 		...
-		sine_i= sine_i&3; // mascara para obter so os 3 bits menos significativo
-		y= sine[sine_i];  // indexacao da LUT
-		sine_i++;		  // incrementador do index
+			sine_i= sine_i&3; // mascara para obter os 3 bits menos significativos
+			y= sine[sine_i];  // indexacao da LUT
+			sine_i++;		  // incrementador do index
 		...
 	}
 \end{lstlisting}
 
-Com a primeira parte do modulador criado, geração da portadora, pode-se aplicar a fase final do modulador, a multiplicação do sinal $d_n$ com a portadora gerando um sinal modelado do tipo BPSK. O código seguinte demonstra esta última fase.  
+\todo{porque a mascara com os 3 bits menos significativos? nunca falamos sequer do sinal sine\_i - o que representa? - teddy}
+
+\todo{y = (32767*y)>>15 ; - linha de codigo que nunca é explicada - teddy}
+
+Com a primeira parte do modulador criado, geração da portadora, pode-se aplicar a fase final do seu desenvolvimento, a multiplicação do sinal $d_n$ com a portadora, gerando assim um sinal modelado do tipo BPSK. O código seguinte demonstra esta última fase.  
 
 \begin{lstlisting}[language=C]
 	 ...
-	 y = d_n*y; // multilicacao do sinal com a portadora
-	 AIC_buffer.channel[LEFT] = y;// sinal observado no canal esquerdo
+		 y = d_n*y; // multilicacao do sinal com a portadora
+		 AIC_buffer.channel[LEFT] = y;// sinal observado no canal esquerdo
 	 ...
 \end{lstlisting}
 
-Com o modulador criado procede-se à fase de testes. Sabe-se que o sinal modulado do tipo BPSK, é sinal de 1 \textit{kbps}, $d_n$,  modulado com uma portadora de 4 \textit{kHz}. Ou seja, existe uma inversão de fase a cada 8 ciclos. Analisando a figura seguinte verifica-se que o modulador está a funcionar correctamente, invertendo a fase no zero da portadora e a cada 8 ciclos.
+Com o modulador criado procede-se à fase de testes. Sabe-se que o sinal modulado do tipo BPSK, é um sinal com ritmo de transmissão de 1 kbps, $d_n$, modulado por uma portadora de 4 kHz. Assim, existe uma inversão de fase a cada 8 ciclos. \todo{nao se percebe porquê - teddy}
 
-\todo{por a imagem BPSK\_modulated}
+Analisando a figura seguinte verifica-se que o modulador está a funcionar correctamente, invertendo a fase no zero da portadora e a cada 8 ciclos.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.10]{exps/BPSK_modulated}
+	\caption{Sinal modulado (em cima) e pormenor obtido com recurso a uma janela temporal (em baixo).}
+	\vspace{-0.8em}
+\end{figure}
 
 \todo{pergunta 3 - margarida}
 
