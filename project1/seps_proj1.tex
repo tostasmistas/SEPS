@@ -473,6 +473,10 @@ Como se pode observar, ocorre \textit{overflow} quando o contador, \texttt{b\_i}
 	\vspace{-0.8em}
 \end{figure} 
 
+Na figura anterior pode-se analisar o resultado do sinal $b_n$, verifica-se que é um sinal binário porque só toma valores 0 ou 1 com um ritmo de transmissão de 1 \textit{kbps}, pois cada bit(o valor máximo ou mínimo do sinal a amarelo) tem 4 ciclos da onda quadrada a verde ( onda quadrada com frequência de 4 kHz), 4\textit{kHz}/4 = 1 \textit{kHz}. Sabendo que um período do sinal $b_n$ é composto por dois \textit{bits} (valor máximo e mínimo ) conclui-se que se tem um sinal com frequência igual a 500 \textit{Hz}, 4 \textit{kHz}/8 = 500 \textit{Hz}.
+
+
+
 \todo{explicar freq de 500HZ e imagem} 
 
 De seguida, aplica-se a função \texttt{XOR} entre o resultado anterior e a variável \texttt{b\_n}, de forma a obter uma sequência $b_n$ que varia alternadamente entre \texttt{0} e \texttt{1}, ou vice-versa, a uma taxa de $f_b$ = 1 kbps. Com o \textit{bit-rate}, $b_n$, criado aplica-se o codificador diferencial de forma a gerar o sinal $c_n$, de acordo com seguinte equação:
