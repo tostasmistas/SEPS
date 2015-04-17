@@ -359,16 +359,18 @@ Pode-se agora computar $y$ de acordo com a equação (\ref{eq:interpol}). Quando
 
 O resultado desta subtracção é então multiplicado com $\Delta x$, que toma sempre valores entre 0 e 1, ou seja, está-se a multiplicar dois valores no formato $Q_{15}$, que origina um valor no formato $Q_{30}$ com replicação do \textit{bit} de sinal. Assim, é necessário efectuar um \textit{shift} para a esquerda para remover o \textit{bit} de sinal replicado, resultando num formato final de $Q_{31}$, para 32 bits. Para se poder armazenar numa variável de 16 \textit{bits}, no formato $Q_{15}$, é necessário efectuar um \textit{shift} de 16 posições para a direita, permitindo armazenar os 16 \textit{bits} mais significativos do resultado de 32 \textit{bits}.
 
-O valor da subtracção que é seguida de uma multiplicação é agora somado ao valor de $y_1$, ou seja, está-se a somar dois números no formato $Q_{15}$, o que dá um resultado que seria no formato $Q_{14}$. No entanto, quando se analisa o pior caso \todo{teddy explicar pior caso}
+O valor da subtracção que é seguida de uma multiplicação é agora somado ao valor de $y_1$, ou seja, está-se a somar dois números no formato $Q_{15}$, o que dá um resultado que seria no formato $Q_{14}$. No entanto, quando se analisa o pior caso onde $y_1$ = 32610 e o $y_2$ = 32767 e o $\Delta x$ = 32767. O resultado da subtracção de $y_2$ com $y_1$ multiplicado por $\Delta x$  é igual a 5144419 em $Q_{31}$ ou 78 em $Q_{15}$, dividindo por $2^{16}$. De seguida soma-se $y_1$ com o resultado anterior tendo um valor final de 32688, podendo guardar em $Q_{15}$ o resultado da equação (2.5).
 
-O valor do sinal interpolado é agora multiplicado pelo sinal \texttt{amp}, ou seja, é efectuada mais uma multiplicação entre dois números no formato $Q_{15}$, sendo necessário efectuar o \textit{shift} para esquerda e os 116 \textit{shifts} para a direita explicados anteriormente.
+ \todo{teddy explicar pior caso}
+
+O valor do sinal interpolado é agora multiplicado pelo sinal \texttt{amp}, ou seja, é efectuada mais uma multiplicação entre dois números no formato $Q_{15}$, sendo necessário efectuar o \textit{shift} para esquerda e os 16 \textit{shifts} para a direita explicados anteriormente.
 
 O excerto de código apresentado de seguida demonstra a obtenção do valor interpolado, que é armazenado na variável \texttt{y}. 
 
 \begin{lstlisting}[language=C]
 	...
 		//obtencao do valor sinusoidal interpolado 
-		y = (amp*(y1 + ((y2-y1)*delta_x>>15))>>15);
+		y = ( ( amp*( y1 + ( (y2-y1)*delta_x << 1 ) >> 16) ) << 1 ) >> 16);
 	...
 \end{lstlisting}
 
@@ -406,11 +408,11 @@ O codificador tem como entrada os \textit{bits} $b_n$, uma sequência que vai al
 
 \vspace{-3mm}
 \begin{equation}
-	c_{n} = \text{'}0\text{'}\to d_{n} = +1;
+	c_{n} = \text{'}0\text{'}\to d_{n} = -1;
 	\label{eq:cn0}
 \end{equation}
 \begin{equation}	
-	c_{n} = \text{'}1\text{'}\to d_{n} = -1.
+	c_{n} = \text{'}1\text{'}\to d_{n} = +1.
 	\label{eq:cn1}  
 \end{equation} 
 
@@ -500,14 +502,14 @@ A solução computacional mais eficiente que se encontrou consiste em três fase
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/esquema2}
-	\caption{Representação da situação em que $c_{n} = 0$, resultando num mapeamento de $d_{n} = +1$.}
+	\caption{Representação da situação em que $c_{n} = 0$, resultando num mapeamento de $d_{n} = -1$.}
 	\vspace{-0.8em}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/esquema1}
-	\caption{Representação da situação em que $c_{n} = 1$, resultando num mapeamento de $d_{n} = -1$.}
+	\caption{Representação da situação em que $c_{n} = 1$, resultando num mapeamento de $d_{n} = +1$.}
 	\vspace{-0.8em}
 \end{figure}
 
