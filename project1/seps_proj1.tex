@@ -331,7 +331,7 @@ Quando a amplitude do sinal de entrada é máxima pode-se visualizar um aumento 
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.10]{exps/200Hz_2_6}
-	\caption{Saída modulada na frequência do oscilador controlado com \textit{input} de uma onda quadrada de 200 Hz.}
+	\caption{Saída modulada na frequência do oscilador controlado (a amarelo) com \textit{input} de uma onda quadrada de 200 Hz (a verde).}
 	\vspace{-0.8em}
 \end{figure}
 
@@ -464,7 +464,16 @@ Foi criada outra solução para a obtenção da sequência $b_n$ com objectivo d
 	...
 \end{lstlisting}
 
-Como se pode observar, ocorre \textit{overflow} quando o contador, \texttt{b\_i}, atinge o valor 16, sendo utilizado este valor porque a frequência de amostragem, de 16 kHz, é divida por esse valor de forma a obter o resultado desejado de uma taxa de transmissão de 1 kbps. Para detectar esta ocorrência aplica-se a máscara \texttt{16} (o quinto \textit{bit} menos significativo com o valor lógico \texttt{1}) e efectua-se um \textit{shift} de 4 posições para a direita. 
+Como se pode observar, ocorre \textit{overflow} quando o contador, \texttt{b\_i}, atinge o valor 16, sendo utilizado este valor porque a frequência de amostragem, de 16 kHz, é divida por esse valor de forma a obter o resultado desejado de uma taxa de transmissão de 1 kbps. Para detectar esta ocorrência aplica-se a máscara \texttt{16} (o quinto \textit{bit} menos significativo com o valor lógico \texttt{1}) e efectua-se um \textit{shift} de 4 posições para a direita.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.10]{exps/bn_zoom}
+	\caption{Sinal $b_n$ (a amarelo) sobreposto com uma onda quadrada com frequência de 4 kHz (a verde).}
+	\vspace{-0.8em}
+\end{figure} 
+
+\todo{explicar freq de 500HZ e imagem} 
 
 De seguida, aplica-se a função \texttt{XOR} entre o resultado anterior e a variável \texttt{b\_n}, de forma a obter uma sequência $b_n$ que varia alternadamente entre \texttt{0} e \texttt{1}, ou vice-versa, a uma taxa de $f_b$ = 1 kbps. Com o \textit{bit-rate}, $b_n$, criado aplica-se o codificador diferencial de forma a gerar o sinal $c_n$, de acordo com seguinte equação:
 
@@ -530,7 +539,7 @@ $f_0 = 16$ kHz, basta especificar 4 valores da onda sinusoidal. Assim, é declar
 	...
 \end{lstlisting}
 
-Com a LUT declarada, usou-se o excerto de código seguinte para poder gerar a portadora de frequência $f_0$ a 4 kHz. O código encontra-se no \textit{loop} da rotina principal de forma a obter um valor da LUT a cada 16 kHz, incrementando a variável,\textit{sine\_i}, de indexação da LUT a cada passagem do \textit{loop} sendo necessário aplicar uma mascara 3, os dois \textit{bits} menos significativos a 1, para poder aceder a posição 0 a 3 da LUT.
+Com a LUT declarada, usou-se o excerto de código seguinte para poder gerar a portadora de frequência $f_0$ a 4 kHz. O código encontra-se no \textit{loop} da rotina principal, de forma a obter um valor da LUT a cada 16 kHz, incrementando a variável de indexação da \textit{look-up-table}, \texttt{sine\_i}, a cada passagem do \textit{loop}. É necessário aplicar a máscara \texttt{3}, os dois \textit{bits} menos significativos a \texttt{1}, para poder aceder à posição 0 a 3 da LUT.
 
 \begin{lstlisting}[language=C]
 	while(1){	
@@ -551,7 +560,7 @@ Com a primeira parte do modulador criado, geração da portadora, pode-se aplica
 	 ...
 \end{lstlisting}
 
-Com o modulador criado procede-se à fase de testes. Sabe-se que o sinal modulado do tipo BPSK,$d_n$, tem uma frequência de 500 \textit{Hz} com um ritmo de transmissão de 1 \textit{kbps} modulado por uma portadora de 4 kHz. Assim, existe uma inversão de fase a cada  4000/500  = 8 ciclos. \todo{nao se percebe porquê - teddy}
+Com o modulador criado procede-se à fase de testes. Sabe-se que o sinal $d_n$ tem uma frequência de 500 Hz com um ritmo de transmissão de 1 kbps, e é modulado por uma portadora de 4 kHz. Assim, existe uma inversão de fase a cada 4000/500 ciclos, ou seja, a cada 8 ciclos.
 
 Analisando a figura seguinte verifica-se que o modulador está a funcionar correctamente, invertendo a fase no zero da portadora e a cada 8 ciclos.
 
@@ -562,8 +571,34 @@ Analisando a figura seguinte verifica-se que o modulador está a funcionar corre
 	\vspace{-0.8em}
 \end{figure}
 
-\todo{pergunta 3 - margarida}
+\todo{comentar esta imagem e repetir imagem no lab com o dn}
+
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/AE_bn}}
+	\hspace{8mm}
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/AE_dn}}
+	\linebreak
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/AE_yn}}
+	\vspace{-0.8em}
+	\caption{Espectro do sinal $b_n$ (a), espectro do sinal $d_n$ (b) e espectro do sinal $y_n$ (c).}
+	\vspace{-0.8em}
+\end{figure}
+
+\todo{comentar imagens do AE - margarida}
 
 \section{Conclusões}
+
+\todo{conclusoes}
+
+\pagebreak
+
+\section{Anexos}
+
+\todo{incluir codigo}
+
+\subsection{Anexo I - Código do Projecto \#1}
+
+\subsection{Anexo II - Código do Projecto \#2}
 
 \end{document}
