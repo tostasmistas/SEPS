@@ -380,9 +380,17 @@ O excerto de código apresentado de seguida demonstra a obtenção do valor inte
 
 Como se viu, foram desenvolvidos dois osciladores sinusoidais - com e sem interpolação - sendo agora importante compará-los, comparação feita inicialmente ao nível dos espectros. De referir que para comparar os sinais fixou-se o valor de $\Delta$, ou seja, não se incluiu a modulação, optando por $\Delta = 16384$, ou seja, uma frequência de 4 kHz. 
 
-Quando se analisou os espectros das sinusoides não se verificou qualquer diferença entre eles e não foi possível concluir sobre qual seria o melhor método, como se pode ver nas figuras da próxima página.
+Quando se analisou os espectros das sinusoides não se verificou qualquer diferença entre eles e não foi possível concluir sobre qual seria o melhor método, como se pode ver nas figuras da próxima página, em que ambos os espectros apresentam uma risca na frequência central, 4 kHz, tal como esperado.
 
-\todo{inserir imagens dos espectros}
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/AE_sem_inter}}
+	\hspace{8mm}
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/AE_com_inter}}
+	\vspace{-0.8em}
+	\caption{Espectro do sinal de saída sem interpolação (a) e com interpolação (b).}
+	\vspace{-0.8em}
+\end{figure}
 
 Assim, para se poder obter resultados mais conclusivos sobre qual o melhor método recorreu-se ao modo persistência do osciloscópio. Este modo sobrepõe múltiplas formas de onda no mesmo \textit{display}, com as formas de onda mais recentes a serem enfatizadas com uma saturação mais profunda. De referir que para comparar os sinais fixou-se agora o valor de $\Delta$ a 16380, ou seja, uma frequência que não é um múltiplo da frequência de amostragem. Isto é feito porque, quando a frequência é múltiplo da frequência de amostragem, não se ganha nada em implementar o método da interpolação. No entanto, na maioria das vezes a frequência não será múltiplo de $f_s$ e assim, tem-se a ganhar quase sempre. 
 
@@ -585,8 +593,6 @@ Apresenta-se também uma imagem em que se encontra apenas representado o sinal m
 	\caption{Sinal modulado (em cima) e pormenor obtido com recurso a uma janela temporal (em baixo).}
 	\vspace{-0.8em}
 \end{figure}
-
-
 
 \begin{figure}[H]
 	\centering
