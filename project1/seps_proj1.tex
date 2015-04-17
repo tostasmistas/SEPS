@@ -530,7 +530,7 @@ $f_0 = 16$ kHz, basta especificar 4 valores da onda sinusoidal. Assim, é declar
 	...
 \end{lstlisting}
 
-Com a LUT declarada, usou-se o excerto de código seguinte para poder gerar a portadora de frequência $f_0$ a 4 kHz. O código encontra-se no \textit{loop} da rotina principal de forma a obter um valor da LUT a cada 16 kHz, incrementando a variável de indexação da LUT a cada passagem do \textit{loop}.
+Com a LUT declarada, usou-se o excerto de código seguinte para poder gerar a portadora de frequência $f_0$ a 4 kHz. O código encontra-se no \textit{loop} da rotina principal de forma a obter um valor da LUT a cada 16 kHz, incrementando a variável,\textit{sine\_i}, de indexação da LUT a cada passagem do \textit{loop} sendo necessário aplicar uma mascara 3, os dois \textit{bits} menos significativos a 1, para poder aceder a posição 0 a 3 da LUT.
 
 \begin{lstlisting}[language=C]
 	while(1){	
@@ -542,10 +542,6 @@ Com a LUT declarada, usou-se o excerto de código seguinte para poder gerar a po
 	}
 \end{lstlisting}
 
-\todo{porque a mascara com os 3 bits menos significativos? nunca falamos sequer do sinal sine\_i - o que representa? - teddy}
-
-\todo{y = (32767*y)>>15 ; - linha de codigo que nunca é explicada - teddy}
-
 Com a primeira parte do modulador criado, geração da portadora, pode-se aplicar a fase final do seu desenvolvimento, a multiplicação do sinal $d_n$ com a portadora, gerando assim um sinal modelado do tipo BPSK. O código seguinte demonstra esta última fase.  
 
 \begin{lstlisting}[language=C]
@@ -555,7 +551,7 @@ Com a primeira parte do modulador criado, geração da portadora, pode-se aplica
 	 ...
 \end{lstlisting}
 
-Com o modulador criado procede-se à fase de testes. Sabe-se que o sinal modulado do tipo BPSK, é um sinal com ritmo de transmissão de 1 kbps, $d_n$, modulado por uma portadora de 4 kHz. Assim, existe uma inversão de fase a cada 8 ciclos. \todo{nao se percebe porquê - teddy}
+Com o modulador criado procede-se à fase de testes. Sabe-se que o sinal modulado do tipo BPSK,$d_n$, tem uma frequência de 500 \textit{Hz} com um ritmo de transmissão de 1 \textit{kbps} modulado por uma portadora de 4 kHz. Assim, existe uma inversão de fase a cada  4000/500  = 8 ciclos. \todo{nao se percebe porquê - teddy}
 
 Analisando a figura seguinte verifica-se que o modulador está a funcionar correctamente, invertendo a fase no zero da portadora e a cada 8 ciclos.
 
