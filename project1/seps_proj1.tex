@@ -135,7 +135,7 @@ f_{0} = \frac{\Delta}{2^{16}} \times f_{s} \leftrightarrow \Delta = \frac{f_{0}}
 
 Existe uma variável de estado da rampa que a cada $T_{s}$, período de amostragem, é incrementada de $\Delta$, como se pode ver na Figura 1. A variável de estado da rampa é de 16 \textit{bits} com representação em $Q_{15}$ e, sabendo que o maior número positivo que se pode representar em $Q_{15}$ é $2^{15} - 1 = 32767$ e o menor número negativo que se pode representar é  $-(2^{15} - 1) = -32767$, a variável de estado começa com o valor -32767 e vai até um máximo de 32767. Quando é atingido o valor máximo, 32767, entra em efeito a circularidade da representação em complemento para dois e, assim, a variável de estado não atinge o valor de $2^{15}$, ``dando a volta'' para -32767. 
 
-Relativamente à variável $\Delta$ esta encontra-se também representada em $Q_{15}$. O NCO tem como característica uma frequência $f_{0}$ que varia entre 2 kHz e 6 kHz. Estes valores são controlados a partir da amplitude do sinal de entrada. Quando esta for minima, a frequência $f_{0}$ é de 2 kHz e quando for máxima, a frequência $f_{0}$ é de 6 kHz. Com estas especificações pode-se calcular três valores de $\Delta$ com recurso à equação (2.1), para a frequência mínima, a frequência média e a frequência máxima.
+Relativamente à variável $\Delta$ esta encontra-se também representada em $Q_{15}$. O NCO tem como característica uma frequência $f_{0}$ que varia entre 2 kHz e 6 kHz. Estes valores são controlados a partir da amplitude do sinal de entrada. Quando esta for mínima, a frequência $f_{0}$ é de 2 kHz e quando for máxima, a frequência $f_{0}$ é de 6 kHz. Com estas especificações pode-se calcular três valores de $\Delta$ com recurso à equação (2.1), para a frequência mínima, a frequência média e a frequência máxima.
 
 \begin{table}[H]
 	\centering
@@ -175,7 +175,7 @@ Nas figuras da próxima página pode-se ver o sinal obtido experimentalmente que
 	\vspace{-0.8em}
 \end{figure}
 
-Como se pode ver na Figura 2(c), por comparação com o esperado teoricamente da Figura 1, o oscilador de relaxação implementado funciona de acordo com o previsto. De notar que o sinal que se observa está invertido relativamente ao teórico, o que é esperado, quando se considera que antes de ser observado no osciloscópio passa por um inversor.
+Como se pode ver na Figura 2(c), por comparação com o esperado teoricamente da Figura 1, o oscilador de relaxação implementado funciona de acordo com o previsto. De notar que o sinal que se observa está invertido relativamente ao teórico, o que já é esperado, quando se considera que antes de ser observado no osciloscópio passa por um inversor.
 
 Com o oscilador implementado pretende-se agora criar uma \textit{look-up-table} (LUT) com 32 valores positivos de meio período da função seno. É necessário começar por determinar esses valores, para que, posteriormente, os mesmos sejam convertidos para o formato mais preciso de representação, $Q_{15}$, uma vez que se encontram no intervalo [-1, 1]. Assim, tendo em conta que meio período da função seno é $\pi$, podemos calcular os valores da seguinte maneira:
 
@@ -205,7 +205,7 @@ Apresenta-se de seguida o excerto de código onde é declarada a LUT com os valo
 Como se pode constatar, a LUT é declarada com 33 valores, o que se deve ao facto de ser necessário garantir que, quando o valor de \texttt{i} for igual a \texttt{31}, seja possível aceder ao valor da função seno correspondente, o que não seria possível caso a LUT fosse apenas declarada com 32 valores.
  
 É possível implementar uma solução diferente, em que é realizada a operação lógica \texttt{AND} de \texttt{i} e \texttt{i+1} para o valor de \texttt{y1} e \texttt{y2} (necessário para o caso  da interpolação), 
-respectivamente, com a máscara \texttt{31}, com as seguintes linhas de código:
+respectivamente, com a máscara \texttt{31}, de acordo com as seguintes linhas de código:
 
 \begin{lstlisting}[language=C]
 	...
@@ -266,7 +266,7 @@ void main(){
 }
 \end{lstlisting}
 
-Analisando a Tabela 2 verifica-se que o valor de \texttt{delta} oscila com uma amplitude de 8192 em torno de 16384, $\Delta_{0}$ . Ou seja, $f_{0}$ tem uma frequência central em 4 kHz, oscilando com uma amplitude de 2 kHz. O incremento do oscilador é obtido de acordo com a seguinte equação, onde $x$ é a amplitude do sinal de entrada: 
+Analisando a Tabela 2 verifica-se que o valor de \texttt{delta} oscila com uma amplitude de 8192 em torno de 16384, $\Delta_{0}$. Ou seja, $f_{0}$ tem uma frequência central em 4 kHz, oscilando com uma amplitude de 2 kHz. O incremento do oscilador é obtido de acordo com a seguinte equação, onde $x$ é a amplitude do sinal de entrada: 
 
 \vspace{-3mm}
 \begin{equation}
@@ -284,7 +284,7 @@ Em baixo está o código referente ao cálculo para obter o valor de \texttt{del
 	...
 \end{lstlisting}
 
-Tendo o valor de \texttt{delta}, é simples obter a amplitude de cada amostra do sinal de saída, multiplicando \texttt{delta} por \texttt{y1}, valor obtido da LUT referente à questão 2.2. Em baixo está representado um excerto do código que demonstra a obtenção da amplitude do sinal de saída. Todas as variáveis são de 16 \textit{bits}, tendo \texttt{y1} e \texttt{delta} o formato de $Q_{15}$, como também \texttt{yf}. Isto deve-se ao facto de o formato do resultado da multiplicação com duas variáveis em $Q_{15}$ ser $Q_{30}$ com replicação do \textit{bit} de sinal. Assim, é necessário efectuar um \textit{shift} para a esquerda para remover o \textit{bit} de sinal replicado, resultando num formato final de $Q_{31}$, para 32 bits. Para se poder armazenar numa variável de 16 \textit{bits}, no formato $Q_{15}$, é necessário efectuar um \textit{shift} de 16 posições para a direita, permitindo armazenar os 16 \textit{bits} mais significativos do resultado de 32 \textit{bits}.
+Tendo o valor de \texttt{delta}, é simples obter a amplitude de cada amostra do sinal de saída, multiplicando \texttt{delta} por \texttt{y1}, valor obtido da LUT especificada anteriormente. Em baixo está representado um excerto do código que demonstra a obtenção da amplitude do sinal de saída. Todas as variáveis são de 16 \textit{bits}, tendo \texttt{y1} e \texttt{delta} o formato de $Q_{15}$, como também \texttt{yf}. Isto deve-se ao facto de o formato do resultado da multiplicação com duas variáveis em $Q_{15}$ ser $Q_{30}$ com replicação do \textit{bit} de sinal. Assim, é necessário efectuar um \textit{shift} para a esquerda para remover o \textit{bit} de sinal replicado, resultando num formato final de $Q_{31}$, para 32 bits. Para se poder armazenar numa variável de 16 \textit{bits}, no formato $Q_{15}$, é necessário efectuar um \textit{shift} de 16 posições para a direita, permitindo armazenar os 16 \textit{bits} mais significativos do resultado de 32 \textit{bits}.
 
 O código apresentado de seguida demonstra a explicação referida.
 
@@ -351,6 +351,8 @@ Com acesso a esse parâmetro, falta ler dois valores consecutivos da função se
 
 O excerto de código seguinte demonstra a obtenção do valor de $\Delta x$, armazenado na variável \texttt{delta\_x} e dois valores consecutivos da função seno, \texttt{y1} e \texttt{y2}.
 
+\pagebreak
+
 \begin{lstlisting}[language=C]
 	...
 		//obtencao do valor de delta_x
@@ -408,6 +410,8 @@ Como se pode ver, o sinal representado a verde, implementação sem interpolaç�
 
 Assim se pode concluir que o método da interpolação compensa na maioria das vezes, pois fornece um oscilador de melhor qualidade.
 
+\pagebreak
+
 \section{Projecto $\#$2 - Transmissor BPSK}
 
 Neste projecto, pretende-se implementar o codificador de um transmissor BPSK (\textit{binary phase-shift keying)}, representado na Figura \ref{fig:BPSK}.
@@ -463,7 +467,7 @@ Os \textit{bits} da sequência $b_n$ são implementados recorrendo a um contador
 	... 
 \end{lstlisting}
 
-Foi criada outra solução para a obtenção da sequência $b_n$ com objectivo de não utilizar a instrução condicional, \texttt{if}. Seguiu-se o conselho do enunciado de usar um contador que quando ocorre \textit{overflow} gera um novo \textit{bit} alternado. Está representado de seguida no excerto de código:
+Foi criada outra solução para a obtenção da sequência $b_n$ com objectivo de não utilizar a instrução condicional, \textit{if}. Seguiu-se o conselho do enunciado de usar um contador que quando ocorre \textit{overflow} gera um novo \textit{bit} alternado. Está representado de seguida no excerto de código:
 
 \begin{lstlisting}[language=C]
 	...
@@ -483,7 +487,7 @@ Como se pode observar, ocorre \textit{overflow} quando o contador, \texttt{b\_i}
 	\vspace{-0.8em}
 \end{figure} 
 
-Na figura anterior pode-se analisar o resultado do sinal $b_n$, verificando-se que é um sinal binário, uma vez que só toma o valor 0 ou 1, com um ritmo de transmissão de 1 kbps. Cada \textit{bit} (quando o sinal representada a amarelo toma o valor máximo ou mínimo) contém 4 ciclos da onda quadrada (onda representada a verde que tem uma frequência de 4 kHz), o que resulta numa frequência de \textit{bit} de 4 kHz/4 = 1 kHz. Sabendo que um período do sinal $b_n$ é composto por dois \textit{bits} (valor máximo e mínimo da onda representada a amarelo) conclui-se que se tem um sinal com frequência de 500 Hz, ou seja, 4 kHz/8 = 500 Hz.
+Na figura anterior pode-se analisar o resultado do sinal $b_n$, verificando-se que é um sinal binário, uma vez que só toma o valor 0 ou 1, com um ritmo de transmissão de 1 kbps. Cada \textit{bit} (quando o sinal representado a amarelo toma o valor máximo ou mínimo) contém 4 ciclos da onda quadrada (onda representada a verde que tem uma frequência de 4 kHz), o que resulta numa frequência de \textit{bit} de 4 kHz/4 = 1 kHz. Sabendo que um período do sinal $b_n$ é composto por dois \textit{bits} (valor máximo e mínimo da onda representada a amarelo) conclui-se que se tem um sinal com frequência de 500 Hz, ou seja, 4 kHz/8 = 500 Hz.
 
 De seguida, aplica-se a função \texttt{XOR} entre o resultado anterior e a variável \texttt{b\_n}, de forma a obter uma sequência $b_n$ que varia alternadamente entre \texttt{0} e \texttt{1}, ou vice-versa, a uma taxa de $f_b$ = 1 kbps. Com o \textit{bit-rate}, $b_n$, criado aplica-se o codificador diferencial de forma a gerar o sinal $c_n$, de acordo com seguinte equação:
 
@@ -511,7 +515,6 @@ A equação anterior foi implementada no ciclo de criação do \textit{bit-rate}
 De seguida, aplica-se o mapeamento aos \textit{bits} do sinal $c_n$ na constelação BPSK, de forma a obter o sinal $d_n$, ou seja, os dois símbolos da constelação: 1 e $-1$. O mapeamento segue as expressões da equação (\ref{eq:cn0}) e (\ref{eq:cn1}).
 	 
 A solução computacional mais eficiente que se encontrou consiste em três fases. Na primeira, é efectuado um \textit{shift} de 15 posições para a esquerda, no intuito de o \textit{bit} mais significativo ter o valor do sinal $c_n$. Em segundo, nega-se o vector. E em último, é efectuado um \textit{shift} de 15 posições para a direita. De seguida encontra-se um esquema que demonstra a solução encontrada para a obtenção do $d_n$ como também o código.
-
 
 \begin{lstlisting}[language=C]
 	...
@@ -549,7 +552,7 @@ $f_0 = 16$ kHz, basta especificar 4 valores da onda sinusoidal. Assim, é declar
 	...
 \end{lstlisting}
 
-Com a LUT declarada, usou-se o excerto de código seguinte para poder gerar a portadora de frequência $f_0$ a 4 kHz. O código encontra-se no \textit{loop} da rotina principal, de forma a obter um valor da LUT a cada 16 kHz, incrementando a variável de indexação da \textit{look-up-table}, \texttt{sine\_i}, a cada passagem do \textit{loop}. É necessário aplicar a máscara \texttt{3}, os dois \textit{bits} menos significativos a \texttt{1}, para poder aceder à posição 0 a 3 da LUT.
+Com a LUT declarada, usou-se o excerto de código seguinte para poder gerar a portadora de frequência $f_0$ a 4 kHz. O código encontra-se no \textit{loop} da rotina principal, de forma a obter um valor da LUT a cada 16 kHz, incrementando a variável de indexação da \textit{look-up-table}, \texttt{sine\_i}, a cada passagem do \textit{loop}. É necessário aplicar a máscara \texttt{3}, os dois \textit{bits} menos significativos a \texttt{1}, para poder aceder às posições 0 a 3 da LUT.
 
 \begin{lstlisting}[language=C]
 	while(1){	
@@ -565,7 +568,7 @@ Com a primeira parte do modulador criado, geração da portadora, pode-se aplica
 
 \begin{lstlisting}[language=C]
 	 ...
-		 y = d_n*y; // multilicacao do sinal com a portadora
+		 y = d_n*y; // multiplicacao do sinal com a portadora
 		 AIC_buffer.channel[LEFT] = y;// sinal observado no canal esquerdo
 	 ...
 \end{lstlisting}
@@ -581,9 +584,7 @@ Analisando a figuras seguinte verifica-se que o modulador está a funcionar corr
 	\vspace{-0.8em}
 \end{figure}
 
-Na imagem anterior, pode-se verificar que a inversão de fase faz-se correctamente 
-quando o sinal $d_n$ passa de +1 para -1 a inversão é feita para a arcada positiva, pode-se verificar isso a inversão do lado esquerdo da figura. Quando o sinal $d_n$ passa de -1 para +1 a inversão é feita para arcada negativa,pode-se verificar isso a inversão do lado esquerdo da figura.
-
+Na figura anterior, pode-se verificar que a inversão de fase faz-se correctamente - quando o sinal $d_n$ passa de $+1$ para $-1$ a inversão é feita para a arcada positiva, como se pode verificar do lado esquerdo da figura. Quando o sinal $d_n$ passa de $-1$ para $+1$ a inversão é feita para a arcada negativa, como se pode verificar na inversão do lado direito da figura.
 
 Apresenta-se também uma imagem em que se encontra apenas representado o sinal modulado, com um \textit{zoom} sobre uma altura em que ocorrem duas inversões de fase. 
 
@@ -593,6 +594,8 @@ Apresenta-se também uma imagem em que se encontra apenas representado o sinal m
 	\caption{Sinal modulado (em cima) e pormenor obtido com recurso a uma janela temporal (em baixo).}
 	\vspace{-0.8em}
 \end{figure}
+
+Efectuou-se também um registo ao nível de espectros para vários sinais, como se pode ver nas figuras da próxima página.
 
 \begin{figure}[H]
 	\centering
@@ -606,20 +609,136 @@ Apresenta-se também uma imagem em que se encontra apenas representado o sinal m
 	\vspace{-0.8em}
 \end{figure}
 
-\todo{comentar imagens do AE - margarida}
+Relativamente ao espectro do sinal $b_n$ verifica-se que existe uma risca na frequência de 500 Hz, e também em 1500 Hz, 2500 Hz, e por aí adiante, com um intervalo entre riscas de 1 kHz. Isto deve-se ao facto de o ritmo de transmissão dos \textit{bits} ser de 1 kbps. O espectro do sinal $d_n$ tem o dobro da informação face ao espectro do sinal $b_n$ e isto acontece porque o espectro de $b_n$ apenas representa a informação do \textit{bit} com valor lógico 1, enquanto o espectro de $d_n$ representa a informação resultante do mapeamento do \textit{bit} com valor lógico 1 e $-1$. 
+
+O espectro de $y_n$ permite verificar o fenómeno de modulação, na medida em que se verifica que o espectro de $d_n$ foi deslocado para altas frequências, ou seja, encontra-se em torno do espectro da portadora que corresponde a uma risca na frequência $f_0$, 4 kHz. De facto, ocorre a convolução do espectro do sinal $d_n$ com o espectro da portadora.
+
+\pagebreak
 
 \section{Conclusões}
 
-\todo{conclusoes}
+Relativamente ao Projecto \#1, pode-se concluir que um oscilador controlado feito com recurso ao método da interpolação apresenta resultados com mais qualidade, isto para casos em que o valor de $\Delta$ representa frequências que não são múltiplos da frequência de amostragem. 
+
+Já em relação ao Projecto \#2, este correu de acordo com o esperado, sendo que se procedeu a uma melhoria ao nível da eficiência do código para que apenas houvesse o \textit{if} do contador. Verificou-se que retirar este último \textit{if} não compensava pois era necessário replicar o código e a eficiência computacional seria equiparável. 
 
 \pagebreak
 
 \section{Anexos}
 
-\todo{incluir codigo}
-
 \subsection{Anexo I - Código do Projecto \#1}
 
+\begin{lstlisting}[language=C]
+#include "dsk6713_aic23.h"
+#include "C6713dskinit.h"
+
+Uint32 fs = DSK6713_AIC23_FREQ_16KHZ;
+
+char	intflag = FALSE;
+union	{Uint32 samples; short channel[2];} AIC_buffer;
+
+short sine[33] = {0,3212,6393,9512,12540,15447,18205,20788,23170,25330,27246,28899,30274,31357,		32138,32610,32767,32610,32138,31357,30274,28899,27246,25330,23170,20788,18205,	15447,12540,9512,6393,3212,0}; 
+
+interrupt void c_int11(){                  	
+	output_sample(AIC_buffer.samples); 
+	AIC_buffer.samples= input_sample(); 
+	intflag = TRUE;
+	return;
+}
+
+void main(){
+	short	inbuf = 0;
+	short	delta = 0 ;
+	short	status = -32767;
+	short	y1 = 0, y2 = 0, y_n = 0, y_s = 0;
+	short	i = 0, delta_x = 0;
+	short	amp = 16384;
+	
+	comm_intr();
+	while(1){
+		if(intflag != FALSE){
+			intflag = FALSE;
+				
+			inbuf = AIC_buffer.channel[LEFT];
+			
+			delta = 16384 + (inbuf>>2);
+			
+			status = status + delta;
+			delta_x = (status & 1023)<<5;
+			
+			i = (status>>10)&31;
+			y1 = sine[i];
+			y2 = sine[i+1];
+			y_s = amp*(y1 + delta)>>15;  
+			y_n = (amp*(y1 + ((y2-y1)*delta_x>>15))>>15);
+			
+			if(status < 0){
+				y_s = -y_s;
+				y_n = -y_n;
+			}
+			AIC_buffer.channel[LEFT] = y_n;  //saida com interpolacao
+			AIC_buffer.channel[RIGHT] = y_s; //saida sem interpolacao
+		}
+	}
+}
+\end{lstlisting}
+
 \subsection{Anexo II - Código do Projecto \#2}
+
+\begin{lstlisting}[language=C]
+#include "dsk6713_aic23.h"	
+#include "C6713dskinit.h"
+
+Uint32 fs = DSK6713_AIC23_FREQ_16KHZ;	
+
+char	intflag = FALSE;
+union	{Uint32 samples; short channel[2];} AIC_buffer;
+
+short	sine[4] = {0,32767,0,-32767};
+
+interrupt void c_int11(){
+	output_sample(AIC_buffer.samples);   	
+	AIC_buffer.samples= input_sample(); 	    
+	intflag = TRUE;
+	return;
+}
+
+void main(){
+	short	d_n, y;
+	short	b_i = 1, sine_i = 0, b = 0;
+	short	c_n = 0;
+	short	b_n = 1, shift15_cn = 0, not_shift15 = 0;
+	
+	comm_intr();
+	while(1){
+		if(intflag != FALSE){
+			intflag = FALSE;
+			
+			sine_i= sine_i&3;
+			y = sine[sine_i];
+			sine_i++;
+			y = (32767*y)>>15 ;
+			
+			
+			/* implementacao do contador sem recurso a instruccao condicional if */
+				//b_i++;
+				//b=(b_i&16)>>4;
+				//b_n=(b_n^b);
+				//b_i=(b_i&15);*/
+			if(b_i>15){
+				b_i=0;
+				b_n=(b_n^1);
+				c_n=c_n^b_n;
+				shift15_cn=c_n<<15;
+				not_shift15=~shift15_cn;
+				d_n=not_shift15>>14;				
+			}
+			b_i++;
+			y=d_n*y;
+			
+			AIC_buffer.channel[LEFT] = y;
+		}
+	}
+}
+\end{lstlisting}
 
 \end{document}
