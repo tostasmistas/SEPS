@@ -703,7 +703,7 @@ Os valores de $x^{-6}$ e $x^{-7}$ representam sinal de saída com um atraso de 6
 
 \vspace{-3mm}
 \begin{equation}
-	e_n~= ~b_n~+~e_{n-6}~+~e_{n-7};
+	e_n~= ~b_n~\oplus~e_{n-6}~\oplus~e_{n-7};
 \end{equation}  
 
 \begin{figure}[H]
@@ -786,9 +786,9 @@ Como se pode observar, a implementação do \textit{scrambler} foi bem sucedida 
 
 
 
-A implementação do \textit{descrambler} tem a função de obter a sequência de \textit{bits} correcta para o que PC. Assim sendo, o circuito do \textit{descrambler} tem que conseguir obter toda a sequência de \textit{bits} que entra no \textit{scrambler}.
+A implementação do \textit{descrambler} tem a função de obter a sequência de \textit{bits} correcta para o PC. Assim sendo, o circuito do \textit{descrambler} tem que conseguir obter toda a sequência de \textit{bits} que entra no \textit{scrambler}.
 Anteriormente foi referido que o \textit{scrambler} segue a seguinte expressão polinomial:
-\change{o que queriam dizer na 1ª frase?}
+
 \begin{equation}
 P(x)~= ~1~+~x^{-6}~+~x^{-7}
 \end{equation}
@@ -796,7 +796,7 @@ Partindo desta equação consegue obter-se a expressão de recuperação do sina
 
 \vspace{-3mm}
 \begin{equation}
-b_n'~= ~e_n~+~e_{n-6}~+~e_{n-7};
+b_n'~= ~e_n~\oplus~e_{n-6}~\oplus~e_{n-7};
 \end{equation}  
 
 O sinal $b_n'$ representa a sequência de \textit{bits} recuperada do sinal de saída do \textit{scrambler}, $e_n$. O esquema seguinte mostra a implementação da equação anterior com maior detalhe:
@@ -826,6 +826,46 @@ Analisando o esquema e seguido a lógica de implementação do \textit{scrambler
 		b_i_RX++;
 	...
 \end{lstlisting}
+
+É de salientar que o \textit{scrambler} e o \textit{descrambler} existe um \textit{delay} de N \textit{bits} sendo a saída do \textit{descrambler} não igual á entrada do \textit{scrambler} mas sim igual à entrada deslocada de N:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/Ndelay}
+	\caption{Esquema com a implementação do \textit{delay}.}
+	\vspace{-0.8em}
+\end{figure}
+
+Analisando o esquema anterior e as equações do (4.7) e (5.2), consegue-se demonstrar que $b'_n$ é igual a $b_{n-N}$ seguindo os seguintes passos:
+
+\vspace{-3mm}
+\begin{equation}
+e_n~= ~b_n~\oplus~e_{n-6}~\oplus~e_{n-7} \rightarrow \text{delay de N} \rightarrow e_{n-N}~= ~b_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N}
+\end{equation}  
+
+\vspace{-3mm}
+\begin{equation}
+ b_n'~= ~e_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N};
+\end{equation}  
+
+\vspace{-3mm}
+\begin{equation}
+\Leftrightarrow b_n'~= ~b_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N};
+\end{equation}  
+\vspace{-3mm}
+\begin{equation}
+\Leftrightarrow b_n'~= ~b_{n-N}; 
+\end{equation}  
+
+De seguida é apresentado o sinal de saída do \textit{descrambler}, $b'_n$ e o sinal de entrado do \textit{scrambler}, $b_{n$. Pode-se verificar que os sinais são iguais pois a implementação da conexação dos dois circuitos foi realizada com um \textit{delay} de N igual \texttt{0}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.40]{exps/DescramblerBnVsBnlinha}
+	\caption{Imagem que demonstra o sinal de entrado do \textit{scrambler}, a amarelo, e do sinal de saída do \textit{descrambler}, a verde.}
+	\vspace{-0.8em}
+\end{figure}
+
 
 \todo{fazer a ponte para esta parte do projecto}
 
@@ -1118,8 +1158,6 @@ Como o filtro de \textit{loop} foi projectado para um frequência de corte de 10
 
 Analisando a tabela anterior, é possível concluir que para a mesma frequência de corte, o aumento da amplitude do sinal de entrada causa o aumento das bandas de captura e manutenção. Em relação à comparação entre os valores obtidos para as bandas para diferentes frequências, percebe-se que um aumento da frequência de corte, o que provoca um aumento do ruído, as bandas de captura e aquisição têm valores superiores, portanto pode concluir-se que a malha sincroniza para um intervalo maior de frequências com o aumento do ruído.
 
-\todo{comentar bandas - tenho a nota do david de que a mallha para sincrozinar precisa de ruido}
-
 O passo seguinte corresponde à conexão entre o modulador do transmissor e o desmodulador do receptor, ou seja, o sinal de entrada do \textit{Costas Loop} é o sinal modelado do tipo BPSK. Este sinal corresponde à multiplicação do sinal $d_n$ com a portadora, como se viu já anteriormente.
 
 \todo{introduzir estas imagens}
@@ -1280,9 +1318,9 @@ De seguida, faz-se uma análise do transitório do processo de aquisição do \t
 	...
 \end{lstlisting}
 
-Durante este período de aquisição o funcionamento do sistema não é linear e, enquanto o sinal de erro não vier a zero, a malha não sincronizará e os \textit{bits} do sinal desmodulado estarão errados.
+Durante este período de aquisição, o funcionamento do sistema não é linear e, enquanto o sinal de erro não vier a zero, a malha não sincronizará e os \textit{bits} do sinal desmodulado estarão errados.
 
-Calculou-se o tempo de aquisição para duas frequências de corte do filtro de \textit{loop}, 10 Hz e 100 Hz, como se pode ver nas figuras seguintes. O sinal a verde representa a saída do filtro de \textit{loop}, o sinal de erro, e o sinal a amarelo representa a saída do filtro de dados do \textit{lower arm} do \textit{Costas Loop}.
+Calculou-se o tempo de aquisição, com o auxílio dos cursores do osciloscópio, determinando o intervalo de tempo entre o início da situação de não-sincronismo  e o instante em que se pode considerar que o sinal de saída do filtro de dados apresenta os bits bem definidos, sendo perceptível a diferença entre '0' e '1', para duas frequências de corte do filtro de \textit{loop}, 10 Hz e 100 Hz, como se pode ver nas figuras seguintes. O sinal a verde representa a saída do filtro de \textit{loop}, o sinal de erro, e o sinal a amarelo representa a saída do filtro de dados do \textit{lower arm} do \textit{Costas Loop}.
 
 \todo{explicar contagem do tempo. vale a pena por as imagens dos 100Hz?}
 
@@ -1308,7 +1346,7 @@ Relativamente ao Projecto \#1, pode-se concluir que um oscilador controlado feit
 
 Já em relação ao Projecto \#2, este correu de acordo com o esperado, sendo que se procedeu a uma melhoria ao nível da eficiência do código para que apenas houvesse o \textit{if} do contador. Verificou-se que retirar este último \textit{if} não compensava pois era necessário replicar o código e a eficiência computacional seria equiparável.
 
-Relativamente ao Projecto \#3, em que o objectivo era desenvolver um receptor BPSK, o mesmo foi implementado da forma esperada, tendo sido analisados várias características do receptor. A implementação dos filtros \textit{Data} do \textit{Costas Loop} com um zero em 8 kHz, o que anula uma componente com essa frequência que estava à entrada dos filtros, garante que à saída do sistema se tenha um sinal em que se podem distinguir claramente os bits '0' e '1', o que é de extrema importância. Em relação ao regime transitório, onde é avaliada a capacidade do sistema adquirir o sincronismo, após o ter perdido, pôde concluir-se que o processo de aquisição do sincronismo apresenta um tempo de transição aproximadamente 10 vezes inferior ao período com que se força a malha a perder o sincronismo. 
+Relativamente ao Projecto \#3, em que o objectivo era desenvolver um receptor BPSK, o mesmo foi implementado da forma esperada, tendo sido analisados várias características do receptor. A implementação dos filtros \textit{Data} do \textit{Costas Loop} com um zero em 8 kHz, o que anula uma componente com essa frequência que estava à entrada dos filtros, garante que à saída do sistema se tenha um sinal em que se podem distinguir claramente os bits '0' e '1', o que é de extrema importância. Em relação ao regime transitório, onde é avaliada a capacidade do sistema adquirir o sincronismo, após o ter perdido, pôde concluir-se que o processo de aquisição do sincronismo apresenta um tempo de transição que varia com o mesmo factor de variação da frequência de corte do \textit{loop filter}. 
 
 \todo{Vejam o que escrevi e alterem/acrescentem o que acharem necessário}
 
