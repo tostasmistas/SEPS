@@ -1122,7 +1122,19 @@ Analisando a tabela anterior, é possível concluir que para a mesma frequência
 
 O passo seguinte corresponde à conexão entre o modulador do transmissor e o desmodulador do receptor, ou seja, o sinal de entrada do \textit{Costas Loop} é o sinal modelado do tipo BPSK. Este sinal corresponde à multiplicação do sinal $d_n$ com a portadora, como se viu já anteriormente.
 
-\todo{2 imagens ranhosas}
+\todo{introduzir estas imagens}
+
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/pulse_saida_filtroSine}}
+	\hspace{8mm}
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/pulse_saida_filtro_Sine_8K}}
+	\vspace{-0.8em}
+	\caption{Sinal à saída do filtro da dados (a) e pormenor feito sobre a zona de amplitude máxima (b).}
+	\vspace{-0.8em}
+\end{figure}
+
+\todo{explicar estas imagens}
 
 Com a conexão estabelecida entre o modulador e transmissor testou-se novamente o valor das bandas de captura e de manutenção, como se pode ver na tabela seguinte.
 
@@ -1254,7 +1266,7 @@ Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja, o sinal de 
 	\vspace{-0.8em}
 \end{figure}
 
-\todo{comentar estas imagens - notas no caderno da margarida}
+Quando se analisa as figuras anteriores verifica-se que são bastante semelhantes, não havendo diferenças perceptíveis a ``olho nu''. De facto, quando se multiplica as duas sinusoides CONTINUAR AQUI
 
 De seguida, faz-se uma análise do transitório do processo de aquisição do \textit{loop}. Para se poder contar o tempo que demora a aquisição do sistema implementa-se um contador de amostra que, de 1000 em 1000 amostras, introduz no sistema uma situação de não-sincronismo, colocando o oscilador e o sinal de erro que o controla em extremos opostos, forçando o valor do erro ao seu máximo, 32767. O excerto de código seguinte representa este forçar do sinal de erro.
 
