@@ -736,13 +736,122 @@ Após a determinação da função de transferência geral, para o caso em que $
 
 \begin{table}[H]
  	\centering
- 	\caption{Especificações dos filtros passa-baixo.}
+ 	\caption{Especificações dos filtros passa-baixo}
  	\vspace{-1.5mm}
  	\includegraphics[keepaspectratio=true, scale=0.70]{tabelas/especificacoes}
 \end{table}
 
+Sabendo que o ganho DC é igual em todos os filtros, é possível determinar $\gamma$ para os mesmos, tendo em conta que em DC se tem $\omega = 0$, portanto:
 
-era bom testar que no filtro com beta=0 deixar passar para comonentes maior que ws/2, fazer um teste e vemos que falha
+\vspace{-3mm}
+\begin{equation}
+	z = e^{j \omega T_s} = 1
+\end{equation}
+
+Donde vem:
+
+\vspace{-3mm}
+\begin{equation}
+	H(z = 1) = \frac{\gamma(1-\alpha)}{1-\alpha} \longrightarrow \gamma = 1
+\end{equation} 
+
+Sabe-se, à \textit{priori}, analisando a função de transferência H(z), já com $\gamma = 1$, que o valor de $\alpha$ tem que estar compreendido entre -1 e 1 para o filtro ser estável, sendo que esse valor, para o filtro ser passa-baixo, tem que estar definido entre 0 e 1, sendo que esse valor vai ser diferente para os dois tipos de filtros, visto que o mesmo é determinado em função da frequência de corte, \textit{$f_c$}. Recorrendo à expressão do ganho do filtro:
+
+\vspace{-3mm}
+\begin{equation}
+	|H(j\omega)| = \frac{1-\alpha}{|1-\alpha e^{j\omega T_s}|}
+\end{equation} 
+
+é possível particulizar o valor do ganho do filtro à frequência de corte:
+
+\vspace{-3mm}
+\begin{equation}
+	|H(j\omega_c)| = \frac{1-\alpha}{|1-\alpha e^{j\omega_c T_s}|} = \frac{1 - \alpha}{\sqrt{1- \alpha^2 cos^2{(\omega_c T_s)} + \alpha^2 sen^2{(\omega_c T_s)}}}
+\end{equation} 
+
+Donde se poderia retirar o valor de $\alpha$, o que envolveria alguma manipulação algébrica. No entanto, sabendo que a frequência de corte dos filtros é muito inferior ao valor da frequência de amostragem dividido por 2, $f_s/2$, vem que:
+
+\vspace{-3mm}
+\begin{equation}
+\omega_ c T_s = 2\pi \frac{f_c}{f_s} \ll 1
+\end{equation} 
+
+podendo considerar-se a seguinte aproximação:
+
+\vspace{-3mm}
+\begin{equation}
+e^{-j\omega T_s} \approx 1 - j\omega_c T_s
+\end{equation} 
+
+resultando então uma expressão para o ganho do filtro, à frequência de corte, bastante mais simples:
+
+\vspace{-3mm}
+\begin{equation}
+|H(j\omega_c)| =  \frac{1 - \alpha}{|1-\alpha(1-j\omega_c T_s)|} 
+\end{equation} 
+
+resultando, finalmente:
+
+\vspace{-3mm}
+\begin{equation}
+\omega_c = \frac{1 - \alpha}{\alpha T_s} = \frac{1 - \alpha}{\alpha} f_s
+\end{equation} 
+
+Assim, tendo em conta que $f_s = 16 kHz$, pode-se calcular o valor de $\alpha$ para os filtros \textit{Data} e filtro \textit{Loop}. Sabendo que o valor vai estar contido no intervalo ]0,1[, pode-se utilizar a representação numérica mais precisa $Q_15$ para representar o valor de $\alpha$, de forma a efectuar a implementação dos filtros. Na Tabela X, são apresentados os valores de $\alpha$ e também a sua conversão em $Q_15$.
+
+
+\todo{falta tabela dos alfas}
+
+Assim, conhecendo-se todos os parâmetros das funções de transferência dos filtros, é possível implementar os filtros, segundo a equação às diferenças:
+
+\vspace{-3mm}
+\begin{equation}
+y(n) = \alpha y(n-1) +  (1-\alpha)x(n)
+\end{equation} 
+
+sendo que um dos filtros \textit{Data} tem como entrada o sinal resultante da multiplicação entre o sinal BPSK e o sinal $\cos(2\pi f_0 + \phi_0)$ e o outro tem como entrada o sinal resultante da multiplicação entre o sinal BPSK e o sinal $\sin(2\pi f_0 + \phi_0)$. De seguida, é apresentado o excerto de código que permite implementar os filtros. 
+
+\begin{lstlisting}[language=C]
+short x_cos = 0, x_sine = 0, y_cos_datafilter = 0, y_sin_datafilter = 0;  short in_loopfilter = 0, y_loop filter = 0, alpha_1k = 23528; 
+short alpha_10 = 32640, um_menos_alpha_1k = 9240, um_menos_alpha_10 = 127;
+
+...
+ //Data Filter
+ x_cos = ((xt_bpsk*y_cos)<<1)>>16;
+ x_sine = ((xt_bpsk*y_sin)<<1)>>16;
+ y_cos_datafilter=(((alpha_1k*y_cos_datafilter)<<1)+((x_cos*um_menos_alpha_1k)<<1))>>16;
+ y_sin_datafilter=(((alpha_1k*y_sin_datafilter)<<1)+((x_sine*um_menos_alpha_1k)<<1))>>16;
+
+ //Loop Filter
+ in_loopfilter = ((y_cos_datafilter*y_sin_datafilter)<<1)>>16;
+ y_loopfilter = (((alpha_10*y_loopfilter)<<1)+ ((in_loopfilter*um_menos_alpha_10)<<1))>>16;
+...
+
+\end{lstlisting}
+\todo{apresentar código de uma forma melhor}
+
+No entanto, antes de ligar todo o sistema, é importante testar o filtro que tem frequência de corte de $f_c = 1 kHz$, pondo à entrada do mesmo um sinal proveniente do gerador de sinais, de forma a comprovar o correcto funcionamento do filtro, não sendo possível testar o filtro com frequência de corte de 10 Hz, já que à entrada da placa se encontra impossível, o que torna impossível verificar que a implementação do \textit{Loop Filter} está correcta. Assim, para o filtro \textit{Data}, visualizou-se a saída do mesmo, apresentada na Figura X, com um sinal de entrada sinusoidal de 250 Hz, de forma a verificar o ganho em baixas frequências.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.50]{exps/filtro_1k_baixafreq}
+	\caption{Sinal de entrada(verde) e sinal de saída(amarelo) do filtro \textit{Data}}
+	\label{fig:fluxo}
+	\vspace{-0.8em}
+\end{figure} 
+
+Analisando os valores de amplitude dos dois sinais, pode verificar-se que o ganho é de $1/2$, não correspondendo ao ganho unitário pretendido, o que se deve ao facto da placa introduzir um factor de ganho que faz com que o sinal de saída do filtro tenha um ganho inferior a 1. 
+Testou-se ainda a frequência de corte, sendo que para isso aumentou-se a frequência do sinal de entrada até o sinal de saída do filtro apresentar uma queda de 3 dB. Verificou-se, como se pode observar na Figura X, que a frequência de corte apresentava o valor de 963 Hz, o que se trata de um valor próximo de 1 kHz. A pequena diferença em relação ao valor pretendido pode dever-se a se ter registado uma frequência onde ainda não tinham caído exactamente os 3 dB.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.50]{exps/filtro_1k_freqcorte}
+	\caption{Sinal de entrada(verde) e sinal de saída(amarelo) do filtro \textit{Data}}
+	\label{fig:fluxo}
+	\vspace{-0.8em}
+\end{figure} 
+
+
 
 \todo{4 - nao nos lembramos do que era isto}
 
