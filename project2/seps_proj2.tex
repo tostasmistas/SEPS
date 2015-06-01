@@ -674,7 +674,9 @@ Analisando agora a Figura 1 verifica-se que do transmissor BPSK ainda falta impl
 
 A geração de \textit{bits} que se implementou é, no fundo, um simples gerador de uma sequência de \textit{bits} bem definida ($b_n$ = 1, 0, 1, 0, \ldots). No entanto, esta sequência não é apropriada para transmissão e, como tal, a sequência referida anteriormente necessita de ser ``misturada'' de modos a que surja de forma aleatória. Para se efectuar isto recorre-se a um circuito denominado de \textit{scrambler}.
 
-O \textit{scrambler} é um dispositivo que inverte a ordem e polaridade dos \textit{bits} da mensagem a ser enviada. A utilização deste dispositivo tem dois principais objectivos, a facilidade de execução dos circuitos de recuperação de relógio, \textit{clock and data recovery},e outros circuitos adaptativos do receptor. Esta melhoria deve-se ao facto do \textit{scambler} eliminar longas sequências constantes de '0' ou '1'. O outro objectivo deve-se ao facto de eliminar 
+O \textit{scrambler} é um dispositivo que inverte a ordem e polaridade dos \textit{bits} da mensagem a ser enviada. A utilização deste dispositivo tem dois principais objectivos, a facilidade de execução dos circuitos de recuperação de relógio, \textit{clock and data recovery},e outros circuitos adaptativos do receptor. Esta melhoria deve-se ao facto do \textit{scambler} eliminar longas sequências constantes de \texttt{0} ou \texttt{1} O outro objectivo deve-se ao facto de eliminar a dependência do sinal a ser transmitido no espectro de potência, ou seja, o sinal transmitido fica mais disperso de forma a maximizar os requisitos do espectro de potência. Pois se a potência for concentrada numa largura de banda limitada pode haver interferência nos canais adjacentes do receptor devido à intermodulação, este fenómeno é conhecido por \textit{cross-modulation}.
+
+A implementação do circuito do dispositivo \textit{scrambler} é 
 
 \todo{imagem da sequencia aleatoria de bits}
 
