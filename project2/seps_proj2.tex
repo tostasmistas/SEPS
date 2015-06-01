@@ -268,9 +268,10 @@ respectivamente, com a máscara \texttt{31}, de acordo com as seguintes linhas d
 
 \begin{lstlisting}[language=C]
 	...
-		i = (status>>10)&31;
+		i = i&31;
 		y1 = sine[i];
 		y2 = sine[(i+1)];
+		i++;
 	...
 \end{lstlisting}
 
@@ -708,38 +709,37 @@ Os valores de $x^{-6}$ e $x^{-7}$ representam o sinal de entrada com um atraso d
 \end{figure}
 
 Analisando o esquema proposto efectuou-se a implementação do circuito na DSP com o apoio do código C.
-Começou-se por definir uma variável de 8 \textit{bits}, \texttt{char delay\_scrambler} que guarda os atrasos temporais de até 7 períodos. O código seguinte demonstra a implementação do \textit{scrambler} onde o sinal de entrada 	é a sequência de \textit{bits} \texttt{b\_n} gerada anteriormente:
+Começou-se por definir uma variável de 8 \textit{bits}, \texttt{char delay\_scrambler} que guarda os atrasos temporais de até 7 períodos. O código seguinte demonstra a implementação e obtenção dos atrasos necessários para o \textit{scrambler}. É de referir que onde o sinal de entrada consiste na sequência de \textit{bits} \texttt{b\_n} gerada anteriormente:
 
 \begin{lstlisting}[language=C]
-	 short     d_n=0,..;
-	 short     b_i_TX = 1, ...;
-	 short     c_n = 0, e_n=0, xor67=0;
-	 short     b_n = 1,...;
-	 unsigned char delay_scrambler=0,delay_descrambler=0;
+		...
+	 unsigned char delay_scrambler=0,...;
 	 ...
-		if(b_i_TX>15){
-			b_i_TX = 0;
-			b_n = (b_n^1);
-			
-			/*Scrambler*/
-			xor67 = (delay_scrambler&1)^((delay_scrambler&2)>>1);
-			e_n = b_n^xor67;
-			delay_scrambler = (delay_scrambler>>1)&0x7f;
-			delay_scrambler = delay_scrambler | (e_n<<7);
-			
-			/*Mapeamento referente ao codificador do sinal de aleatorio de saida do scrambler*/
-			c_n=c_n^e_n;
-			shift15_cn=c_n<<15;
-			not_shift15=~shift15_cn;
-			d_n=not_shift15>>14;
-		}
-		b_i_TX++;
+		delay_scrambler = (delay_scrambler>>1)&0x7f;/*Deslocamento temporal*/
+		delay_scrambler = delay_scrambler | (e_n<<7);/*Actualizacao do novo valor de e_n no vector*/	
 	...
 \end{lstlisting}
 
+Assim sendo o \textit{bit} mais significativo representado o resultado do \textit{scrambler} com atraso \texttt{0} e por consequente o \textit{bit} menos significativo representa o atraso 7 na linha temporal. Seguindo esta lógica o vector \texttt{delay\_scrambler} é actualizado da seguinte forma:
 
- 
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.40]{teoricas/calculodoscrambler}
+	\caption{Esquema do cálculo do \texttt{delay\_scrambler}.}
+	\vspace{-0.8em}
+\end{figure}
+Inicialmente é realizado um \textit{shift} de uma posição para direita no vector \texttt{delay\_scrambler}, representando o deslocamento temporal de cada amostra. De seguida aplica-se a máscara \texttt{0x7f} de forma a obter um \texttt{0} no \textit{bit} mais significativo e mantendo os valores das amostras deslocadas. Com o deslocamento feito recorre-se à operação lógica OR para guardar o resultado do \textit{scrambler} no atraso temporal \texttt{0}.
 
+Com a actualização do vector \texttt{dela\_scarmbler} realizada a obtenção do resultado do \textit{scrambler} é obtida da seguinte forma:  
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.40]{teoricas/calculodeen}
+	\caption{Esquema do cálculo da saída do \texttt{scrambler}.}
+	\vspace{-0.8em}
+\end{figure}
+
+Começa-se por somar os resultados do \textit{scrambler} referente ao atraso 6 e 7
 \todo{imagem da sequencia aleatoria de bits}
 
 \section{Projecto $\#$3 - Receptor BPSK}
