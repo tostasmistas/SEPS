@@ -734,7 +734,7 @@ Assim sendo, o \textit{bit} mais significativo representa o resultado do \textit
 	\vspace{-0.8em}
 \end{figure}
 
-Inicialmente é realizado um \textit{shift} de uma posição para direita no vector \texttt{delay\_scrambler}, representando o deslocamento temporal de cada amostra. De seguida aplica-se a máscara \texttt{0x7f} de forma a obter um \texttt{0} no \textit{bit} mais significativo e mantendo os valores das amostras deslocadas. Com o deslocamento feito recorre-se à operação lógica OR para guardar o resultado do \textit{scrambler} no atraso temporal correspondente.
+Inicialmente é realizado um \textit{shift} de uma posição para a direita no vector \texttt{delay\_scrambler}, representando o deslocamento temporal de cada amostra. De seguida, aplica-se a máscara \texttt{0x7f} de forma a obter um \texttt{0} no \textit{bit} mais significativo e mantendo os valores das amostras deslocadas. Com o deslocamento feito recorre-se à operação lógica OR para guardar o resultado do \textit{scrambler} no atraso temporal correspondente.
 
 Com a actualização do vector \texttt{delay\_scrambler} realizada, a obtenção do resultado do \textit{scrambler} é obtida da seguinte forma:  
 
@@ -745,7 +745,7 @@ Com a actualização do vector \texttt{delay\_scrambler} realizada, a obtenção
 	\vspace{-0.8em}
 \end{figure}
 
-Começa-se por somar os resultados do \textit{scrambler} referente ao atraso 6 e 7 guardando o resultado na variável \texttt{xor67}. De seguida, soma-se com \texttt{b\_n} originando \texttt{e\_n}. A implementação em código segue no excerto seguinte.
+Começa-se por somar os resultados do \textit{scrambler} referente ao atraso 6 e 7, guardando o resultado na variável \texttt{xor67}. De seguida, soma-se com \texttt{b\_n} originando \texttt{e\_n}. A implementação em código segue no excerto seguinte.
 
 \begin{lstlisting}[language=C]
 	short    b_i_TX = 1;
@@ -778,7 +778,7 @@ A imagem seguinte representa a visualização do sinal de saída do \textit{scra
 	\vspace{-0.8em}
 \end{figure}
 
-Como se pode observar, a implementação do \textit{scrambler} foi bem sucedida devido à aleatoriedade da sequência de \textit{bits} obtida, como se pode visualizar no sinal a verde. 
+Como se pode observar, a implementação do \textit{scrambler} foi bem sucedida devido à aleatoriedade da sequência de \textit{bits} obtida, como se pode verificar no sinal a verde. 
 
 \pagebreak
 
@@ -788,10 +788,11 @@ Como se pode observar, a implementação do \textit{scrambler} foi bem sucedida 
 
 A implementação do \textit{descrambler} tem a função de obter a sequência de \textit{bits} correcta para o que PC. Assim sendo, o circuito do \textit{descrambler} tem que conseguir obter toda a sequência de \textit{bits} que entra no \textit{scrambler}.
 Anteriormente foi referido que o \textit{scrambler} segue a seguinte expressão polinomial:
+\change{o que queriam dizer na 1ª frase?}
 \begin{equation}
 P(x)~= ~1~+~x^{-6}~+~x^{-7}
 \end{equation}
-Partindo desta equação consegue obter a expressão de recuperação do sinal de entrada do \textit{scrambler}:
+Partindo desta equação consegue obter-se a expressão de recuperação do sinal de entrada do \textit{scrambler}:
 
 \vspace{-3mm}
 \begin{equation}
@@ -1049,11 +1050,11 @@ Com o \textit{Costas Loop} implementado pretende-se testar o seu funcionamento p
 
 As duas fases $\phi_{i}$ e $\phi_{o}$ são comparadas no detector de fase, o que gera o sinal $v_{D}\left(t\right)$ que é uma função da diferença $\phi_{i} - \phi_{o}$ (sinal de erro). Este sinal controla a frequência (e, consequentemente, a fase) do oscilador de maneira a que $\phi_{o}$ ``segue'' a variação em $\phi_{i}$.
 
-Posto isto, o PLL pode estar num de dois estados - \textit{locked} (sincronizado) ou \textit{unlocked} (dessincronizado). Quando no primeiro estado o oscilador gera um sinal com uma frequência que é, em média, igual à frequência do sinal de entrada $f_o = f_i$ e o \textit{loop} ajusta o oscilador de fase de modo a que este ``siga'' $\phi_{i}$. Quando o PLL se encontra no segundo estado, a frequência $f_o$ não está relacionada com $f_i$ e se houver variações em $\phi_{i}$ estas não serão necessariamente ``seguidas'' por $\phi_{o}$.
+Posto isto, o PLL pode estar num de dois estados - \textit{locked} (sincronizado) ou \textit{unlocked} (dessincronizado). Quando no primeiro estado, o oscilador gera um sinal com uma frequência que é, em média, igual à frequência do sinal de entrada $f_o = f_i$ e o \textit{loop} ajusta o oscilador de fase de modo a que este ``siga'' $\phi_{i}$. Quando o PLL se encontra no segundo estado, a frequência $f_o$ não está relacionada com $f_i$ e se houver variações em $\phi_{i}$ estas não serão necessariamente ``seguidas'' por $\phi_{o}$.
 
 Assim, para testar o correcto funcionamento do PLL projectado é necessário verificar o comportamento do sinal à saída do oscilador controlado e à entrada do detector de fase. No projecto em causa o detector de fase é um multiplicador, que é o adequado para processar sinais do tipo sinusoidal. 
 
-À entrada colocou-se um sinal sinusoidal com amplitude de 1 $V_{\text{PP}}$, fazendo-se variar a sua frequência, partindo de um valor inicial de 4 kHz que é a frequência de funcionamento da malha dessincronizada. Nas figuras seguintes apresenta-se o comportamento do PLL para duas situações distintas, estando representado a amarelo o sinal de entrada e a verde o sinal à saída do oscilador controlado.
+À entrada colocou-se um sinal sinusoidal com amplitude de 1 $V_{\text{PP}}$, fazendo-se variar a sua frequência, partindo de um valor inicial de 4 kHz, que é a frequência de funcionamento da malha dessincronizada. Nas figuras seguintes apresenta-se o comportamento do PLL para duas situações distintas, estando representado a amarelo o sinal de entrada e a verde o sinal à saída do oscilador controlado.
 
 \begin{figure}[H]
 	\centering
@@ -1188,7 +1189,7 @@ Conclui-se assim que o filtro implementado anula a componente de 8 kHz, o que co
 
 Depois de testado o \textit{Costas Loop} este vai ser caracterizado através de vários sinais e espectros. De referir que as imagens retiradas daqui para a frente são com o filtro com o zero que elimina interferências em $w_{s}/2$. 
 
-Primeiramente analisa-se o sinal modulado do tipo BPSK, no domínio do tempo e da frequência.
+Primeiramente, analisa-se o sinal modulado do tipo BPSK, no domínio do tempo e da frequência.
 
 \begin{figure}[H]
 	\centering
@@ -1222,7 +1223,7 @@ De seguida analisa-se as formas de onda à saída dos filtros do \textit{upper} 
 
 \todo{comentar esta figura}
 
-Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja o sinal de erro que depois controla o oscilador. Foi analisada esta situação para o caso em que o filtro de dados tem o zero. 
+Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja, o sinal de erro que depois controla o oscilador. Foi analisada esta situação para o caso em que o filtro de dados tem o zero. 
 
 \begin{figure}[H]
 	\centering
