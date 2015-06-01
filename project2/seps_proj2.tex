@@ -180,6 +180,7 @@ Com recurso à Figura 1 pode-se deduzir que
 f_{0} = \frac{\Delta}{2^{16}} \times f_{s} \leftrightarrow \Delta = \frac{f_{0}}{f_{s}} \times 2^{16}.
 \end{equation}
 
+\vspace{1mm}
 Existe uma variável de estado da rampa que a cada $T_{s}$, período de amostragem, é incrementada de $\Delta$, como se pode ver na Figura 1. A variável de estado da rampa é de 16 \textit{bits} com representação em $Q_{15}$ e, sabendo que o maior número positivo que se pode representar em $Q_{15}$ é $2^{15} - 1 = 32767$ e o menor número negativo que se pode representar é  $-(2^{15} - 1) = -32767$, a variável de estado começa com o valor -32767 e vai até um máximo de 32767. Quando é atingido o valor máximo, 32767, entra em efeito a circularidade da representação em complemento para dois e, assim, a variável de estado não atinge o valor de $2^{15}$, ``dando a volta'' para -32767. 
 
 Relativamente à variável $\Delta$ esta encontra-se também representada em $Q_{15}$. O NCO tem como característica uma frequência $f_{0}$ que varia entre 2 kHz e 6 kHz. Estes valores são controlados a partir da amplitude do sinal de entrada. Quando esta for mínima, a frequência $f_{0}$ é de 2 kHz e quando for máxima, a frequência $f_{0}$ é de 6 kHz. Com estas especificações pode-se calcular três valores de $\Delta$ com recurso à equação (2.1), para a frequência mínima, a frequência média e a frequência máxima.
@@ -231,6 +232,7 @@ Com o oscilador implementado pretende-se agora criar uma LUT com 32 valores posi
 a_{k} = \sin \left( \frac{\pi}{32}k \right), k = 0, 1, \ldots, 31.
 \end{equation}
 
+\vspace{1mm}
 Os 32 valores determinados são então convertidos para o formato $Q_{15}$, recorrendo a:
 
 \vspace{-3mm}
@@ -238,6 +240,7 @@ Os 32 valores determinados são então convertidos para o formato $Q_{15}$, reco
 a_{k_{15}} = \text{round}\left(a_{k} \times 2^{15} \right),
 \end{equation} 
 
+\vspace{1mm}
 sendo assim criada a LUT pretendida.
 
 Apresenta-se de seguida o excerto de código onde é declarada a LUT com os valores de meio período da função seno, no vector \texttt{sine} que tem 33 posições, cada uma de 16 \textit{bits}. 
@@ -323,6 +326,7 @@ Analisando a Tabela 2 verifica-se que o valor de \texttt{delta} oscila com uma a
 \Delta = \Delta_{0} + kx.
 \end{equation}
 
+\vspace{1mm}
 Com esta conclusão, teve de se garantir que o valor da amplitude do sinal de entrada não ultrapassa 8192, mantendo a relação entre cada amostra. Optou-se por dividir o valor de cada amostra por 4, $k = 1/4$, pois a amplitude máxima é de 32767, o equivalente a um \textit{shift} de 2 \textit{bits} para a direita. 
 
 Em baixo está o código referente ao cálculo para obter o valor de \texttt{delta}, sendo que todas as variáveis definidas neste excerto são de 16 \textit{bits}, \texttt{short}, em formato $Q_{15}$.
@@ -398,6 +402,7 @@ Pretende-se agora melhorar a qualidade do oscilador sinusoidal utilizando interp
 	\label{eq:interpol}
 \end{equation}
 
+\vspace{1mm}
 Na Figura \ref{fig:variavelestado}, onde se encontra representada a variável de estado da rampa, pode-se ver que os 10 \textit{bits} menos significativos desta correspondem à variável $\Delta x$ da equação (\ref{eq:interpol}), que está representada no formato $Q_{15}$.
 
 Para se obter o valor de $\Delta x$ é utilizada a função lógica \texttt{AND} com a máscara \texttt{1023} (10 \textit{bits} menos significativos com o valor lógico \texttt{1}), sendo de seguida necessário efectuar um \textit{shift} de 5 posições para a esquerda para que a variável seja representada em $Q_{15}$.
@@ -491,6 +496,7 @@ O codificador tem como entrada os \textit{bits} $b_n$, uma sequência que vai al
 	\label{eq:cn1}  
 \end{equation} 
 
+\vspace{1mm}
 Assim, o sinal modulado BPSK é dado por:
 
 \vspace{-3mm}
@@ -505,6 +511,7 @@ Ou, a tempo discreto:
 	s_{n} = s(n T_s) = d_n \sin (2\pi f_0 T_s n).
 \end{equation} 
 
+\vspace{1mm}
 É utilizada uma frequência de amostragem, $f_s=1/T_s$ , de 16 kHz e uma frequência da portadora, $f_0$, de 4 kHz. A taxa de bits é de $f_b$ = 1 kbps, por isso, por cada \textit{bit}, há 4 períodos da portadora.  
 
 Os \textit{bits} da sequência $b_n$ são implementados recorrendo a um contador, uma vez que a cada 16 amostras do sinal de entrada, é necessário que haja uma alteração do \textit{bit} seguinte da sequência $b_n$, passando de \texttt{0} para \texttt{1} ou vice-versa. Para que seja realizada essa alteração, é utilizada a função \texttt{XOR} do bit $b_n$ anterior com \texttt{1}. Apresenta-se de seguida o excerto de código que implementa a sequência de bits $b_n$. 
@@ -551,6 +558,7 @@ De seguida, aplica-se a função \texttt{XOR} entre o resultado anterior e a var
 	c_n = c_{n-1} \oplus b_n
 \end{equation} 
 
+\vspace{1mm}
 A equação anterior foi implementada no ciclo de criação do \textit{bit-rate}, $b_n$,  aplicando a função \texttt{XOR} entre o bit $c_{n-1}$ e $b_n$, como se mostra no seguinte excerto de código:
 
 \begin{lstlisting}[language=C]
@@ -692,43 +700,46 @@ COSTAS LOOP
 
 O modem BPSK, apresentado na Figura X, é constituído por vários módulos, sendo que três desses módulos tratam-se de filtros passa-baixo. Esses filtros apresentam um pólo e um zero, satisfazendo a seguinte equação às diferenças:
 
- \vspace{-3mm}
- \begin{equation}
- 	y(n) = \alpha y(n-1) + \gamma \frac{1-\alpha}{1-\beta}[x(n)-\beta x(n-1)]
- \end{equation} 
+\vspace{-3mm}
+\begin{equation}
+y(n) = \alpha y(n-1) + \gamma \frac{1-\alpha}{1-\beta}[x(n)-\beta x(n-1)],
+\end{equation} 
 
-que apresentam um diagrama de fluxo de sinal como o apresentado na Figura 16.
+\vspace{1mm}
+que apresentam um diagrama de fluxo de sinal como o apresentado na Figura \ref{fig:fluxo}.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.75]
-	{exps/diagrama_fluxo}
-	\caption{Diagrama de fluxo de sinal de filtro passa-baixo}
+	\includegraphics[keepaspectratio=true, scale=0.75]{exps/diagrama_fluxo}
+	\caption{Diagrama de fluxo de sinal de filtro passa-baixo.}
+	\label{fig:fluxo}
 	\vspace{-0.8em}
 \end{figure}
 
 Aplicando a transformada Z, é possível determinar a função de transferência do filtro, obtendo-se:
 
- \vspace{-3mm}
- \begin{equation}
- H(z) = \frac{\gamma \frac{1-\alpha}{1-\beta} (1-\beta z^{-1})}{1-\alpha z^{-1}}
- \end{equation}
+\vspace{-3mm}
+\begin{equation}
+H(z) = \frac{\gamma \frac{1-\alpha}{1-\beta} (1-\beta z^{-1})}{1-\alpha z^{-1}}.
+\end{equation}
  
- Neste caso, considera-se $\beta=0$, resultando uma expressão mais simples para a função de transferência:
+\vspace{1mm}
+Neste caso, considera-se $\beta=0$, resultando uma expressão mais simples para a função de transferência:
  
-  \vspace{-3mm}
-  \begin{equation}
-  H(z) = \frac{\gamma(1-\alpha)}{1-\alpha z^{-1}}
-  \end{equation} 
-  
-  Após a determinação da função de transferência gera, para o caso em que $\beta = 0$, é necessário calcular as constantes $\alpha$ e $\gamma$ para os dois tipos de filtros presentes no \textit{Costas Loop}, que apesar de serem ambos filtros passa-baixo, apresentam frequências de corte diferentes, sendo que o ganho DC é igual nos dois casos. As especificações dos dois tipos de filtros, \textit{Data Filter} e \textit{Loop Filter}, sendo que existem dois filtros do primeiro tipo e apenas um do segundo, são apresentadas na Tabela 3. 
-  
-  \begin{table}[H]
-  	\centering
-  	\caption{Especificações dos filtros passa-baixo}
-  	\vspace{-1.5mm}
-  	\includegraphics[keepaspectratio=true, scale=0.70]{tabelas/especificacoes}
-  \end{table}
+\vspace{-3mm}
+\begin{equation}
+H(z) = \frac{\gamma(1-\alpha)}{1-\alpha z^{-1}}.
+\end{equation} 
+
+\vspace{1mm}
+Após a determinação da função de transferência geral, para o caso em que $\beta = 0$, é necessário calcular as constantes $\alpha$ e $\gamma$ para os dois tipos de filtros presentes no \textit{Costas Loop}, que apesar de serem ambos filtros passa-baixo, apresentam frequências de corte diferentes, sendo que o ganho DC é igual nos dois casos. As especificações dos dois tipos de filtros, \textit{data filter} e \textit{loop filter}, sendo que existem dois filtros do primeiro tipo e apenas um do segundo, são apresentadas na Tabela 3. 
+
+\begin{table}[H]
+ 	\centering
+ 	\caption{Especificações dos filtros passa-baixo.}
+ 	\vspace{-1.5mm}
+ 	\includegraphics[keepaspectratio=true, scale=0.70]{tabelas/especificacoes}
+\end{table}
 
 
 era bom testar que no filtro com beta=0 deixar passar para comonentes maior que ws/2, fazer um teste e vemos que falha
@@ -737,7 +748,15 @@ era bom testar que no filtro com beta=0 deixar passar para comonentes maior que 
 
 \todo{5 - margarida}
 
-Com o Costas Loop implementado pretende-se testar o seu funcionamento para um sinal de entrada sinusoidal. Numa primeira fase de testes apenas se considera o \textit{upper arm}, de maneira a que o \textit{loop} se comporte como um clássico DPLL (\textit{digital phase locked loop}). Um DPLL é um tipo de PLL que é realizado com recurso a circuitos lógicos e/ou microprocessadores, tendo a capacidade de processar sinais discretos tanto em tempo como em amplitude.
+Com o \textit{Costas Loop} implementado pretende-se testar o seu funcionamento para um sinal de entrada sinusoidal. Numa primeira fase de testes apenas se considera o \textit{upper arm}, de maneira a que o \textit{loop} se comporte como um clássico DPLL (\textit{digital phase locked loop}). Um DPLL é um tipo de PLL que é realizado com recurso a circuitos lógicos e/ou microprocessadores, tendo a capacidade de processar sinais discretos tanto em tempo como em amplitude.
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.27]{teoricas/pll}
+	\caption{Diagrama de blocos de um PLL básico.}
+	\vspace{-0.8em}
+\end{figure}
 
 \todo{depois desta parte comentamos as imagens que tiramos no ultimo lab}
 
