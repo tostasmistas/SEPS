@@ -1030,16 +1030,16 @@ Como o filtro de \textit{loop} foi projectado para um frequência de corte de 10
 
 O passo seguinte corresponde à conexão entre o modulador do transmissor e o desmodulador do receptor, ou seja, o sinal de entrada do \textit{Costas Loop} é o sinal modelado do tipo BPSK. Este sinal corresponde à multiplicação do sinal $d_n$ com a portadora, como se viu já anteriormente.
 
-\todo{depois desta parte comentamos as imagens que tiramos no ultimo lab}
+\todo{2 imagens ranhosas}
 
-\todo{Parte do filtro de 8 k}
+\todo{tabela das bandas com tudo junto para se comparar}
 
-Realizando o teste do filtro de dados com uma entrada sinusoidal de 8 kHz, é possível, observando a Figura X, perceber que o filtro não anula completamente o sinal de entrada, o que causa o problema descrito acima. 
+Realizando o teste do filtro de dados com uma entrada sinusoidal de 8 kHz, é possível, observando a Figura X, perceber que o filtro não anula completamente o sinal de entrada, o que causa o problema descrito anteriormente. 
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.37]{exps/FiltroSemZero8k}
-	\caption{Sinal de entrada do filtro (a verde) e sinal de saída do filtro de dados (a amarelo).}
+	\caption{Sinal de entrada do filtro (a verde) e sinal de saída do filtro de dados (a amarelo) para o caso do filtro sem zero.}
 	\vspace{-0.8em}
 \end{figure} 
 
@@ -1093,7 +1093,7 @@ Na Figura X, pode observar-se a saída do filtro digital implementado com um zer
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.37]{exps/FiltroComZero8k}
-	\caption{Sinal de entrada do filtro (a verde) e sinal de saída do filtro de dados (a amarelo).}
+	\caption{Sinal de entrada do filtro (a verde) e sinal de saída do filtro de dados (a amarelo) para o caso do filtro com zero.}
 	\vspace{-0.8em}
 \end{figure} 
 
@@ -1105,6 +1105,58 @@ Conclui-se assim que o filtro implementado anula a componente de 8 kHz, o que co
 	\caption{Sinal à saída do filtro da dados com o \textit{Costas Loop} completo.}
 	\vspace{-0.8em}
 \end{figure}
+
+Depois de testado o \textit{Costas Loop} este vai ser caracterizado através de vários sinais e espectros. De referir que as imagens retiradas daqui para a frente são com o filtro com o zero que elimina interferências em $w_{s}/2$. 
+
+Primeiramente analisa-se o sinal modulado do tipo BPSK, no domínio do tempo e da frequência.
+
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/xtBPSK_temporal}}
+	\hspace{8mm}
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/xtBPSK_espectro}}
+	\vspace{-0.8em}
+	\caption{Sinal modulado do tipo BPSK no domínio do tempo (a) e no domínio da frequência (b).}
+	\vspace{-0.8em}
+\end{figure}
+
+\todo{comentar estas figuras}
+
+De seguida analisa-se as formas de onda à saída dos filtros do \textit{upper} e \textit{lower arm}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.37]{exps/ineoutdofiltro}
+	\caption{Sinal à entrada do filtro de dados (a amarelo) e à saída do filtro (a verde).}
+	\vspace{-0.8em}
+\end{figure}
+
+\todo{comentar esta figura de cima - notas no caderno da margarida}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.37]{exps/upperandlowerarm}
+	\caption{Sinal à saída do filtro de dados do \textit{lower arm} (a verde) e à saída do filtro dados do \textit{upper arm} (a amarelo).}
+	\vspace{-0.8em}
+\end{figure}
+
+\todo{comentar esta figura}
+
+Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja o sinal de erro que depois controla o oscilador. Foi analisada esta situação para o caso em que o filtro de dados tem o zero. 
+
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/errofiltrosemzero}}
+	\hspace{8mm}
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/errofiltrocomzero}}
+	\vspace{-0.8em}
+	\caption{Sinal de erro para o caso do filtro sem zero (a) e com zero (b).}
+	\vspace{-0.8em}
+\end{figure}
+
+\todo{comentar estas imagens - notas no caderno da margarida}
+
+De seguida, faz-se uma análise do transitório do processo de aquisição do \textit{loop}. CONTINUAR AQUI
 
 \section{Conclusões}
 
