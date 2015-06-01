@@ -800,14 +800,60 @@ b_n'~= ~e_n~+~e_{n-6}~+~e_{n-7};
 
 O sinal $b_n'$ representa a sequência de \textit{bits} recuperada do sinal de saída do \textit{scrambler}, $e_n$. O esquema seguinte mostra a implementação da equação anterior com maior detalhe:
 
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[keepaspectratio=true, scale=0.60]{teoricas/descrambler}
+%	\caption{Esquema do cálculo da implementação do \textit{descrambler}.}
+%	\vspace{-0.8em}
+%\end{figure}
+
+<<<<<<< HEAD
+\todo{david - seno e coseno em quadratura}
+=======
+Pretende-se implementar um NCO (\textit{numerically controlled oscillator}) controlado pelo sinal de erro $\varepsilon (t)$ com a seguinte característica:
+
+\vspace{-3mm}
+\begin{equation}
+	f_{osc} = f_{ol} + K_0\varepsilon (n), 
+\end{equation} 
+
+sendo que $f_{ol}$ trata-se da frequência livre do oscilador, que deve ser definida como sendo igual à frequência da portadora do sinal BPSK, ou seja, $f_{ol} = f_0$ e que $\varepsilon (n)$ se trata da saída do filtro \textit{Loop}, que será implementado posteriormente. Assim, considerando o gerador de uma onda sinusoidal implementado na primeira parte do projecto, que usa uma 32 valores de meio período da função seno, é possível implementar este oscilador de forma idêntica, tendo em atenção o valor de $f_ol$ e de $K_0$, que tal como no oscilador implementado anteriormente, tem o valor de $1/4$. É ainda pretendido que seja gerada uma outra saída em quadratura, o que é possível lendo a LUT 16 valores depois. É apresentado o excerto de código que implementa o oscilador, permitindo que sejam geradas as duas saídas em quadratura.
+
+\begin{lstlisting}[language=C]
+
+short   sine[32] = {0,3212,6393,9512,12540,15447,18205,20788,23170,25330,27246,28899,30274,31357,32138,32610,32767,32610,32138,31357,30274,28899,27246,25330,23170,20788,18205,15447,12540,9512,6393,3212};
+short delta_erro = 0, y_loop_filter = 0, status_erro = 0, i_erro = 0, y_cos = 0, y_sin;
+
+...
+delta_erro = 16384 + (y_loopfilter >> 2);
+status_erro = status_erro + delta_erro ;
+i_erro = status_erro >> 10;
+i_erro = i_erro & 31;
+
+y_cos = sine[(i_erro+16)&31]; //coseno
+y_sin = sine[i_erro]; //seno
+
+if(i_erro > 15){
+y_cos = -y_cos;
+}
+if(status_erro < 0){
+y_sin = -y_sin;
+y_cos = -y_cos;
+}	
+...
+\end{lstlisting}
+
+Na Figura X, é representado o sinal de saída do oscilador, que é mostrado aqui apenas para demonstração do correcto funcionamento do oscilador, já que a implementação do filtro donde saí o sinal de erro apenas será explicada posteriormente. 
+
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.60]{teoricas/descrambler}
-	\caption{Esquema do cálculo da implementação do \textit{descrambler}.}
+	\includegraphics[keepaspectratio=true, scale=0.37]{exps/SinVsCos}
+	\caption{}
 	\vspace{-0.8em}
 \end{figure}
 
-\todo{david - seno e coseno em quadratura}
+\todo{LEGENDA DA FIGURA - Qual é o seno e o coseno? Eu sei que é igual pormos que o verde é um ou o outro, era só para saber se tinham ideia}
+>>>>>>> origin/master
 
 O \textit{modem} BPSK, apresentado na Figura 2, é constituído por vários módulos, sendo que três desses módulos tratam-se de filtros passa-baixo. Esses filtros apresentam um pólo e um zero, satisfazendo a seguinte equação às diferenças:
 
@@ -1196,7 +1242,12 @@ De seguida, faz-se uma análise do transitório do processo de aquisição do \t
 
 Relativamente ao Projecto \#1, pode-se concluir que um oscilador controlado feito com recurso ao método da interpolação apresenta resultados com mais qualidade, isto para casos em que o valor de $\Delta$ representa frequências que não são múltiplos da frequência de amostragem. 
 
-Já em relação ao Projecto \#2, este correu de acordo com o esperado, sendo que se procedeu a uma melhoria ao nível da eficiência do código para que apenas houvesse o \textit{if} do contador. Verificou-se que retirar este último \textit{if} não compensava pois era necessário replicar o código e a eficiência computacional seria equiparável. 
+Já em relação ao Projecto \#2, este correu de acordo com o esperado, sendo que se procedeu a uma melhoria ao nível da eficiência do código para que apenas houvesse o \textit{if} do contador. Verificou-se que retirar este último \textit{if} não compensava pois era necessário replicar o código e a eficiência computacional seria equiparável.
+
+Relativamente ao Projecto \#3, em que o objectivo era desenvolver um receptor BPSK, o mesmo foi implementado da forma esperada, tendo sido analisados várias características do receptor. A implementação dos filtros \textit{Data} do \textit{Costas Loop} com um zero em 8 kHz, o que anula uma componente com essa frequência que estava à entrada dos filtros, garante que à saída do sistema se tenha um sinal em que se podem distinguir claramente os bits '0' e '1', o que é de extrema importância. Em relação ao regime transitório, onde é avaliada a capacidade do sistema adquirir o sincronismo, após o ter perdido, pôde concluir-se que o processo de aquisição do sincronismo apresenta um tempo de transição aproximadamente 10 vezes inferior ao período com que se força a malha a perder o sincronismo. 
+
+\todo{Vejam o que escrevi e alterem/acrescentem o que acharem necessário}
+
 
 \todo{conclusao geral e conclusao do projecto 3}
 
