@@ -1254,7 +1254,39 @@ Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja, o sinal de 
 
 \todo{comentar estas imagens - notas no caderno da margarida}
 
-De seguida, faz-se uma análise do transitório do processo de aquisição do \textit{loop}. Para se poder contar o tempo que demora a aquisição do sistema 
+De seguida, faz-se uma análise do transitório do processo de aquisição do \textit{loop}. Para se poder contar o tempo que demora a aquisição do sistema implementa-se um contador de amostra que, de 1000 em 1000 amostras, introduz no sistema uma situação de não-sincronismo, colocando o oscilador e o sinal de erro que o controla em extremos opostos, forçando o valor do erro ao seu máximo, 32767. O excerto de código seguinte representa este forçar do sinal de erro.
+
+\begin{lstlisting}[language=C]
+	...
+		if(trans > 1000){
+			trans = 0;
+			y_loopfilter = 32767; //forcar o valor maximo que o sinal de erro pode tomar
+		}	
+		trans++;
+	...
+\end{lstlisting}
+
+Durante este período de aquisição o funcionamento do sistema não é linear e, enquanto o sinal de erro não vier a zero, a malha não sincronizará e os \textit{bits} do sinal desmodulado estarão errados.
+
+Calculou-se o tempo de aquisição para duas frequências de corte do filtro de \textit{loop}, 10 Hz e 100 Hz, como se pode ver nas figuras seguintes. O sinal a verde representa a saída do filtro de \textit{loop}, o sinal de erro, e o sinal a amarelo representa a saída do filtro de dados do \textit{lower arm} do \textit{Costas Loop}.
+
+\todo{explicar contagem do tempo. vale a pena por as imagens dos 100Hz?}
+
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/calculo_tempo_aquisicao_10Hz}}
+	\hspace{8mm}
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/calculo_tempo_aquisicao_100Hz}}
+	\vspace{-0.8em}
+	\caption{Tempo de aquisição da malha para uma $f_c$ do filtro de \textit{loop} a 10 Hz(a) e a 100 Hz(b).}
+	\vspace{-0.8em}
+\end{figure}
+
+Como se pode ver nas figuras anteriores, o tempo de transitório para um valor de $f_c$ de 10 Hz é de 63.2 ms e para um valor de $f_c$ de 100 Hz é de 7.2 ms. Assim, verifica-se que, quanto maior a frequência do filtro de \textit{loop}, mais rápida é a malha a sincronizar. 
+
+De facto, durante a aquisição quer-se um transitório rápido, para que se atinja rapidamente o sincronismo, mas na manutenção quer-se uma largura de banda mais pequena para que o sistema não tenha tanto ruído. Assim, é frequente utilizar-se duas larguras de banda diferentes - uma para o transitório (aquisição) e uma para a manutenção.
+
+Saber qual o valor deste tempo de transitório é extremamente importante, pois pode ser utilizado para enviar um cabeçalho para o sistema que contém \textit{bits} piloto que foram previamente estudados de acordo com as funcionalidades do sistema em causa. Uma vez que termine o envio do cabeçalho o sistema encontra-se pronto para adquirir sinais.
 
 \section{Conclusões}
 
