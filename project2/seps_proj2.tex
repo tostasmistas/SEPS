@@ -670,7 +670,8 @@ Relativamente ao espectro do sinal $b_n$ verifica-se que existe uma risca na fre
 O espectro de $y_n$ permite verificar o fenómeno de modulação, na medida em que se verifica que o espectro de $d_n$ foi deslocado para altas frequências, ou seja, encontra-se em torno do espectro da portadora que corresponde a uma risca na frequência $f_0$, 4 kHz. De facto, ocorre a convolução do espectro do sinal $d_n$ com o espectro da portadora.
 
 SCRAMBLER
-O \textit{scrambler} é um dispositivo que inverte a ordem e polaridade dos \textit{bits} da mensagem a ser enviada. A utilização deste dispositivo tem dois principais objectivos, a facilidade de execução dos circuitos de recuperação de relógio, \textit{clock and data recovery},e outros circuitos adaptativos do receptor. Esta melhoria deve-se ao facto do \textit{scambler} eliminar longas sequências constantes de '0' ou '1'. O outro objectivo deve-se ao facto de eliminar 
+O \textit{scrambler} é um dispositivo que inverte a ordem e polaridade dos \textit{bits} da mensagem a ser enviada. A utilização deste dispositivo tem dois principais objectivos, a facilidade de execução dos circuitos de recuperação de relógio, \textit{clock and data recovery},e outros circuitos adaptativos do receptor. Esta melhoria deve-se ao facto do \textit{scambler} eliminar longas sequências constantes de \texttt{0} ou \texttt{1} O outro objectivo deve-se ao facto de eliminar a dependência do sinal a ser transmitido no espectro de potência, ou seja, o sinal transmitido fica mais disperso de forma a maximizar os requisitos do espectro de potência. Pois se a potência for concentrada numa largura de banda limitada pode haver interferência nos canais adjacentes do receptor devido à intermodulação, este fenómeno é conhecido por \textit{cross-modulation}.
+A implementação do circuito do dispositivo \textit{scrambler} é 
 
 
 \todo{imagem da sequencia aleatoria de bits}
