@@ -248,8 +248,8 @@ respectivamente, com a máscara \texttt{31}, de acordo com as seguintes linhas d
 
 \begin{lstlisting}[language=C]
 	...
-		y1 = sine[i&31];
-		y2 = sine[(i+1)&31];
+		y1 = sine[i];
+		y2 = sine[(i+1)];
 	...
 \end{lstlisting}
 
@@ -679,6 +679,47 @@ COSTAS LOOP
 \todo{1 - teddy}
 
 \todo{2 e 3 - david - nas imagens e bom tirar a LB, para comprovar que esta a funcionar}
+
+O modem BPSK, apresentado na Figura X, é constituído por vários módulos, sendo que três desses módulos tratam-se de filtros passa-baixo. Esses filtros apresentam um pólo e um zero, satisfazendo a seguinte equação às diferenças:
+
+ \vspace{-3mm}
+ \begin{equation}
+ 	y(n) = \alpha y(n-1) + \gamma \frac{1-\alpha}{1-\beta}[x(n)-\beta x(n-1)]
+ \end{equation} 
+
+que apresentam um diagrama de fluxo de sinal como o apresentado na Figura 16.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.75]
+	{exps/diagrama_fluxo}
+	\caption{Diagrama de fluxo de sinal de filtro passa-baixo}
+	\vspace{-0.8em}
+\end{figure}
+
+Aplicando a transformada Z, é possível determinar a função de transferência do filtro, obtendo-se:
+
+ \vspace{-3mm}
+ \begin{equation}
+ H(z) = \frac{\gamma \frac{1-\alpha}{1-\beta} (1-\beta z^{-1})}{1-\alpha z^{-1}}
+ \end{equation}
+ 
+ Neste caso, considera-se $\beta=0$, resultando uma expressão mais simples para a função de transferência:
+ 
+  \vspace{-3mm}
+  \begin{equation}
+  H(z) = \frac{\gamma(1-\alpha)}{1-\alpha z^{-1}}
+  \end{equation} 
+  
+  Após a determinação da função de transferência gera, para o caso em que $\beta = 0$, é necessário calcular as constantes $\alpha$ e $\gamma$ para os dois tipos de filtros presentes no \textit{Costas Loop}, que apesar de serem ambos filtros passa-baixo, apresentam frequências de corte diferentes, sendo que o ganho DC é igual nos dois casos. As especificações dos dois tipos de filtros, \textit{Data Filter} e \textit{Loop Filter}, sendo que existem dois filtros do primeiro tipo e apenas um do segundo, são apresentadas na Tabela 3. 
+  
+  \begin{table}[H]
+  	\centering
+  	\caption{Especificações dos filtros passa-baixo}
+  	\vspace{-1.5mm}
+  	\includegraphics[keepaspectratio=true, scale=0.70]{tabelas/especificacoes}
+  \end{table}
+
 
 era bom testar que no filtro com beta=0 deixar passar para comonentes maior que ws/2, fazer um teste e vemos que falha
 
