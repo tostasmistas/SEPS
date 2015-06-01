@@ -738,12 +738,46 @@ Com a actualização do vector \texttt{dela\_scarmbler} realizada a obtenção d
 	\vspace{-0.8em}
 \end{figure}
 
-Começa-se por somar os resultados do \textit{scrambler} referente ao atraso 6 e 7
-\todo{imagem da sequencia aleatoria de bits}
+Começa-se por somar os resultados do \textit{scrambler} referente ao atraso 6 e 7 guardando em \texttt{Xor67}. E seguida soma-se com \texttt{b\_n} originando o \texttt{e\_n}. A implementação em código segue no excerto seguinte:
+
+\begin{lstlisting}[language=C]
+	...
+	short     b_i_TX = 1,...;
+	short     ..., e_n=0, xor67=0;
+	short     b_n = 1,..;
+	unsigned char delay_scrambler=0,...;
+	...
+		 if(b_i_TX>15){
+			b_i_TX = 0;
+			b_n = (b_n^1);
+			 
+			/*Scrambler*/
+			xor67 = (delay_scrambler&1)^((delay_scrambler&2)>>1);
+			e_n = b_n^xor67;
+			delay_scrambler = (delay_scrambler>>1)&0x7f;/*Deslocamento temporal*/
+			delay_scrambler = delay_scrambler | (e_n<<7);/*Actualizacao do novo valor de e_n no vector*/
+			...
+		}
+		b_i_TX	
+	...
+\end{lstlisting}
+
+A imagem seguinte representa a visualização do sinal de saída do \textit{scrambler} como também do sinal \texttt{b\_n}: 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.40]{exps/ScramblerBnVsEn}
+	\caption{Imagem do  sinal \texttt{b\_n}, sinal a amarelo, e do sinal \texttt{e\_n}, sinal a verde.}
+	\vspace{-0.8em}
+\end{figure}
+
+Como se pode observar, a implementação do \textit{scrambler} foi bem sucedida devido à aleatoriedade da sequência de \textit{bits} obtida, visualizar o sinal a verde. 
+
 
 \section{Projecto $\#$3 - Receptor BPSK}
 
-\todo{descrambler - teddy}
+DESCRAMBLER
+
 
 COSTAS LOOP
 
