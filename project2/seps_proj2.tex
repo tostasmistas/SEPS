@@ -689,14 +689,17 @@ Analisando agora a Figura 1 verifica-se que do transmissor BPSK ainda falta impl
 
 A geração de \textit{bits} que se implementou é, no fundo, um simples gerador de uma sequência de \textit{bits} bem definida ($b_n$ = 1, 0, 1, 0, \ldots). No entanto, esta sequência não é apropriada para transmissão e, como tal, a sequência referida anteriormente necessita de ser ``misturada'' de modo a que surja de forma aleatória. Para se efectuar isto recorre-se a um circuito denominado de \textit{scrambler}.
 
-O \textit{scrambler} é um dispositivo que inverte a ordem e polaridade dos \textit{bits} da mensagem a ser enviada. A utilização deste dispositivo tem dois principais objectivos, a facilidade de execução dos circuitos de recuperação de relógio, \textit{clock and data recovery},e outros circuitos adaptativos do receptor. Esta melhoria deve-se ao facto do \textit{scambler} eliminar longas sequências constantes de \texttt{0} ou \texttt{1} O outro objectivo deve-se ao facto de eliminar a dependência do sinal a ser transmitido no espectro de potência, ou seja, o sinal transmitido fica mais disperso de forma a maximizar os requisitos do espectro de potência. Pois se a potência for concentrada numa largura de banda limitada pode haver interferência nos canais adjacentes do receptor devido à intermodulação, este fenómeno é conhecido por \textit{cross-modulation}.
+O \textit{scrambler} é um dispositivo que inverte a ordem e polaridade dos \textit{bits} da mensagem a ser enviada. A utilização deste dispositivo tem dois principais objectivos - a facilidade de execução dos circuitos de recuperação de relógio, \textit{clock and data recovery}, e outros circuitos adaptativos do receptor. Esta melhoria deve-se ao facto do \textit{scrambler} eliminar longas sequências constantes de \texttt{0} ou \texttt{1}. O outro objectivo deve-se ao facto de eliminar a dependência do sinal a ser transmitido no espectro de potência, ou seja, o sinal transmitido fica mais disperso de forma a maximizar os requisitos do espectro de potência. Se a potência for concentrada numa largura de banda limitada pode haver interferência nos canais adjacentes do receptor devido à intermodulação, este fenómeno é conhecido por \textit{cross-modulation}.
 
-O circuito do dispositivo \textit{scrambler} tem como expressão matemática o polinómio seguinte:
+O circuito do dispositivo \textit{scrambler} tem como expressão matemática o seguinte polinómio:
+
+\vspace{-3mm}
 \begin{equation}
 	P(x)~= ~1~+~x^{-6}~+~x^{-7}
 \end{equation}  
 
-Os valores de $x^{-6}$ e $x^{-7}$ representam o sinal de entrada com um atraso de 6 e 7 períodos respectivamente, a implementação do circuito segue o seguinte esquema:
+\vspace{1mm}
+Os valores de $x^{-6}$ e $x^{-7}$ representam o sinal de entrada com um atraso de 6 e 7 períodos, respectivamente. A implementação do circuito segue o seguinte esquema:
 
 \begin{figure}[H]
 	\centering
@@ -706,10 +709,10 @@ Os valores de $x^{-6}$ e $x^{-7}$ representam o sinal de entrada com um atraso d
 \end{figure}
 
 Analisando o esquema proposto efectuou-se a implementação do circuito na DSP com o apoio do código C.
-Começou-se por definir uma variável de 8 \textit{bits}, \texttt{char delay\_scrambler} que guarda os atrasos temporais de até 7 períodos. O código seguinte demonstra a implementação e obtenção dos atrasos necessários para o \textit{scrambler}. É de referir que onde o sinal de entrada consiste na sequência de \textit{bits} \texttt{b\_n} gerada anteriormente:
+Começou-se por definir uma variável de 8 \textit{bits}, \texttt{delay\_scrambler}, que guarda os atrasos temporais de até 7 períodos. O código seguinte demonstra a implementação e obtenção dos atrasos necessários para o \textit{scrambler}. É de referir que o sinal de entrada corresponde à sequência de \textit{bits} \texttt{b\_n} gerada anteriormente.
 
 \begin{lstlisting}[language=C]
-	unsigned char delay_scrambler=0,...;
+	unsigned char delay_scrambler = 0;
 	
 	...
 		delay_scrambler = (delay_scrambler>>1)&0x7f; // deslocamento temporal
@@ -717,7 +720,7 @@ Começou-se por definir uma variável de 8 \textit{bits}, \texttt{char delay\_sc
 	...
 \end{lstlisting}
 
-Assim sendo o \textit{bit} mais significativo representado o resultado do \textit{scrambler} com atraso \texttt{0} e por consequente o \textit{bit} menos significativo representa o atraso 7 na linha temporal. Seguindo esta lógica o vector \texttt{delay\_scrambler} é actualizado da seguinte forma:
+Assim sendo, o \textit{bit} mais significativo representa o resultado do \textit{scrambler} com atraso \texttt{0} e, consequentemente, o \textit{bit} menos significativo representa o atraso 7 na linha temporal. Seguindo esta lógica o vector \texttt{delay\_scrambler} é actualizado da seguinte forma:
 
 \begin{figure}[H]
 	\centering
@@ -725,9 +728,10 @@ Assim sendo o \textit{bit} mais significativo representado o resultado do \texti
 	\caption{Esquema do cálculo do \texttt{delay\_scrambler}.}
 	\vspace{-0.8em}
 \end{figure}
-Inicialmente é realizado um \textit{shift} de uma posição para direita no vector \texttt{delay\_scrambler}, representando o deslocamento temporal de cada amostra. De seguida aplica-se a máscara \texttt{0x7f} de forma a obter um \texttt{0} no \textit{bit} mais significativo e mantendo os valores das amostras deslocadas. Com o deslocamento feito recorre-se à operação lógica OR para guardar o resultado do \textit{scrambler} no atraso temporal \texttt{0}.
 
-Com a actualização do vector \texttt{dela\_scarmbler} realizada a obtenção do resultado do \textit{scrambler} é obtida da seguinte forma:  
+Inicialmente é realizado um \textit{shift} de uma posição para direita no vector \texttt{delay\_scrambler}, representando o deslocamento temporal de cada amostra. De seguida aplica-se a máscara \texttt{0x7f} de forma a obter um \texttt{0} no \textit{bit} mais significativo e mantendo os valores das amostras deslocadas. Com o deslocamento feito recorre-se à operação lógica OR para guardar o resultado do \textit{scrambler} no atraso temporal correspondente.
+
+Com a actualização do vector \texttt{delay\_scrambler} realizada, a obtenção do resultado do \textit{scrambler} é obtida da seguinte forma:  
 
 \begin{figure}[H]
 	\centering
@@ -736,51 +740,48 @@ Com a actualização do vector \texttt{dela\_scarmbler} realizada a obtenção d
 	\vspace{-0.8em}
 \end{figure}
 
-Começa-se por somar os resultados do \textit{scrambler} referente ao atraso 6 e 7 guardando em \texttt{Xor67}. E seguida soma-se com \texttt{b\_n} originando o \texttt{e\_n}. A implementação em código segue no excerto seguinte:
+Começa-se por somar os resultados do \textit{scrambler} referente ao atraso 6 e 7 guardando o resultado na variável \texttt{xor67}. De seguida, soma-se com \texttt{b\_n} originando \texttt{e\_n}. A implementação em código segue no excerto seguinte.
 
 \begin{lstlisting}[language=C]
+	short    b_i_TX = 1;
+	short    e_n = 0, xor67 = 0;
+	short    b_n = 1;
+	unsigned char delay_scrambler = 0;
+	
 	...
-	short     b_i_TX = 1,...;
-	short     ..., e_n=0, xor67=0;
-	short     b_n = 1,..;
-	unsigned char delay_scrambler=0,...;
-	...
-		 if(b_i_TX>15){
+		if(b_i_TX > 15){
 			b_i_TX = 0;
 			b_n = (b_n^1);
 			 
-			/*Scrambler*/
+			/* scrambler */
 			xor67 = (delay_scrambler&1)^((delay_scrambler&2)>>1);
 			e_n = b_n^xor67;
-			delay_scrambler = (delay_scrambler>>1)&0x7f;/*Deslocamento temporal*/
-			delay_scrambler = delay_scrambler | (e_n<<7);/*Actualizacao do novo valor de e_n no vector*/
+			delay_scrambler = (delay_scrambler>>1)&0x7f; //deslocamento temporal
+			delay_scrambler = delay_scrambler | (e_n<<7); //cctualizacao do novo valor de e_n no vector
 			...
 		}
-		b_i_TX	
+		b_i_TX++;	
 	...
 \end{lstlisting}
 
-A imagem seguinte representa a visualização do sinal de saída do \textit{scrambler} como também do sinal \texttt{b\_n}: 
+A imagem seguinte representa a visualização do sinal de saída do \textit{scrambler} como também do sinal \texttt{b\_n}.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.40]{exps/ScramblerBnVsEn}
-	\caption{Imagem do  sinal \texttt{b\_n}, sinal a amarelo, e do sinal \texttt{e\_n}, sinal a verde.}
+	\caption{Sinal \texttt{b\_n} (a amarelo) e sinal \texttt{e\_n} (a verde).}
 	\vspace{-0.8em}
 \end{figure}
 
-Como se pode observar, a implementação do \textit{scrambler} foi bem sucedida devido à aleatoriedade da sequência de \textit{bits} obtida, visualizar o sinal a verde. 
-
+Como se pode observar, a implementação do \textit{scrambler} foi bem sucedida devido à aleatoriedade da sequência de \textit{bits} obtida, como se pode visualizar no sinal a verde. 
 
 \pagebreak
 
 \section{Projecto $\#$3 - Receptor BPSK}
 
-DESCRAMBLER
+\todo{teddy - desrambler}
 
-
-
-\todo{seno e coseno em quadratura}
+\todo{david - seno e coseno em quadratura}
 
 O \textit{modem} BPSK, apresentado na Figura 2, é constituído por vários módulos, sendo que três desses módulos tratam-se de filtros passa-baixo. Esses filtros apresentam um pólo e um zero, satisfazendo a seguinte equação às diferenças:
 
@@ -1038,7 +1039,7 @@ Realizando o teste do filtro de dados com uma entrada sinusoidal de 8 kHz, é po
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.37]{exps/FiltroSemZero8k}
-	\caption{Sinal de entrada(verde) e sinal de saída(amarelo) do filtro \textit{Data}}
+	\caption{Sinal de entrada do filtro (a verde) e sinal de saída do filtro de dados (a amarelo).}
 	\vspace{-0.8em}
 \end{figure} 
 
@@ -1092,7 +1093,7 @@ Na Figura X, pode observar-se a saída do filtro digital implementado com um zer
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.37]{exps/FiltroComZero8k}
-	\caption{Sinal de entrada(verde) e sinal de saída(amarelo) do filtro de dados.}
+	\caption{Sinal de entrada do filtro (a verde) e sinal de saída do filtro de dados (a amarelo).}
 	\vspace{-0.8em}
 \end{figure} 
 
@@ -1101,7 +1102,7 @@ Conclui-se assim que o filtro implementado anula a componente de 8 kHz, o que co
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.37]{exps/pulse_saida_filtro_Sine_mudancanoFiltro}
-	\caption{Sinal à saída do filtro \textit{data} com o \textit{Costas Loop} completo.}
+	\caption{Sinal à saída do filtro da dados com o \textit{Costas Loop} completo.}
 	\vspace{-0.8em}
 \end{figure}
 
@@ -1110,6 +1111,8 @@ Conclui-se assim que o filtro implementado anula a componente de 8 kHz, o que co
 Relativamente ao Projecto \#1, pode-se concluir que um oscilador controlado feito com recurso ao método da interpolação apresenta resultados com mais qualidade, isto para casos em que o valor de $\Delta$ representa frequências que não são múltiplos da frequência de amostragem. 
 
 Já em relação ao Projecto \#2, este correu de acordo com o esperado, sendo que se procedeu a uma melhoria ao nível da eficiência do código para que apenas houvesse o \textit{if} do contador. Verificou-se que retirar este último \textit{if} não compensava pois era necessário replicar o código e a eficiência computacional seria equiparável. 
+
+\todo{conclusao geral e conclusao do projecto 3}
 
 \pagebreak
 
@@ -1224,6 +1227,142 @@ void main(){
 			y=d_n*y;
 			
 			AIC_buffer.channel[LEFT] = y;
+		}
+	}
+}
+\end{lstlisting}
+
+\subsection{Anexo III - Código do Projecto \#3}
+
+\begin{lstlisting}[language=C]
+#include "dsk6713_aic23.h"
+#include "C6713dskinit.h"
+
+Uint32 fs=DSK6713_AIC23_FREQ_16KHZ;
+
+char	intflag = FALSE;
+short	sine[32] = {0,3212,6393,9512,12540,15447,18205,20788,23170,25330,27246,28899,30274,31357,		32138,32610,32767,32610,32138,31357,30274,28899,27246,25330,23170,20788,18205,	15447,12540,9512,6393,3212}; 
+short	alpha_10 = 32640, alpha_100 = 31529, alpha_1k = 23528, 
+			um_menos_alpha_1k = 9240, um_menos_alpha_10 = 127, um_menos_alpha_100 = 1238;
+union {Uint32 samples; short channel[2];} AIC_buffer;
+
+interrupt void c_int11(){
+	output_sample(AIC_buffer.samples);   
+	AIC_buffer.samples= input_sample(); 	   
+	intflag = TRUE;
+	return;
+}
+
+void main(){
+	short	d_n = 0, y1 = 0, y2 = 0, y_sin = 0, y_cos = 0, xt_bpsk = 0, y_port = 0;
+	short	x_cos = 0, x_sine = 0, y_cos_datafilter = 0, y_sin_datafilter = 0;
+	short	x_cos_old = 0, x_sine_old = 0;
+	short	in_loopfilter = 0, y_loopfilter;
+	short	b_i_TX = 1, b_i_RX = 1, sine_i = 0, inbuf;
+	short	c_n = 0, e_n = 0, xor67 = 0;
+	short 	i = 0 , delta = 0 ,trans = 0;
+	short	status = -32767;
+	short	status_erro = -32767, delta_erro = 16384, i_erro = 0;
+	short	b_n = 1, shift15_cn = 0, not_shift15 = 0, b_nlinha = 0;
+	unsigned char delay_scrambler = 0, delay_descrambler = 0;
+	
+	comm_intr();                   
+	while(1){                	   	
+		if(intflag != FALSE){
+			intflag = FALSE;
+			
+			inbuf = AIC_buffer.channel[LEFT];
+			
+			//////////////////////////////////////
+			////////////// TX	////////////////////
+			//////////////////////////////////////
+			delta = 16384;
+			status = status + delta;
+			i = status >> 10;
+			i = i & 31;
+			
+			y_port = sine[i];
+			
+			if(status < 0 ){
+				y_port = -y_port;
+			}
+			
+			if(b_i_TX>15){
+				b_i_TX = 0;
+				b_n = (b_n^1);
+				/* scrambler */
+				xor67 = (delay_scrambler&1)^((delay_scrambler&2)>>1);
+				e_n = b_n^xor67;
+				delay_scrambler = (delay_scrambler>>1)&0x7f;
+				delay_scrambler = delay_scrambler | (e_n<<7);
+				
+				c_n=c_n^e_n;
+				shift15_cn=c_n<<15;
+				not_shift15=~shift15_cn;
+				d_n=not_shift15>>14;
+			}
+			b_i_TX++;
+			
+			xt_bpsk = y_port*d_n;
+			
+			//////////////////////////////////////
+			////////////// RX	////////////////////
+			//////////////////////////////////////	
+			delta_erro = 16384 + (y_loopfilter >>2);
+			status_erro = status_erro + delta_erro ;
+			i_erro = status_erro >> 10;
+			i_erro = i_erro & 31;
+			
+			y_cos = sine[(i_erro+16)&31]; //coseno
+			y_sin = sine[i_erro]; //seno
+			
+			if(i_erro > 15){
+				y_cos = -y_cos;
+			}
+			if(status_erro < 0){
+				y_sin = -y_sin;
+				y_cos = -y_cos;
+			}
+			
+			//filtro de dados com fc = 1 kHz
+			x_cos = (xt_bpsk*y_cos)>>15;
+			x_sine= (xt_bpsk*y_sin)>>15;
+			//x_cos = xt_bpsk;
+			// x_sine= xt_bpsk;
+			y_cos_datafilter = (((alpha_1k*y_cos_datafilter)<<1) + ((x_cos*um_menos_alpha_1k)<<1))>>16;/*Filtro sem zero em ws/2*/
+			y_sin_datafilter = (((alpha_1k*y_sin_datafilter)<<1) + ((x_sine*um_menos_alpha_1k)<<1))>>16;/*Filtro sem zero em ws/2*/
+			
+			// y_cos_datafilter = (((alpha_1k*y_cos_datafilter)<<1) + ((((x_cos + x_cos_old)*um_menos_alpha_1k)>>1)<<1))>>16;/*Filtro com zero em ws/2*/
+			//y_sin_datafilter = (((alpha_1k*y_sin_datafilter)<<1) + ((((x_sine + x_sine_old)*um_menos_alpha_1k)>>1)<<1))>>16;/*Filtro com zero em ws/2*/
+			
+			x_sine_old = x_sine;
+			x_cos_old  = x_cos;
+			
+			in_loopfilter	= (y_cos_datafilter*y_sin_datafilter)>>15;
+			y_loopfilter = (((alpha_10*y_loopfilter)<<1) + ((in_loopfilter*um_menos_alpha_10)<<1))>>16;
+			//y_loopfilter = (((alpha_100*y_loopfilter)<<1) + ((in_loopfilter*um_menos_alpha_100)<<1))>>16;
+			
+			if(b_i_RX>15){
+				b_i_RX = 0;
+				/* descrambler ^/
+				xor67 = (delay_descrambler&1)^((delay_descrambler&2)>>1);
+				b_nlinha = e_n^xor67;
+				delay_descrambler = (delay_descrambler>>1)&0x7f;
+				delay_descrambler = delay_descrambler | (e_n<<7);
+			}
+			b_i_RX++;
+			/*
+			if(trans>1000){
+				trans=0;
+				y_loopfilter = 32767;
+			}
+			trans++;*/
+			
+			//////////////////////////////////////
+			////////////// OUT ///////////////////
+			//////////////////////////////////////
+			AIC_buffer.channel[LEFT] = y_cos;
+			AIC_buffer.channel[RIGHT] = y_cos_datafilter;		
 		}
 	}
 }
