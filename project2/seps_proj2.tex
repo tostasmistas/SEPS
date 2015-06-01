@@ -790,60 +790,67 @@ Após a determinação da função de transferência geral, para o caso em que $
 
 \begin{table}[H]
  	\centering
- 	\caption{Especificações dos filtros passa-baixo}
+ 	\caption{Especificações dos filtros passa-baixo.}
  	\vspace{-1.5mm}
- 	\includegraphics[keepaspectratio=true, scale=0.70]{tabelas/especificacoes}
+ 	\includegraphics[keepaspectratio=true, scale=0.35]{tabelas/especificacoes}
 \end{table}
 
-Sabendo que o ganho DC é igual em todos os filtros, é possível determinar $\gamma$ para os mesmos, tendo em conta que em DC se tem $\omega = 0$, portanto:
+Sabendo que o ganho DC é igual em todos os filtros, é possível determinar o valor de $\gamma$ dos mesmos, tendo em conta que em DC se tem $\omega = 0$, portanto:
 
 \vspace{-3mm}
 \begin{equation}
-	z = e^{j \omega T_s} = 1
+	z = e^{j \omega T_s} = 1.
 \end{equation}
 
-Donde vem:
+\vspace{1mm}
+De onde vem:
 
 \vspace{-3mm}
 \begin{equation}
-	H(z = 1) = \frac{\gamma(1-\alpha)}{1-\alpha} \longrightarrow \gamma = 1
+	H(z = 1) = \frac{\gamma(1-\alpha)}{1-\alpha} \longrightarrow \gamma = 1.
 \end{equation} 
 
-Sabe-se, à \textit{priori}, analisando a função de transferência H(z), já com $\gamma = 1$, que o valor de $\alpha$ tem que estar compreendido entre -1 e 1 para o filtro ser estável, sendo que esse valor, para o filtro ser passa-baixo, tem que estar definido entre 0 e 1, sendo que esse valor vai ser diferente para os dois tipos de filtros, visto que o mesmo é determinado em função da frequência de corte, \textit{$f_c$}. Recorrendo à expressão do ganho do filtro:
+\vspace{1mm}
+Sabe-se, à \textit{priori}, analisando a função de transferência H(z), já com $\gamma = 1$, que o valor de $\alpha$ tem que estar compreendido entre -1 e 1 para o filtro ser estável, sendo que esse valor, para o filtro ser passa-baixo, tem que estar definido entre 0 e 1. Mais ainda, esse valor vai ser diferente para os dois tipos de filtros, visto que o mesmo é determinado em função da frequência de corte, \textit{$f_c$}. Recorrendo à expressão do ganho do filtro vem:
 
 \vspace{-3mm}
 \begin{equation}
-	|H(j\omega)| = \frac{1-\alpha}{|1-\alpha e^{j\omega T_s}|}
+	|H(j\omega)| = \frac{1-\alpha}{|1-\alpha e^{j\omega T_s}|},
 \end{equation} 
 
-é possível particulizar o valor do ganho do filtro à frequência de corte:
+\vspace{1mm}
+em que é possível particulizar o valor do ganho do filtro à frequência de corte:
 
 \vspace{-3mm}
 \begin{equation}
-	|H(j\omega_c)| = \frac{1-\alpha}{|1-\alpha e^{j\omega_c T_s}|} = \frac{1 - \alpha}{\sqrt{1- \alpha^2 cos^2{(\omega_c T_s)} + \alpha^2 sen^2{(\omega_c T_s)}}}
+	|H(j\omega_c)| = \frac{1-\alpha}{|1-\alpha e^{j\omega_c T_s}|} = \frac{1 - \alpha}{\sqrt{1- \alpha^2 cos^2{(\omega_c T_s)} + \alpha^2 sen^2{(\omega_c T_s)}}},
 \end{equation} 
 
-Donde se poderia retirar o valor de $\alpha$, o que envolveria alguma manipulação algébrica. No entanto, sabendo que a frequência de corte dos filtros é muito inferior ao valor da frequência de amostragem dividido por 2, $f_s/2$, vem que:
+\vspace{1mm}
+de onde se poderia retirar o valor de $\alpha$, o que envolveria alguma manipulação algébrica. No entanto, sabendo que a frequência de corte dos filtros é muito inferior ao valor da frequência de amostragem dividido por 2, $f_s/2$, vem que:
 
 \vspace{-3mm}
 \begin{equation}
-\omega_ c T_s = 2\pi \frac{f_c}{f_s} \ll 1
+\omega_ c T_s = 2\pi \frac{f_c}{f_s} \ll 1,
 \end{equation} 
 
+\vspace{1mm}
 podendo considerar-se a seguinte aproximação:
 
 \vspace{-3mm}
 \begin{equation}
-e^{-j\omega T_s} \approx 1 - j\omega_c T_s
+e^{-j\omega T_s} \approx 1 - j\omega_c T_s,
 \end{equation} 
 
+\vspace{1mm}
 resultando então uma expressão para o ganho do filtro, à frequência de corte, bastante mais simples:
 
 \vspace{-3mm}
 \begin{equation}
-|H(j\omega_c)| =  \frac{1 - \alpha}{|1-\alpha(1-j\omega_c T_s)|} 
+|H(j\omega_c)| =  \frac{1 - \alpha}{|1-\alpha(1-j\omega_c T_s)|},
 \end{equation} 
 
+\vspace{1mm}
 resultando, finalmente:
 
 \vspace{-3mm}
@@ -851,10 +858,15 @@ resultando, finalmente:
 \omega_c = \frac{1 - \alpha}{\alpha T_s} = \frac{1 - \alpha}{\alpha} f_s
 \end{equation} 
 
-Assim, tendo em conta que $f_s = 16 kHz$, pode-se calcular o valor de $\alpha$ para os filtros \textit{Data} e filtro \textit{Loop}. Sabendo que o valor vai estar contido no intervalo ]0,1[, pode-se utilizar a representação numérica mais precisa $Q_15$ para representar o valor de $\alpha$, de forma a efectuar a implementação dos filtros. Na Tabela X, são apresentados os valores de $\alpha$ e também a sua conversão em $Q_15$.
+\vspace{1mm}
+Assim, tendo em conta que $f_s = 16$ kHz, pode-se calcular o valor de $\alpha$ para os filtros \textit{data} e filtro \textit{loop}. Sabendo que o valor vai estar contido no intervalo $]0,1[$, pode-se utilizar a representação numérica mais precisa $Q_{15}$ para representar o valor de $\alpha$, de forma a efectuar a implementação dos filtros. Na tabela seguinte, são apresentados os valores de $\alpha$ e também a sua conversão em $Q_{15}$.
 
-
-\todo{falta tabela dos alfas}
+\begin{table}[H]
+	\centering
+	\caption{Valores de $\alpha$ dos filtros passa-baixo.}
+	\vspace{-1.5mm}
+	\includegraphics[keepaspectratio=true, scale=0.35]{tabelas/alphas}
+\end{table}
 
 Assim, conhecendo-se todos os parâmetros das funções de transferência dos filtros, é possível implementar os filtros, segundo a equação às diferenças:
 
@@ -888,9 +900,8 @@ No entanto, antes de ligar todo o sistema, é importante testar o filtro que tem
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.50]{exps/filtro_1k_baixafreq}
-	\caption{Sinal de entrada(verde) e sinal de saída(amarelo) do filtro \textit{Data}}
-	\label{fig:fluxo}
+	\includegraphics[keepaspectratio=true, scale=0.37]{exps/filtro_1k_baixafreq}
+	\caption{Verificação do ganho em baixas frequências - sinal de entrada (a verde) e sinal de saída (a amarelo) do filtro \textit{data}.}
 	\vspace{-0.8em}
 \end{figure} 
 
@@ -899,9 +910,8 @@ Testou-se ainda a frequência de corte, sendo que para isso aumentou-se a frequ�
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.50]{exps/filtro_1k_freqcorte}
-	\caption{Sinal de entrada(verde) e sinal de saída(amarelo) do filtro \textit{Data}}
-	\label{fig:fluxo}
+	\includegraphics[keepaspectratio=true, scale=0.37]{exps/filtro_1k_freqcorte}
+	\caption{Verificação da frequência de corte - sinal de entrada (a verde) e sinal de saída (a amarelo) do filtro \textit{data}.}
 	\vspace{-0.8em}
 \end{figure} 
 
@@ -929,7 +939,7 @@ Posto isto, o PLL pode estar num de dois estados - \textit{locked} (sincronizado
 
 Assim, para testar o correcto funcionamento do PLL projectado é necessário verificar o comportamento do sinal à saída do oscilador controlado e à entrada do detector de fase. No projecto em causa o detector de fase é um multiplicador, que é o adequado para processar sinais do tipo sinusoidal. 
 
-À entrada colocou-se um sinal sinusoidal com amplitude de 1 $V_{PP}$, fazendo-se variar a sua frequência. Nas figuras seguintes apresenta-se o comportamento do PLL para duas situações distintas, estando representado a amarelo o sinal de entrada e a verde o sinal à saída do oscilador controlado.
+À entrada colocou-se um sinal sinusoidal com amplitude de 1 $V_{PP}$, fazendo-se variar a sua frequência, partindo de um valor inicial de 4 kHz que é a frequência de funcionamento da malha dessincronizada. Nas figuras seguintes apresenta-se o comportamento do PLL para duas situações distintas, estando representado a amarelo o sinal de entrada e a verde o sinal à saída do oscilador controlado.
 
 \begin{figure}[H]
 	\centering
@@ -944,9 +954,26 @@ Assim, para testar o correcto funcionamento do PLL projectado é necessário ver
 
 Para ambas as situações recorreu-se ao modo persistência do osciloscópio, com o objectivo de ajudar a reconhecer a situação de dessincronismo do PLL. De facto, na Figura \ref{fig:PLL}(a) verifica-se que o sinal â saída do oscilador apresenta bastante dispersão em torno dos valores pretendidos para a forma de onda, tal como esperado. Quando se ajustou a frequência do sinal de entrada e o PLL entrou num estado de sincronismo obtém-se os resultados da Figura \ref{fig:PLL}(b), em que o sinal representado a verde não apresenta dispersão em torno dos valores pretendidos, tal como esperado.
 
-Uma vez verificado o correcto funcionamento do \textit{upper arm} do \textit{Costas Loop}, conectou-se o \textit{lower arm} e testou-se todo o \textit{loop} utilizando também um sinal sinusoidal à entrada. Verificou-se ambos os \textit{arms} apresentam o comportamento esperado.
+Uma vez verificado o correcto funcionamento do \textit{upper arm} do \textit{Costas Loop}, conectou-se o \textit{lower arm} e testou-se todo o \textit{loop} utilizando também um sinal sinusoidal à entrada. Verificou-se que ambos os \textit{arms} apresentam o comportamento esperado. Assim, procede-se à medição da banda de captura e da banda de manutenção do \textit{loop}.
 
-O passo seguinte corresponde à conexão entre CONTINUAR
+O sinal de entrada deve estar compreendido na banda de captura do \textit{loop}. Uma vez que se adquira o sincronismo, o \textit{loop} manter-se-á nesse estado, dentro de certos limites, que definem a banda de manutenção, sendo que esta banda pode ser diferente da banda de captura. 
+
+Para se calcular experimentalmente o valor das bandas é necessário observar o valor médio do sinal de erro, enquanto se faz variar lentamente a frequência do sinal de entrada decrescentemente, partindo de um estado inicial de \textit{loop} dessincronizado, até que ocorre uma captura em $w_{C}^{-}$. De seguida aumenta-se a frequência do sinal de entrada até que se perde o sincronismo em $w_{L}^{+}$. O passo seguinte é efectuar um varrimento no sentido contrário, adquirindo sincronismo em $w_{C}^{+}$ que depois é perdido em $w_{L}^{-}$.
+
+Relativamente ao sinal de erro que se observa nesta medição, considere-se o caso em que o PLL está fora de sincronismo e o oscilador gera uma frequência $f_o$. Quando o \textit{loop} se fecha (ou quando o sinal de entrada tem uma frequência $f_i$) se a diferença entre as duas frequências for pequena o suficiente, então o filtro de  \textit{loop} irá desenvolver um sinal de erro que leva a frequência do oscilador até $f_i$. Eventualmente o \textit{loop} vai adquirir sincronismo e neste estado a frequência média gerada pelo oscilador é igual à frequência média do sinal de entrada.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.25]{teoricas/malhas}
+	\caption{Representação das bandas que caracterizam o PLL.}
+	\vspace{-0.8em}
+\end{figure} 
+
+Da figura anterior verifica-se que, regra geral, $\Delta w_L \geq \Delta w_C$.
+
+\todo{continuar bandas}
+
+O passo seguinte corresponde à conexão entre o modulador do transmissor e o desmodulador do receptor, ou seja, o sinal de entrada do \textit{Costas Loop} é o sinal modelado do tipo BPSK. Este sinal corresponde à multiplicação do sinal $d_n$ com a portadora, como se viu já anteriormente.
 
 \todo{depois desta parte comentamos as imagens que tiramos no ultimo lab}
 
