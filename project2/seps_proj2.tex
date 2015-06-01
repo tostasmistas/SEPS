@@ -108,11 +108,40 @@ Grupo n.º 5 de segunda-feira das 15h30 - 18h30
 
 Com este trabalho laboratorial o objectivo é a familiarização com o sistema de desenvolvimento de \textit{software} e \textit{kit} de processamento digital de sinal DSK TMS320C6713. O processador em causa é de 32 \textit{bits}, com um relógio de 225 MHz, sendo capaz de fazer o \textit{fetching} e execução de 8 instruções por ciclo de relógio. Relativamente ao \textit{software}, a ferramenta utilizada para programar o DSK é o CCS v5.5.
 
-Na primeira fase do projecto pretende-se implementar um oscilador numericamente controlado (NCO) e de seguida um transmissor \textit{binary phase-shift keying} (BPSK).
+Na primeira fase do projecto pretende-se implementar um oscilador numericamente controlado (NCO) e de seguida um transmissor e receptor \textit{binary phase-shift keying} (BPSK). Na figura seguinte apresenta-se um modem BPSK como o que se pretende implementar.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/modem}
+	\caption{Modem DSP-BPSK.}
+	\vspace{-0.8em}
+\end{figure}
 
 \section{Projecto de Demonstração}
 
-\todo{teddy - falar das demonstracoes, ganho é >= 33}
+Com o objectivo de fazer uma adaptação às ferramentas de trabalho realiza-se um projeto de demonstração que reproduz um seno através de uma \textit{look-up-table} (LUT) de 8 posições, como se pode ver no excerto de código seguinte.
+
+\begin{lstlisting}[language=C]
+	...
+		//LUT do seno
+		short sine_table[8] = {0,707,1000,707,0,-707,-1000,-707}; 
+	...
+\end{lstlisting}
+
+Esta LUT é lida num \textit{loop} e os seus valores são multiplicados por um factor de ganho antes de serem exibidos no osciloscópio, ou seja, ocorre uma multiplicação de duas variáveis do tipo \texttt{short} com representação em $Q_{15}$. O formato do resultado da multiplicação de duas variáveis em $Q_{15}$ é $Q_{30}$ com replicação do \textit{bit} de sinal. Assim, é necessário efectuar um \textit{shift} para a esquerda para remover o \textit{bit} de sinal replicado, resultando num formato final de $Q_{31}$, para 32 bits. Para se poder armazenar numa variável de 16 \textit{bits}, no formato $Q_{15}$, é necessário efectuar um \textit{shift} de 16 posições para a direita, permitindo armazenar os 16 \textit{bits} mais significativos do resultado de 32 \textit{bits}. 
+
+Em complemento para dois e numa notação do formato $Q_{15}$ pode-se representar valores no intervalo $-2^{0} \leq x \leq 2^{0} - 2^{-15}$, o que corresponde a valores decimais entre -32767 e 32767. Quando é atingido o valor máximo, 32767, entra em efeito a circularidade da representação em complemento para dois e, assim, para este caso, o valor máximo da amplitude do seno não atinge o valor $2^{15}$, ``dando a volta'' para -32767. 
+
+Com um valor inicial para o ganho de 10, o valor máximo de amplitude que ocorre no seno gerado é de $1000 \times 10 = 10000$, valor que se encontra compreendido no intervalo referido anteriormente. Também para um factor de ganho de 32 o valor máximo da amplitude do seno pode ser representada no formato $Q_{15}$. Porém, quando o factor de ganho passa para 33 esse valor máximo passa para $1000 \times 33 = 33000$, valor que gera um \textit{overflow}, como explicado anteriormente.
+
+Assim, para um factor de ganho de 33 a sinusoide \todo{continuar isto - margarida}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.37]{exps/demonstracao}
+	\caption{Sinusoide gerada para um factor de ganho de 10 (a verde) e para um factor de ganho de 33 (a amarelo).}
+	\vspace{-0.8em}
+\end{figure}
 
 \section{Projecto $\#$1 - NCO}
 
@@ -120,7 +149,7 @@ Um oscilador numericamente controlado permite gerar uma frequência instantânea
 
 As características do NCO são apresentadas na seguinte tabela.
 
-\begin{table}[ht]
+\begin{table}[H]
 	\centering
 	\caption{Características do NCO.}
 	\vspace{-1.5mm}
@@ -129,7 +158,7 @@ As características do NCO são apresentadas na seguinte tabela.
 
 Pretende-se primeiramente desenvolver um oscilador de relaxação utilizando uma variável inteira com sinal de 16 \textit{bits} e a circularidade da representação em complemento para dois. Na figura abaixo encontra-se uma representação do sinal a obter.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.37]{teoricas/rampa}
 	\caption{Esquema do oscilador de relaxação.}
@@ -147,7 +176,7 @@ Existe uma variável de estado da rampa que a cada $T_{s}$, período de amostrag
 
 Relativamente à variável $\Delta$ esta encontra-se também representada em $Q_{15}$. O NCO tem como característica uma frequência $f_{0}$ que varia entre 2 kHz e 6 kHz. Estes valores são controlados a partir da amplitude do sinal de entrada. Quando esta for mínima, a frequência $f_{0}$ é de 2 kHz e quando for máxima, a frequência $f_{0}$ é de 6 kHz. Com estas especificações pode-se calcular três valores de $\Delta$ com recurso à equação (2.1), para a frequência mínima, a frequência média e a frequência máxima.
 
-\begin{table}[ht]
+\begin{table}[H]
 	\centering
 	\caption{Valores de $\Delta$ para as três frequências especificadas.}
 	\vspace{-1.5mm}
@@ -173,7 +202,7 @@ void main(){
 
 Nas figuras da próxima página pode-se ver o sinal obtido experimentalmente que representa a rampa para dois valores diferentes de frequência $f_{0}$.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.073]{exps/rampa2K}}
 	\hspace{8mm}
@@ -187,7 +216,7 @@ Nas figuras da próxima página pode-se ver o sinal obtido experimentalmente que
 
 Como se pode ver na Figura 2(c), por comparação com o esperado teoricamente da Figura 1, o oscilador de relaxação implementado funciona de acordo com o previsto. De notar que o sinal que se observa está invertido relativamente ao teórico, o que já é esperado, quando se considera que antes de ser observado no osciloscópio passa por um inversor.
 
-Com o oscilador implementado pretende-se agora criar uma \textit{look-up-table} (LUT) com 32 valores positivos de meio período da função seno. É necessário começar por determinar esses valores, para que, posteriormente, os mesmos sejam convertidos para o formato mais preciso de representação, $Q_{15}$, uma vez que se encontram no intervalo [-1, 1]. Assim, tendo em conta que meio período da função seno é $\pi$, podemos calcular os valores da seguinte maneira:
+Com o oscilador implementado pretende-se agora criar uma LUT com 32 valores positivos de meio período da função seno. É necessário começar por determinar esses valores, para que, posteriormente, os mesmos sejam convertidos para o formato mais preciso de representação, $Q_{15}$, uma vez que se encontram no intervalo [-1, 1]. Assim, tendo em conta que meio período da função seno é $\pi$, podemos calcular os valores da seguinte maneira:
 
 \vspace{-3mm}
 \begin{equation}
@@ -224,13 +253,13 @@ respectivamente, com a máscara \texttt{31}, de acordo com as seguintes linhas d
 	...
 \end{lstlisting}
 
-\change{david - rever este excerto de codigo acima, o prof diz ''o i ja vem limitado a 3''}
+\change{david - rever este excerto de codigo acima, o prof diz ''o i ja vem limitado a 31''}
 
 Esta solução faz com que não seja necessário mais memória para criar a LUT, embora seja realizado um maior número de operações.  
 
 Para que se possa agora aceder aos valores da função seno, é utilizada a variável de estado do oscilador, \texttt{status}, como índice da LUT. Apenas 5 \textit{bits} da variável são utilizados para endereçar a LUT, sendo criada a variável \texttt{i}, tal como especificado na Figura 3, onde a variável de estado do oscilador é representada por \textit{x}.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.27]{teoricas/seno}
 	\caption{Representação da variável do estado do oscilador.}
@@ -348,7 +377,7 @@ Quando a amplitude do sinal de entrada é máxima pode-se visualizar um aumento 
 
 \change{na parte final do paragrafo o prof diz que temos de ter cuidado com esta conclusao pq ha um atraso de processamento}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.10]{exps/200Hz_2_6}
 	\caption{Saída modulada na frequência do oscilador controlado (a amarelo) com \textit{input} de uma onda quadrada de 200 Hz (a verde).}
@@ -404,7 +433,7 @@ Como se viu, foram desenvolvidos dois osciladores sinusoidais - com e sem interp
 
 Quando se analisou os espectros das sinusoides não se verificou qualquer diferença entre eles e não foi possível concluir sobre qual seria o melhor método, como se pode ver nas figuras da próxima página, em que ambos os espectros apresentam uma risca na frequência central, 4 kHz, tal como esperado.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/AE_sem_inter}}
 	\hspace{8mm}
@@ -418,7 +447,7 @@ Assim, para se poder obter resultados mais conclusivos sobre qual o melhor méto
 
 Na Figura \ref{fig:AE1} apresenta-se as formas de onda obtidas para as sinusoides geradas de acordo com os dois métodos, com $\Delta$ a 16380.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.33]{exps/diferenca1}
 	\caption{Onda sinusoidal obtida sem interpolação (a verde) e com interpolação (a amarelo).}
@@ -436,7 +465,7 @@ Assim se pode concluir que o método da interpolação compensa na maioria das v
 
 Neste projecto, pretende-se implementar o codificador de um transmissor BPSK (\textit{binary phase-shift keying)}, representado na Figura \ref{fig:BPSK}.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.5]{teoricas/bpsk}
 	\caption{Esquema de um transmissor BPSK.}
@@ -500,7 +529,7 @@ Foi criada outra solução para a obtenção da sequência $b_n$ com objectivo d
 
 Como se pode observar, ocorre \textit{overflow} quando o contador, \texttt{b\_i}, atinge o valor 16, sendo utilizado este valor porque a frequência de amostragem, de 16 kHz, é divida por esse valor de forma a obter o resultado desejado de uma taxa de transmissão de 1 kbps. Para detectar esta ocorrência aplica-se a máscara \texttt{16} (o quinto \textit{bit} menos significativo com o valor lógico \texttt{1}) e efectua-se um \textit{shift} de 4 posições para a direita.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.10]{exps/bn_zoom}
 	\caption{Sinal $b_n$ (a amarelo) sobreposto com uma onda quadrada com frequência de 4 kHz (a verde).}
@@ -552,14 +581,14 @@ A solução computacional mais eficiente que se encontrou consiste em três fase
 
 \change{rever se compensa o if ou nao - profiling do codigo?}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/esquema2}
 	\caption{Representação da situação em que $c_{n} = 0$, resultando num mapeamento de $d_{n} = -1$.}
 	\vspace{-0.8em}
 \end{figure}
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/esquema1}
 	\caption{Representação da situação em que $c_{n} = 1$, resultando num mapeamento de $d_{n} = +1$.}
@@ -601,7 +630,7 @@ Com o modulador criado procede-se à fase de testes. Sabe-se que o sinal $d_n$ t
 
 Analisando a figuras seguinte verifica-se que o modulador está a funcionar correctamente, invertendo a fase no zero da portadora e a cada 8 ciclos.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.10]{exps/dn_com_y}
 	\caption{Sobreposição do sinal modulado (a amarelo) com o sinal $d_n$ (a verde).}
@@ -612,7 +641,7 @@ Na figura anterior, pode-se verificar que a inversão de fase faz-se correctamen
 
 Apresenta-se também uma imagem em que se encontra apenas representado o sinal modulado, com um \textit{zoom} sobre uma altura em que ocorrem duas inversões de fase. 
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.10]{exps/BPSK_modulated}
 	\caption{Sinal modulado (em cima) e pormenor obtido com recurso a uma janela temporal (em baixo).}
@@ -621,7 +650,7 @@ Apresenta-se também uma imagem em que se encontra apenas representado o sinal m
 
 Efectuou-se também um registo ao nível de espectros para vários sinais, como se pode ver nas figuras da próxima página.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 	\centering
 	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/AE_bn}}
 	\hspace{8mm}
