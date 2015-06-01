@@ -248,6 +248,10 @@ respectivamente, com a máscara \texttt{31}, de acordo com as seguintes linhas d
 
 \begin{lstlisting}[language=C]
 	...
+<<<<<<< HEAD
+=======
+		i = (status>>10)&31;
+>>>>>>> origin/master
 		y1 = sine[i];
 		y2 = sine[(i+1)];
 	...
@@ -327,7 +331,7 @@ Em baixo está o código referente ao cálculo para obter o valor de \texttt{del
 	...
 \end{lstlisting}
 
-Tendo o valor de \texttt{delta}, é simples obter a amplitude de cada amostra do sinal de saída, multiplicando \texttt{delta} por \texttt{y1}, valor obtido da LUT especificada anteriormente. Em baixo está representado um excerto do código que demonstra a obtenção da amplitude do sinal de saída. Todas as variáveis são de 16 \textit{bits}, tendo \texttt{y1} e \texttt{delta} o formato de $Q_{15}$, como também \texttt{yf}. Isto deve-se ao facto de o formato do resultado da multiplicação com duas variáveis em $Q_{15}$ ser $Q_{30}$ com replicação do \textit{bit} de sinal. Assim, é necessário efectuar um \textit{shift} para a esquerda para remover o \textit{bit} de sinal replicado, resultando num formato final de $Q_{31}$, para 32 bits. Para se poder armazenar numa variável de 16 \textit{bits}, no formato $Q_{15}$, é necessário efectuar um \textit{shift} de 16 posições para a direita, permitindo armazenar os 16 \textit{bits} mais significativos do resultado de 32 \textit{bits}.
+Tendo o valor de \texttt{delta}, é simples obter a amplitude de cada amostra do sinal de saída, somando  \texttt{delta} com \texttt{y1}, valor obtido da LUT especificada anteriormente. Em baixo está representado um excerto do código que demonstra a obtenção da amplitude do sinal de saída. Todas as variáveis são de 16 \textit{bits}, tendo \texttt{y1} e \texttt{delta} o formato de $Q_{15}$, como também \texttt{yf}. Isto deve-se ao facto de o formato do resultado da multiplicação com duas variáveis em $Q_{15}$ ser $Q_{30}$ com replicação do \textit{bit} de sinal. Assim, é necessário efectuar um \textit{shift} para a esquerda para remover o \textit{bit} de sinal replicado, resultando num formato final de $Q_{31}$, para 32 bits. Para se poder armazenar numa variável de 16 \textit{bits}, no formato $Q_{15}$, é necessário efectuar um \textit{shift} de 16 posições para a direita, permitindo armazenar os 16 \textit{bits} mais significativos do resultado de 32 \textit{bits}.
 
 \change{teddy - neste paragrafo de cima, na 1a frase o prof colocou 2 ?}
 
@@ -335,12 +339,11 @@ O código apresentado de seguida demonstra a explicação referida.
 
 \begin{lstlisting}[language=C]
 	...
-		//controlo da amplitude e frequencia
-		yf = (y1*delta<<1)>>16);
+		//controlo de frequencia
+		yf = y1 + delta;
 	...
 \end{lstlisting}
 
-\change{teddy - neste excerto de codigo afinal e uma soma? o prof diz ''para que? nao percebo?''}
 
 Para o controlo da amplitude do sinal de saída, multiplica-se o resultado final obtido anteriormente por uma constante de 16 \textit{bits} em formato $Q_{15}$. Está representado um excerto de código que demonstra a alteração da amplitude do sinal de saída. Neste caso todas as variáveis são também de 16 \textit{bits}, tendo \texttt{yf} e \texttt{amp} o formato de $Q_{15}$, como também \texttt{y}. Para armazenar a variável \texttt{y} em $Q_{15}$ recorre-se à mesma lógica explicada anteriormente de fazer 15 \textit{shifts} para a direita ao resultado da multiplicação.
 
@@ -666,9 +669,11 @@ Relativamente ao espectro do sinal $b_n$ verifica-se que existe uma risca na fre
 
 O espectro de $y_n$ permite verificar o fenómeno de modulação, na medida em que se verifica que o espectro de $d_n$ foi deslocado para altas frequências, ou seja, encontra-se em torno do espectro da portadora que corresponde a uma risca na frequência $f_0$, 4 kHz. De facto, ocorre a convolução do espectro do sinal $d_n$ com o espectro da portadora.
 
-\todo{scrambler - margarida}
+SCRAMBLER
+O \textit{scrambler} é um dispositivo que inverte a ordem e polaridade dos \textit{bits} da mensagem a ser enviada. A utilização deste dispositivo tem dois principais objectivos, a facilidade de execução dos circuitos de recuperação de relógio, \textit{clock and data recovery},e outros circuitos adaptativos do receptor. Esta melhoria deve-se ao facto do \textit{scambler} eliminar longas sequências constantes de '0' ou '1'. O outro objectivo deve-se ao facto de eliminar 
 
-imagem da sequencia aleatoria de bits
+
+\todo{imagem da sequencia aleatoria de bits}
 
 \section{Projecto $\#$3 - Receptor BPSK}
 
