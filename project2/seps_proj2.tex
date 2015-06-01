@@ -684,7 +684,52 @@ A geração de \textit{bits} que se implementou é, no fundo, um simples gerador
 
 O \textit{scrambler} é um dispositivo que inverte a ordem e polaridade dos \textit{bits} da mensagem a ser enviada. A utilização deste dispositivo tem dois principais objectivos, a facilidade de execução dos circuitos de recuperação de relógio, \textit{clock and data recovery},e outros circuitos adaptativos do receptor. Esta melhoria deve-se ao facto do \textit{scambler} eliminar longas sequências constantes de \texttt{0} ou \texttt{1} O outro objectivo deve-se ao facto de eliminar a dependência do sinal a ser transmitido no espectro de potência, ou seja, o sinal transmitido fica mais disperso de forma a maximizar os requisitos do espectro de potência. Pois se a potência for concentrada numa largura de banda limitada pode haver interferência nos canais adjacentes do receptor devido à intermodulação, este fenómeno é conhecido por \textit{cross-modulation}.
 
-A implementação do circuito do dispositivo \textit{scrambler} é 
+O circuito do dispositivo \textit{scrambler} tem como expressão matemática o polinómio seguinte:
+\begin{equation}
+	P(x)~= ~1~+~x^{-6}~+~x^{-7}
+\end{equation}  
+
+Os valores de $x^{-6}$ e $x^{-7}$ representam o sinal de entrada com um atraso de 6 e 7 períodos respectivamente, a implementação do circuito segue o seguinte esquema:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.50]{teoricas/scrambler}
+	\caption{Esquema da implementação do \textit{scrambler}.}
+	\vspace{-0.8em}
+\end{figure}
+
+Analisando o esquema proposto efectuou-se a implementação do circuito na DSP com o apoio do código C.
+Começou-se por definir uma variável de 8 \textit{bits}, \texttt{char delay\_scrambler} que guarda os atrasos temporais de até 7 períodos. O código seguinte demonstra a implementação do \textit{scrambler} onde o sinal de entrada 	é a sequência de \textit{bits} \texttt{b\_n} gerada anteriormente:
+
+\begin{lstlisting}[language=C]
+	 short     d_n=0,..;
+	 short     b_i_TX = 1, ...;
+	 short     c_n = 0, e_n=0, xor67=0;
+	 short     b_n = 1,...;
+	 unsigned char delay_scrambler=0,delay_descrambler=0;
+	 ...
+		if(b_i_TX>15){
+			b_i_TX = 0;
+			b_n = (b_n^1);
+			
+			/*Scrambler*/
+			xor67 = (delay_scrambler&1)^((delay_scrambler&2)>>1);
+			e_n = b_n^xor67;
+			delay_scrambler = (delay_scrambler>>1)&0x7f;
+			delay_scrambler = delay_scrambler | (e_n<<7);
+			
+			/*Mapeamento referente ao codificador do sinal de aleatorio de saida do scrambler*/
+			c_n=c_n^e_n;
+			shift15_cn=c_n<<15;
+			not_shift15=~shift15_cn;
+			d_n=not_shift15>>14;
+		}
+		b_i_TX++;
+	...
+\end{lstlisting}
+
+
+ 
 
 \todo{imagem da sequencia aleatoria de bits}
 
