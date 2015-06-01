@@ -1156,7 +1156,7 @@ Como o filtro de \textit{loop} foi projectado para um frequência de corte de 10
 	\includegraphics[keepaspectratio=true, scale=0.35]{tabelas/bandas}
 \end{table}
 
-\todo{comentar bandas - tenho a nota do david de que a mallha para sincrozinar precisa de ruido}
+Analisando a tabela anterior, é possível concluir que para a mesma frequência de corte, o aumento da amplitude do sinal de entrada causa o aumento das bandas de captura e manutenção. Em relação à comparação entre os valores obtidos para as bandas para diferentes frequências, percebe-se que um aumento da frequência de corte, o que provoca um aumento do ruído, as bandas de captura e aquisição têm valores superiores, portanto pode concluir-se que a malha sincroniza para um intervalo maior de frequências com o aumento do ruído.
 
 O passo seguinte corresponde à conexão entre o modulador do transmissor e o desmodulador do receptor, ou seja, o sinal de entrada do \textit{Costas Loop} é o sinal modelado do tipo BPSK. Este sinal corresponde à multiplicação do sinal $d_n$ com a portadora, como se viu já anteriormente.
 
@@ -1294,7 +1294,39 @@ Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja, o sinal de 
 
 \todo{comentar estas imagens - notas no caderno da margarida}
 
-De seguida, faz-se uma análise do transitório do processo de aquisição do \textit{loop}. Para se poder contar o tempo que demora a aquisição do sistema 
+De seguida, faz-se uma análise do transitório do processo de aquisição do \textit{loop}. Para se poder contar o tempo que demora a aquisição do sistema implementa-se um contador de amostra que, de 1000 em 1000 amostras, introduz no sistema uma situação de não-sincronismo, colocando o oscilador e o sinal de erro que o controla em extremos opostos, forçando o valor do erro ao seu máximo, 32767. O excerto de código seguinte representa este forçar do sinal de erro.
+
+\begin{lstlisting}[language=C]
+	...
+		if(trans > 1000){
+			trans = 0;
+			y_loopfilter = 32767; //forcar o valor maximo que o sinal de erro pode tomar
+		}	
+		trans++;
+	...
+\end{lstlisting}
+
+Durante este período de aquisição, o funcionamento do sistema não é linear e, enquanto o sinal de erro não vier a zero, a malha não sincronizará e os \textit{bits} do sinal desmodulado estarão errados.
+
+Calculou-se o tempo de aquisição, com o auxílio dos cursores do osciloscópio, determinando o intervalo de tempo entre o início da situação de não-sincronismo  e o instante em que se pode considerar que o sinal de saída do filtro de dados apresenta os bits bem definidos, sendo perceptível a diferença entre '0' e '1', para duas frequências de corte do filtro de \textit{loop}, 10 Hz e 100 Hz, como se pode ver nas figuras seguintes. O sinal a verde representa a saída do filtro de \textit{loop}, o sinal de erro, e o sinal a amarelo representa a saída do filtro de dados do \textit{lower arm} do \textit{Costas Loop}.
+
+\todo{explicar contagem do tempo. vale a pena por as imagens dos 100Hz?}
+
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/calculo_tempo_aquisicao_10Hz}}
+	\hspace{8mm}
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/calculo_tempo_aquisicao_100Hz}}
+	\vspace{-0.8em}
+	\caption{Tempo de aquisição da malha para uma $f_c$ do filtro de \textit{loop} a 10 Hz(a) e a 100 Hz(b).}
+	\vspace{-0.8em}
+\end{figure}
+
+Como se pode ver nas figuras anteriores, o tempo de transitório para um valor de $f_c$ de 10 Hz é de 63.2 ms e para um valor de $f_c$ de 100 Hz é de 7.2 ms. Assim, verifica-se que, quanto maior a frequência do filtro de \textit{loop}, mais rápida é a malha a sincronizar. 
+
+De facto, durante a aquisição quer-se um transitório rápido, para que se atinja rapidamente o sincronismo, mas na manutenção quer-se uma largura de banda mais pequena para que o sistema não tenha tanto ruído. Assim, é frequente utilizar-se duas larguras de banda diferentes - uma para o transitório (aquisição) e uma para a manutenção.
+
+Saber qual o valor deste tempo de transitório é extremamente importante, pois pode ser utilizado para enviar um cabeçalho para o sistema que contém \textit{bits} piloto que foram previamente estudados de acordo com as funcionalidades do sistema em causa. Uma vez que termine o envio do cabeçalho o sistema encontra-se pronto para adquirir sinais.
 
 \section{Conclusões}
 
@@ -1302,7 +1334,7 @@ Relativamente ao Projecto \#1, pode-se concluir que um oscilador controlado feit
 
 Já em relação ao Projecto \#2, este correu de acordo com o esperado, sendo que se procedeu a uma melhoria ao nível da eficiência do código para que apenas houvesse o \textit{if} do contador. Verificou-se que retirar este último \textit{if} não compensava pois era necessário replicar o código e a eficiência computacional seria equiparável.
 
-Relativamente ao Projecto \#3, em que o objectivo era desenvolver um receptor BPSK, o mesmo foi implementado da forma esperada, tendo sido analisados várias características do receptor. A implementação dos filtros \textit{Data} do \textit{Costas Loop} com um zero em 8 kHz, o que anula uma componente com essa frequência que estava à entrada dos filtros, garante que à saída do sistema se tenha um sinal em que se podem distinguir claramente os bits '0' e '1', o que é de extrema importância. Em relação ao regime transitório, onde é avaliada a capacidade do sistema adquirir o sincronismo, após o ter perdido, pôde concluir-se que o processo de aquisição do sincronismo apresenta um tempo de transição aproximadamente 10 vezes inferior ao período com que se força a malha a perder o sincronismo. 
+Relativamente ao Projecto \#3, em que o objectivo era desenvolver um receptor BPSK, o mesmo foi implementado da forma esperada, tendo sido analisados várias características do receptor. A implementação dos filtros \textit{Data} do \textit{Costas Loop} com um zero em 8 kHz, o que anula uma componente com essa frequência que estava à entrada dos filtros, garante que à saída do sistema se tenha um sinal em que se podem distinguir claramente os bits '0' e '1', o que é de extrema importância. Em relação ao regime transitório, onde é avaliada a capacidade do sistema adquirir o sincronismo, após o ter perdido, pôde concluir-se que o processo de aquisição do sincronismo apresenta um tempo de transição que varia com o mesmo factor de variação da frequência de corte do \textit{loop filter}. 
 
 \todo{Vejam o que escrevi e alterem/acrescentem o que acharem necessário}
 
