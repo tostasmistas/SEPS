@@ -263,8 +263,7 @@ Apresenta-se de seguida o excerto de código onde é declarada a LUT com os valo
 
 Como se pode constatar, a LUT é declarada com 33 valores, o que se deve ao facto de ser necessário garantir que, quando o valor de \texttt{i} for igual a \texttt{32}, seja possível aceder ao valor da função seno correspondente, o que não seria possível caso a LUT fosse apenas declarada com 32 valores.
  
-É possível implementar uma solução diferente, em que é realizada a operação lógica \texttt{AND} de \texttt{i} e \texttt{i+1} para o valor de \texttt{y1} e \texttt{y2} (necessário para o caso  da interpolação), 
-respectivamente, com a máscara \texttt{31}, de acordo com as seguintes linhas de código:
+É possível implementar uma solução diferente, em que é realizada a operação lógica \texttt{AND} de \texttt{i} e \texttt{i+1} para o valor de \texttt{y1} e \texttt{y2} (necessário para o caso  da interpolação), respectivamente, com a máscara \texttt{31}, sendo a variável i incrementada,  de acordo com as seguintes linhas de código:
 
 \begin{lstlisting}[language=C]
 	...
@@ -894,8 +893,15 @@ No entanto, antes de ligar todo o sistema, é importante testar o filtro que tem
 	\vspace{-0.8em}
 \end{figure} 
 
-Analisando os valores de amplitude dos dois sinais, pode verificar-se que o ganho é de $1/2$, não correspondendo ao ganho unitário pretendido, o que se deve ao facto da placa introduzir um factor de ganho que faz com que o sinal de saída do filtro tenha um ganho inferior a 1. 
-Testou-se ainda a frequência de corte, sendo que para isso aumentou-se a frequência do sinal de entrada até o sinal de saída do filtro apresentar uma queda de 3 dB. Verificou-se, como se pode observar na Figura X, que a frequência de corte apresentava o valor de 963 Hz, o que se trata de um valor próximo de 1 kHz. A pequena diferença em relação ao valor pretendido pode dever-se a se ter registado uma frequência onde ainda não tinham caído exactamente os 3 dB.
+Analisando os valores de amplitude dos dois sinais, pode verificar-se que o ganho é de, aproximadamente, $1/2$, não correspondendo ao ganho unitário pretendido, o que se deve ao facto da placa introduzir um factor de ganho que faz com que o sinal de saída do filtro tenha um ganho inferior a 1. 
+Testou-se ainda a frequência de corte, sendo que para isso aumentou-se a frequência do sinal de entrada até o sinal de saída do filtro apresentar uma queda de 3 dB, ou seja, tendo o ganho em baixa frequência o valor de 1.01 V, pretende-se registar a frequência a que o filtro apresenta no sinal de saída um valor de, aproximadamente, 0.7 V.
+
+\vspace{-3mm}
+\begin{equation}
+	|H(j\omega_{-3dB})| = \frac{|H(j\omega \approx 0)|}{\sqrt{2}} = \frac{1}{\sqrt{2}} \approx 0.7 V
+\end{equation} 
+
+Verificou-se, como se pode observar na Figura X, que a frequência de corte apresentava o valor de 963 Hz, o que se trata de um valor próximo de 1 kHz. A pequena diferença em relação ao valor pretendido pode dever-se a se ter registado uma frequência onde ainda não tinham caído exactamente os 3 dB.
 
 \begin{figure}[H]
 	\centering
@@ -950,7 +956,79 @@ O passo seguinte corresponde à conexão entre CONTINUAR
 
 \todo{depois desta parte comentamos as imagens que tiramos no ultimo lab}
 
-\pagebreak
+\todo{Parte do filtro de 8 k}
+
+Realizando o teste do filtro \textit{Data} com uma entrada sinusoidal de 8 kHz, é possível, observando a Figura X, perceber que o filtro não anula completamente o sinal de entrada, o que causa o problema descrito acima. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.50]{exps/FiltroSemZero8k}
+	\caption{Sinal de entrada(verde) e sinal de saída(amarelo) do filtro \textit{Data}}
+	\label{fig:fluxo}
+	\vspace{-0.8em}
+\end{figure} 
+
+De forma a solucionar este problema, implementou-se um filtro idêntico ao já implementado, adicionando um zero na frequência de 8 kHz, o que permite anular essa componente no sinal de saída. Assim, de forma a implementar esta solução, é necessário que $\beta = -1$, que vem de:
+
+\vspace{-3mm}
+\begin{equation}
+H(z) = \frac{\gamma \frac{1-\alpha}{1-\beta} (1-\beta z^{-1})}{1-\alpha z^{-1}} = 0 \Rightarrow \beta z = 1.
+\end{equation}
+
+
+e, para a frequência de 8 kHz, sendo $z = e^{j\omega T_s} = e^{j2\pi \frac{8\times 10^3}{16\times 10^3}}$, é possível determinar o valor de $\beta$.
+	
+Resulta então a função de transferência, mantendo-se os valores de $\alpha e \gamma$:
+
+\vspace{-3mm}
+\begin{equation}
+H(z) = \frac{\gamma \frac{1-\alpha}{2} (1+z^{-1})}{1-\alpha z^{-1}}
+\end{equation}
+
+concluindo-se que, em relação à implementação anterior, basta dividir o ganho por 2 e utilizar o valor da amostra anterior, somando-a à actual, respeitando a seguinte equação às diferenças:
+
+\vspace{-3mm}
+\begin{equation}
+y(n) = \alpha y(n-1) +  (1-\alpha)[x(n) + x(n-1)]
+\end{equation} 
+
+cujo excerto de código que permite implementar essa equação é apresentado de seguida.
+
+\begin{lstlisting}[language=C]
+short x_cos = 0, x_sine = 0, y_cos_datafilter = 0, y_sin_datafilter = 0;  
+short in_loopfilter = 0, y_loop filter = 0, alpha_1k = 23528; 
+short alpha_10 = 32640, um_menos_alpha_1k = 9240, um_menos_alpha_10 = 127;
+...
+ //Data filter com zero em ws/2
+ y_cos_datafilter = (((alpha_1k*y_cos_datafilter)<<1) + ((((x_cos + x_cos_old)*um_menos_alpha_1k)>>1)<<1))>>16;
+ y_sin_datafilter = (((alpha_1k*y_sin_datafilter)<<1) + ((((x_sine + x_sine_old)*um_menos_alpha_1k)>>1)<<1))>>16;
+
+ x_cos_old = x_cos;
+ x_sine_old = x_sin;
+
+...
+
+\end{lstlisting}
+
+Na Figura X, pode observar-se a saída do filtro digital implementado com um zero em 8 kHz, para um sinal de entrada sinusoidal com essa frequência. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.50]{exps/FiltroComZero8k}
+	\caption{Sinal de entrada(verde) e sinal de saída(amarelo) do filtro \textit{Data}}
+	\label{fig:fluxo}
+	\vspace{-0.8em}
+\end{figure} 
+
+Conclui-se assim que o filtro implementado anula a componente de 8 kHz, o que comprova a implementação de forma correcta do mesmo, permitindo que o sinal de saída do filtro, com o \textit{Costas Loop} completo, apresente de uma forma clara uma diferença entre o nível \textit{high} e \textit{low}, tal como representado na Figura X.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.50]{exps/pulse_saida_filtro_Sine_mudancanoFiltro}
+	\caption{Sinal à saída do filtro \textit{Data} com \textit{Costas Loop} completo}
+	\label{fig:fluxo}
+	\vspace{-0.8em}
+\end{figure}
 
 \section{Conclusões}
 
