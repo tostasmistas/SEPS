@@ -699,7 +699,12 @@ O circuito do dispositivo \textit{scrambler} tem como expressão matemática o s
 \end{equation}  
 
 \vspace{1mm}
-Os valores de $x^{-6}$ e $x^{-7}$ representam o sinal de entrada com um atraso de 6 e 7 períodos, respectivamente. A implementação do circuito segue o seguinte esquema:
+Os valores de $x^{-6}$ e $x^{-7}$ representam sinal de saída com um atraso de 6 e 7 períodos, respectivamente. A implementação do circuito segue a seguinte equação e esquema, $e_n$ sinal de saída e $b_n$ sinal de entrada no  \textit{scrambler}
+
+\vspace{-3mm}
+\begin{equation}
+	e_n~= ~b_n~+~e_{n-6}~+~e_{n-7};
+\end{equation}  
 
 \begin{figure}[H]
 	\centering
@@ -779,7 +784,34 @@ Como se pode observar, a implementação do \textit{scrambler} foi bem sucedida 
 
 \section{Projecto $\#$3 - Receptor BPSK}
 
-\todo{teddy - desrambler}
+
+
+A implementação do \textit{descrambler} tem a função de obter a sequência de \textit{bits} correcta para o que PC. Assim sendo, o circuito do \textit{descrambler} tem que conseguir obter toda a sequência de \textit{bits} que entra no \textit{scrambler}.
+Anteriormente foi referido que o \textit{scrambler} segue a seguinte expressão polinomial:
+\begin{equation}
+P(x)~= ~1~+~x^{-6}~+~x^{-7}
+\end{equation}
+Partindo desta equação consegue obter a expressão de recuperação do sinal de entrada do \textit{scrambler}:
+
+\vspace{-3mm}
+\begin{equation}
+b_n'~= ~e_n~+~e_{n-6}~+~e_{n-7};
+\end{equation}  
+
+O sinal $b_n'$ representa a sequência de \textit{bits} recuperada do sinal de saída do \textit{scrambler}, $e_n$. O esquema seguinte mostra a implementação da equação anterior com maior detalhe:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.60]{teoricas/descrambler}
+	\caption{Esquema do cálculo da implementação do \textit{descrambler}.}
+	\vspace{-0.8em}
+\end{figure}
+
+
+
+
+
+
 
 \todo{david - seno e coseno em quadratura}
 
