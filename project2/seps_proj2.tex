@@ -117,6 +117,8 @@ Na primeira fase do projecto pretende-se implementar um oscilador numericamente 
 	\vspace{-0.8em}
 \end{figure}
 
+\pagebreak
+
 \section{Projecto de Demonstração}
 
 Com o objectivo de fazer uma adaptação às ferramentas de trabalho realiza-se um projeto de demonstração que reproduz um seno através de uma \textit{look-up-table} (LUT) de 8 posições, como se pode ver no excerto de código seguinte.
@@ -136,7 +138,7 @@ Com um valor inicial para o ganho de 10, o valor máximo de amplitude que ocorre
 
 Para um factor de ganho de 10 os valores do seno para 8 iterações do \textit{loop} que o gera são $\{0,7070,10000,7070,0,-7070,-10000,-7070\}$ e para um factor de ganho de 33 os valores são $\{0,23331,$ \linebreak $-233,23331,0,-23331,233,-23331\}$. O valor de 233 deriva do \textit{overflow} gerado e a amplitude da sinusoide fica com o valor $33000 - 32767 = 233$.
 
-Analisando os valores anteriores verifica-se que a sinusoide com o factor de ganho de 33 tem uma frequência que é o triplo da frequência da sinusoide com o factor de ganho de 10, como se pode ver na figura seguinte.
+Analisando os valores anteriores verifica-se que a sinusoide com o factor de ganho de 33 tem uma frequência que é o triplo da frequência da sinusoide com o factor de ganho de 10, como se pode ver na figura da próxima página.
 
 \begin{figure}[H]
 	\centering
@@ -147,11 +149,13 @@ Analisando os valores anteriores verifica-se que a sinusoide com o factor de gan
 
 Verifica-se que a onda a verde tem uma frequência próxima de 1 kHz e a onda a amarelo tem uma frequência próxima de 3 kHz, ou seja, o triplo da frequência da sinusoide que tem um factor de ganho de 10.
 
+\pagebreak
+
 \section{Projecto $\#$1 - NCO}
 
 Um oscilador numericamente controlado permite gerar uma frequência instantânea proporcional â amplitude do sinal de entrada. É um gerador digital de sinal que cria uma representação síncrona, discreta no tempo e discreta em amplitude de uma forma de onda.
 
-As características do NCO são apresentadas na tabela da próxima página.
+As características do NCO são apresentadas na tabela seguinte.
 
 \begin{table}[H]
 	\centering
@@ -164,7 +168,7 @@ Pretende-se primeiramente desenvolver um oscilador de relaxação utilizando uma
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.33]{teoricas/rampa}
+	\includegraphics[keepaspectratio=true, scale=0.37]{teoricas/rampa}
 	\caption{Esquema do oscilador de relaxação.}
 	\vspace{-0.8em}
 \end{figure}
@@ -252,12 +256,11 @@ respectivamente, com a máscara \texttt{31}, de acordo com as seguintes linhas d
 
 \begin{lstlisting}[language=C]
 	...
-		y1 = sine[i&31];
-		y2 = sine[(i+1)&31];
+		i = (status>>10)&31;
+		y1 = sine[i];
+		y2 = sine[(i+1)];
 	...
 \end{lstlisting}
-
-\change{david - rever este excerto de codigo acima, o prof diz ''o i ja vem limitado a 31''}
 
 Esta solução faz com que não seja necessário mais memória para criar a LUT, embora seja realizado um maior número de operações.  
 
@@ -331,7 +334,7 @@ Em baixo está o código referente ao cálculo para obter o valor de \texttt{del
 	...
 \end{lstlisting}
 
-Tendo o valor de \texttt{delta}, é simples obter a amplitude de cada amostra do sinal de saída, multiplicando \texttt{delta} por \texttt{y1}, valor obtido da LUT especificada anteriormente. Em baixo está representado um excerto do código que demonstra a obtenção da amplitude do sinal de saída. Todas as variáveis são de 16 \textit{bits}, tendo \texttt{y1} e \texttt{delta} o formato de $Q_{15}$, como também \texttt{yf}. Isto deve-se ao facto de o formato do resultado da multiplicação com duas variáveis em $Q_{15}$ ser $Q_{30}$ com replicação do \textit{bit} de sinal. Assim, é necessário efectuar um \textit{shift} para a esquerda para remover o \textit{bit} de sinal replicado, resultando num formato final de $Q_{31}$, para 32 bits. Para se poder armazenar numa variável de 16 \textit{bits}, no formato $Q_{15}$, é necessário efectuar um \textit{shift} de 16 posições para a direita, permitindo armazenar os 16 \textit{bits} mais significativos do resultado de 32 \textit{bits}.
+Tendo o valor de \texttt{delta}, é simples obter a amplitude de cada amostra do sinal de saída, somando  \texttt{delta} com \texttt{y1}, valor obtido da LUT especificada anteriormente. Em baixo está representado um excerto do código que demonstra a obtenção da amplitude do sinal de saída. Todas as variáveis são de 16 \textit{bits}, tendo \texttt{y1} e \texttt{delta} o formato de $Q_{15}$, como também \texttt{yf}. Isto deve-se ao facto de o formato do resultado da multiplicação com duas variáveis em $Q_{15}$ ser $Q_{30}$ com replicação do \textit{bit} de sinal. Assim, é necessário efectuar um \textit{shift} para a esquerda para remover o \textit{bit} de sinal replicado, resultando num formato final de $Q_{31}$, para 32 bits. Para se poder armazenar numa variável de 16 \textit{bits}, no formato $Q_{15}$, é necessário efectuar um \textit{shift} de 16 posições para a direita, permitindo armazenar os 16 \textit{bits} mais significativos do resultado de 32 \textit{bits}.
 
 \change{teddy - neste paragrafo de cima, na 1a frase o prof colocou 2 ?}
 
@@ -339,12 +342,11 @@ O código apresentado de seguida demonstra a explicação referida.
 
 \begin{lstlisting}[language=C]
 	...
-		//controlo da amplitude e frequencia
-		yf = (y1*delta<<1)>>16);
+		//controlo de frequencia
+		yf = y1 + delta;
 	...
 \end{lstlisting}
 
-\change{teddy - neste excerto de codigo afinal e uma soma? o prof diz ''para que? nao percebo?''}
 
 Para o controlo da amplitude do sinal de saída, multiplica-se o resultado final obtido anteriormente por uma constante de 16 \textit{bits} em formato $Q_{15}$. Está representado um excerto de código que demonstra a alteração da amplitude do sinal de saída. Neste caso todas as variáveis são também de 16 \textit{bits}, tendo \texttt{yf} e \texttt{amp} o formato de $Q_{15}$, como também \texttt{y}. Para armazenar a variável \texttt{y} em $Q_{15}$ recorre-se à mesma lógica explicada anteriormente de fazer 15 \textit{shifts} para a direita ao resultado da multiplicação.
 
@@ -403,8 +405,6 @@ Para se obter o valor de $\Delta x$ é utilizada a função lógica \texttt{AND}
 Com acesso a esse parâmetro, falta ler dois valores consecutivos da função seno, o que pode ser feito endereçando a LUT com recurso à variável \texttt{i} que foi anteriormente definida.
 
 O excerto de código seguinte demonstra a obtenção do valor de $\Delta x$, armazenado na variável \texttt{delta\_x} e dois valores consecutivos da função seno, \texttt{y1} e \texttt{y2}.
-
-\pagebreak
 
 \begin{lstlisting}[language=C]
 	...
@@ -483,11 +483,11 @@ O codificador tem como entrada os \textit{bits} $b_n$, uma sequência que vai al
 
 \vspace{-3mm}
 \begin{equation}
-	c_{n} = \text{'}0\text{'}\to d_{n} = -1;
+	c_{n} = 0 \to d_{n} = -1;
 	\label{eq:cn0}
 \end{equation}
 \begin{equation}	
-	c_{n} = \text{'}1\text{'}\to d_{n} = +1.
+	c_{n} = 1 \to d_{n} = +1.
 	\label{eq:cn1}  
 \end{equation} 
 
@@ -672,9 +672,11 @@ O espectro de $y_n$ permite verificar o fenómeno de modulação, na medida em q
 
 Analisando agora a Figura 1 verifica-se que do transmissor BPSK ainda falta implementar o módulo de \textit{scrambler}. Nesta altura do desenvolvimento do projecto já estão implementados os módulos de geração de \textit{bits}, de codificação diferencial e de modulação, estando o sinal BPSK, $x\left(t\right)$, disponível.
 
-\todo{scrambler - margarida}
+A geração de \textit{bits} que se implementou é, no fundo, um simples gerador de uma sequência de \textit{bits} bem definida ($b_n$ = 1, 0, 1, 0, \ldots). No entanto, esta sequência não é apropriada para transmissão e, como tal, a sequência referida anteriormente necessita de ser ``misturada'' de modos a que surja de forma aleatória. Para se efectuar isto recorre-se a um circuito denominado de \textit{scrambler}.
 
-imagem da sequencia aleatoria de bits
+O \textit{scrambler} é um dispositivo que inverte a ordem e polaridade dos \textit{bits} da mensagem a ser enviada. A utilização deste dispositivo tem dois principais objectivos, a facilidade de execução dos circuitos de recuperação de relógio, \textit{clock and data recovery},e outros circuitos adaptativos do receptor. Esta melhoria deve-se ao facto do \textit{scambler} eliminar longas sequências constantes de '0' ou '1'. O outro objectivo deve-se ao facto de eliminar 
+
+\todo{imagem da sequencia aleatoria de bits}
 
 \section{Projecto $\#$3 - Receptor BPSK}
 
@@ -685,6 +687,47 @@ COSTAS LOOP
 \todo{1 - teddy}
 
 \todo{2 e 3 - david - nas imagens e bom tirar a LB, para comprovar que esta a funcionar}
+
+O modem BPSK, apresentado na Figura X, é constituído por vários módulos, sendo que três desses módulos tratam-se de filtros passa-baixo. Esses filtros apresentam um pólo e um zero, satisfazendo a seguinte equação às diferenças:
+
+ \vspace{-3mm}
+ \begin{equation}
+ 	y(n) = \alpha y(n-1) + \gamma \frac{1-\alpha}{1-\beta}[x(n)-\beta x(n-1)]
+ \end{equation} 
+
+que apresentam um diagrama de fluxo de sinal como o apresentado na Figura 16.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.75]
+	{exps/diagrama_fluxo}
+	\caption{Diagrama de fluxo de sinal de filtro passa-baixo}
+	\vspace{-0.8em}
+\end{figure}
+
+Aplicando a transformada Z, é possível determinar a função de transferência do filtro, obtendo-se:
+
+ \vspace{-3mm}
+ \begin{equation}
+ H(z) = \frac{\gamma \frac{1-\alpha}{1-\beta} (1-\beta z^{-1})}{1-\alpha z^{-1}}
+ \end{equation}
+ 
+ Neste caso, considera-se $\beta=0$, resultando uma expressão mais simples para a função de transferência:
+ 
+  \vspace{-3mm}
+  \begin{equation}
+  H(z) = \frac{\gamma(1-\alpha)}{1-\alpha z^{-1}}
+  \end{equation} 
+  
+  Após a determinação da função de transferência gera, para o caso em que $\beta = 0$, é necessário calcular as constantes $\alpha$ e $\gamma$ para os dois tipos de filtros presentes no \textit{Costas Loop}, que apesar de serem ambos filtros passa-baixo, apresentam frequências de corte diferentes, sendo que o ganho DC é igual nos dois casos. As especificações dos dois tipos de filtros, \textit{Data Filter} e \textit{Loop Filter}, sendo que existem dois filtros do primeiro tipo e apenas um do segundo, são apresentadas na Tabela 3. 
+  
+  \begin{table}[H]
+  	\centering
+  	\caption{Especificações dos filtros passa-baixo}
+  	\vspace{-1.5mm}
+  	\includegraphics[keepaspectratio=true, scale=0.70]{tabelas/especificacoes}
+  \end{table}
+
 
 era bom testar que no filtro com beta=0 deixar passar para comonentes maior que ws/2, fazer um teste e vemos que falha
 
