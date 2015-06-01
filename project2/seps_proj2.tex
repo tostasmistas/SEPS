@@ -142,7 +142,6 @@ Com o objectivo de fazer uma adaptação às ferramentas de trabalho realiza-se 
 Esta LUT é lida num \textit{loop} e os seus valores são multiplicados por um factor de ganho antes de serem exibidos no osciloscópio, ou seja, ocorre uma multiplicação de duas variáveis do tipo \texttt{short} com representação em $Q_{15}$. O formato do resultado da multiplicação de duas variáveis em $Q_{15}$ é $Q_{30}$ com replicação do \textit{bit} de sinal. Assim, é necessário efectuar um \textit{shift} para a esquerda para remover o \textit{bit} de sinal replicado, resultando num formato final de $Q_{31}$, para 32 bits. Para se poder armazenar numa variável de 16 \textit{bits}, no formato $Q_{15}$, é necessário efectuar um \textit{shift} de 16 posições para a direita, permitindo armazenar os 16 \textit{bits} mais significativos do resultado de 32 \textit{bits}. 
 
 Em complemento para dois e numa notação do formato $Q_{15}$ pode-se representar valores no intervalo $-2^{0} \leq x \leq 2^{0} - 2^{-15}$, o que corresponde a valores decimais entre -32767 e 32767. Quando é atingido o valor máximo, 32767, entra em efeito a circularidade da representação em complemento para dois e, assim, para este caso, o valor máximo da amplitude do seno não atinge o valor $2^{15}$, ``dando a volta'' para -32767. 
-
 Com um valor inicial para o ganho de 10, o valor máximo de amplitude que ocorre no seno gerado é de $1000 \times 10 = 10000$, valor que se encontra compreendido no intervalo referido anteriormente. Também para um factor de ganho de 32 o valor máximo da amplitude do seno pode ser representada no formato $Q_{15}$. Porém, quando o factor de ganho passa para 33 esse valor máximo passa para $1000 \times 33 = 33000$, valor que gera um \textit{overflow}, como explicado anteriormente.
 
 Para um factor de ganho de 10 os valores do seno para 8 iterações do \textit{loop} que o gera são $\{0,7070,10000,7070,0,-7070,-10000,-7070\}$ e para um factor de ganho de 33 os valores são $\{0,23331,$ \linebreak $-233,23331,0,-23331,233,-23331\}$. O valor de 233 deriva do \textit{overflow} gerado e a amplitude da sinusoide fica com o valor $33000 - 32767 = 233$.
@@ -347,7 +346,6 @@ Em baixo está o código referente ao cálculo para obter o valor de \texttt{del
 
 Tendo o valor de \texttt{delta}, é simples obter a amplitude de cada amostra do sinal de saída, somando  \texttt{delta} com \texttt{y1}, valor obtido da LUT especificada anteriormente. Em baixo está representado um excerto do código que demonstra a obtenção da amplitude do sinal de saída. Todas as variáveis são de 16 \textit{bits}, tendo \texttt{y1} e \texttt{delta} o formato de $Q_{15}$, como também \texttt{yf}. Isto deve-se ao facto de o formato do resultado da multiplicação com duas variáveis em $Q_{15}$ ser $Q_{30}$ com replicação do \textit{bit} de sinal. Assim, é necessário efectuar um \textit{shift} para a esquerda para remover o \textit{bit} de sinal replicado, resultando num formato final de $Q_{31}$, para 32 bits. Para se poder armazenar numa variável de 16 \textit{bits}, no formato $Q_{15}$, é necessário efectuar um \textit{shift} de 16 posições para a direita, permitindo armazenar os 16 \textit{bits} mais significativos do resultado de 32 \textit{bits}.
 
-\change{teddy - neste paragrafo de cima, na 1a frase o prof colocou 2 ?}
 
 O código apresentado de seguida demonstra a explicação referida.
 
@@ -390,9 +388,8 @@ O sinal de saída pode ser observado no canal esquerdo da DSP.
 
 Com o oscilador controlado já implementado procede-se à fase de testes. A verificação de funcionamento pode ser vista na Figura 4, onde se utilizou um sinal de entrada, a verde, definido como uma onda quadrada com uma frequência de 200 Hz e uma amplitude próxima de 1 V, no intuito de poder verificar o controlo da frequência do sinal de saída, a amarelo, a partir da amplitude do sinal de entrada. 
 
-Quando a amplitude do sinal de entrada é máxima pode-se visualizar um aumento da frequência do sinal de saída, ou seja, para um mesmo intervalo de tempo há um maior número de ciclos. Quando a amplitude do sinal de entrada é mínima, a frequência do sinal de saída diminui, ou seja, há um menor número de ciclos para o mesmo intervalo de tempo. Com estes resultados, pode-se concluir que o método de controlo utilizado funciona de modo adequado.
+Quando a amplitude do sinal de entrada é máxima pode-se visualizar um aumento da frequência do sinal de saída, ou seja, para um mesmo intervalo de tempo há um maior número de ciclos. Quando a amplitude do sinal de entrada é mínima, a frequência do sinal de saída diminui, ou seja, há um menor número de ciclos para o mesmo intervalo de tempo. Com estes resultados, pode-se concluir que o método de controlo utilizado funciona de modo adequado, ressalvando que existe um atraso de processamento como se pode verificar na figura seguinte em que os sinais apresentam um ligeiro desfazamento face ao que se tinha esperado.
 
-\change{na parte final do paragrafo o prof diz que temos de ter cuidado com esta conclusao pq ha um atraso de processamento}
 
 \begin{figure}[H]
 	\centering
@@ -857,7 +854,7 @@ e_n~= ~b_n~\oplus~e_{n-6}~\oplus~e_{n-7} \rightarrow \text{delay de N} \rightarr
 \Leftrightarrow b_n'~= ~b_{n-N}; 
 \end{equation}  
 
-De seguida é apresentado o sinal de saída do \textit{descrambler}, $b'_n$ e o sinal de entrado do \textit{scrambler}, $b_{n$. Pode-se verificar que os sinais são iguais pois a implementação da conexação dos dois circuitos foi realizada com um \textit{delay} de N igual \texttt{0}.
+De seguida é apresentado o sinal de saída do \textit{descrambler}, $b'_n$ e o sinal de entrado do \textit{scrambler}, $b_n$. Pode-se verificar que os sinais são iguais pois a implementação da conexação dos dois circuitos foi realizada com um \textit{delay} de N igual \texttt{0}.
 
 \begin{figure}[H]
 	\centering
