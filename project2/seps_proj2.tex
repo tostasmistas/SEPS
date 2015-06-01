@@ -703,7 +703,7 @@ Os valores de $x^{-6}$ e $x^{-7}$ representam sinal de saída com um atraso de 6
 
 \vspace{-3mm}
 \begin{equation}
-	e_n~= ~b_n~+~e_{n-6}~+~e_{n-7};
+	e_n~= ~b_n~\oplus~e_{n-6}~\oplus~e_{n-7};
 \end{equation}  
 
 \begin{figure}[H]
@@ -786,9 +786,9 @@ Como se pode observar, a implementação do \textit{scrambler} foi bem sucedida 
 
 
 
-A implementação do \textit{descrambler} tem a função de obter a sequência de \textit{bits} correcta para o que PC. Assim sendo, o circuito do \textit{descrambler} tem que conseguir obter toda a sequência de \textit{bits} que entra no \textit{scrambler}.
+A implementação do \textit{descrambler} tem a função de obter a sequência de \textit{bits} correcta para o PC. Assim sendo, o circuito do \textit{descrambler} tem que conseguir obter toda a sequência de \textit{bits} que entra no \textit{scrambler}.
 Anteriormente foi referido que o \textit{scrambler} segue a seguinte expressão polinomial:
-\change{o que queriam dizer na 1ª frase?}
+
 \begin{equation}
 P(x)~= ~1~+~x^{-6}~+~x^{-7}
 \end{equation}
@@ -796,7 +796,7 @@ Partindo desta equação consegue obter-se a expressão de recuperação do sina
 
 \vspace{-3mm}
 \begin{equation}
-b_n'~= ~e_n~+~e_{n-6}~+~e_{n-7};
+b_n'~= ~e_n~\oplus~e_{n-6}~\oplus~e_{n-7};
 \end{equation}  
 
 O sinal $b_n'$ representa a sequência de \textit{bits} recuperada do sinal de saída do \textit{scrambler}, $e_n$. O esquema seguinte mostra a implementação da equação anterior com maior detalhe:
@@ -826,6 +826,46 @@ Analisando o esquema e seguido a lógica de implementação do \textit{scrambler
 		b_i_RX++;
 	...
 \end{lstlisting}
+
+É de salientar que o \textit{scrambler} e o \textit{descrambler} existe um \textit{delay} de N \textit{bits} sendo a saída do \textit{descrambler} não igual á entrada do \textit{scrambler} mas sim igual à entrada deslocada de N:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/Ndelay}
+	\caption{Esquema com a implementação do \textit{delay}.}
+	\vspace{-0.8em}
+\end{figure}
+
+Analisando o esquema anterior e as equações do (4.7) e (5.2), consegue-se demonstrar que $b'_n$ é igual a $b_{n-N}$ seguindo os seguintes passos:
+
+\vspace{-3mm}
+\begin{equation}
+e_n~= ~b_n~\oplus~e_{n-6}~\oplus~e_{n-7} \rightarrow \text{delay de N} \rightarrow e_{n-N}~= ~b_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N}
+\end{equation}  
+
+\vspace{-3mm}
+\begin{equation}
+ b_n'~= ~e_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N};
+\end{equation}  
+
+\vspace{-3mm}
+\begin{equation}
+\Leftrightarrow b_n'~= ~b_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N};
+\end{equation}  
+\vspace{-3mm}
+\begin{equation}
+\Leftrightarrow b_n'~= ~b_{n-N}; 
+\end{equation}  
+
+De seguida é apresentado o sinal de saída do \textit{descrambler}, $b'_n$ e o sinal de entrado do \textit{scrambler}, $b_{n$. Pode-se verificar que os sinais são iguais pois a implementação da conexação dos dois circuitos foi realizada com um \textit{delay} de N igual \texttt{0}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.40]{exps/DescramblerBnVsBnlinha}
+	\caption{Imagem que demonstra o sinal de entrado do \textit{scrambler}, a amarelo, e do sinal de saída do \textit{descrambler}, a verde.}
+	\vspace{-0.8em}
+\end{figure}
+
 
 \todo{fazer a ponte para esta parte do projecto}
 
