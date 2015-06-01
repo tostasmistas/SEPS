@@ -76,7 +76,7 @@
 
 \vspace{6mm}
 
-{\huge \bfseries Modem BPSK \\[1cm]}
+{\huge \bfseries \textit{Modem} BPSK \\[1cm]}
 
 \begin{tabular}{ l l }
 Maria Margarida Dias dos Reis & \hspace{2mm} n.º 73099 \\
@@ -108,12 +108,21 @@ Grupo n.º 5 de segunda-feira das 15h30 - 18h30
 
 Com este trabalho laboratorial o objectivo é a familiarização com o sistema de desenvolvimento de \textit{software} e \textit{kit} de processamento digital de sinal DSK TMS320C6713. O processador em causa é de 32 \textit{bits}, com um relógio de 225 MHz, sendo capaz de fazer o \textit{fetching} e execução de 8 instruções por ciclo de relógio. Relativamente ao \textit{software}, a ferramenta utilizada para programar o DSK é o CCS v5.5.
 
-Na primeira fase do projecto pretende-se implementar um oscilador numericamente controlado (NCO) e de seguida um transmissor e receptor \textit{binary phase-shift keying} (BPSK). Na figura seguinte apresenta-se um modem BPSK, sendo que os módulos a azul são os que se pretende implementar.
+Na primeira fase do projecto pretende-se implementar um oscilador numericamente controlado (NCO) e de seguida um transmissor e receptor \textit{binary phase-shift keying} (BPSK). Na figura seguinte apresenta-se um \textit{modem} BPSK, sendo que os módulos a azul são os que se pretende implementar.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/modem}
-	\caption{Modem DSP-BPSK.}
+	\caption{\textit{Modem} DSP-BPSK.}
+	\vspace{-0.8em}
+\end{figure}
+
+Na Figura 2 está representado o \textit{subset} do \textit{modem} BPSK a implementar.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.27]{teoricas/modem2}
+	\caption{\textit{Subset} do \textit{modem} BPSK a implementar.}
 	\vspace{-0.8em}
 \end{figure}
 
@@ -698,7 +707,7 @@ COSTAS LOOP
 
 \todo{2 e 3 - david - nas imagens e bom tirar a LB, para comprovar que esta a funcionar}
 
-O modem BPSK, apresentado na Figura X, é constituído por vários módulos, sendo que três desses módulos tratam-se de filtros passa-baixo. Esses filtros apresentam um pólo e um zero, satisfazendo a seguinte equação às diferenças:
+O modem BPSK, apresentado na Figura 2, é constituído por vários módulos, sendo que três desses módulos tratam-se de filtros passa-baixo. Esses filtros apresentam um pólo e um zero, satisfazendo a seguinte equação às diferenças:
 
 \vspace{-3mm}
 \begin{equation}
@@ -710,7 +719,7 @@ que apresentam um diagrama de fluxo de sinal como o apresentado na Figura \ref{f
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.75]{exps/diagrama_fluxo}
+	\includegraphics[keepaspectratio=true, scale=0.20]{teoricas/diagrama_fluxo}
 	\caption{Diagrama de fluxo de sinal de filtro passa-baixo.}
 	\label{fig:fluxo}
 	\vspace{-0.8em}
@@ -748,15 +757,42 @@ era bom testar que no filtro com beta=0 deixar passar para comonentes maior que 
 
 \todo{5 - margarida}
 
-Com o \textit{Costas Loop} implementado pretende-se testar o seu funcionamento para um sinal de entrada sinusoidal. Numa primeira fase de testes apenas se considera o \textit{upper arm}, de maneira a que o \textit{loop} se comporte como um clássico DPLL (\textit{digital phase locked loop}). Um DPLL é um tipo de PLL que é realizado com recurso a circuitos lógicos e/ou microprocessadores, tendo a capacidade de processar sinais discretos tanto em tempo como em amplitude.
-
+Com o \textit{Costas Loop} implementado pretende-se testar o seu funcionamento para um sinal de entrada sinusoidal. Numa primeira fase de testes apenas se considera o \textit{upper arm}, de maneira a que o \textit{loop} se comporte como um clássico DPLL (\textit{digital phase locked loop}), tal como se pode observar na figura abaixo. Um DPLL é um tipo de PLL que é realizado com recurso a circuitos lógicos e/ou microprocessadores, tendo a capacidade de processar sinais discretos tanto em tempo como em amplitude.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.27]{teoricas/pll}
-	\caption{Diagrama de blocos de um PLL básico.}
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{teoricas/pll}}
+	\hspace{8mm}
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{teoricas/dpll}}
+	\vspace{-0.8em}
+	\caption{Diagrama de blocos de um PLL básico (a) e do \textit{upper arm} do \textit{Costas Loop} projectado (b).}
 	\vspace{-0.8em}
 \end{figure}
+
+As duas fases $\phi_{i}$ e $\phi_{o}$ são comparadas no detector de fase, o que gera o sinal $v_{D}\left(t\right)$ que é uma função da diferença $\phi_{i} - \phi_{o}$ (sinal de erro). Este sinal controla a frequência (e, consequentemente, a fase) do oscilador de maneira a que $\phi_{o}$ ``segue'' a variação em $\phi_{i}$.
+
+Posto isto, o PLL pode estar num de dois estados - \textit{locked} (sincronizado) ou \textit{unlocked} (dessincronizado). Quando no primeiro estado o oscilador gera um sinal com uma frequência que é, em média, igual à frequência do sinal de entrada $f_o = f_i$ e o \textit{loop} ajusta o oscilador de fase de modo a que este ``siga'' $\phi_{i}$. Quando o PLL se encontra no segundo estado, a frequência $f_o$ não está relacionada com $f_i$ e se houver variações em $\phi_{i}$ estas não serão necessariamente ``seguidas'' por $\phi_{o}$.
+
+Assim, para testar o correcto funcionamento do PLL projectado é necessário verificar o comportamento do sinal à saída do oscilador controlado e à entrada do detector de fase. No projecto em causa o detector de fase é um multiplicador, que é o adequado para processar sinais do tipo sinusoidal. 
+
+À entrada colocou-se um sinal sinusoidal com amplitude de 1 $V_{PP}$, fazendo-se variar a sua frequência. Nas figuras seguintes apresenta-se o comportamento do PLL para duas situações distintas, estando representado a amarelo o sinal de entrada e a verde o sinal à saída do oscilador controlado.
+
+\begin{figure}[H]
+	\centering
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/upperarm_desync}}
+	\hspace{8mm}
+	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/upperarm_sync}}
+	\vspace{-0.8em}
+	\caption{Situação em que o PLL está dessincronizado (a) e sincronizado (b).}
+	\label{fig:PLL}
+	\vspace{-0.8em}
+\end{figure}
+
+Para ambas as situações recorreu-se ao modo persistência do osciloscópio, com o objectivo de ajudar a reconhecer a situação de dessincronismo do PLL. De facto, na Figura \ref{fig:PLL}(a) verifica-se que o sinal â saída do oscilador apresenta bastante dispersão em torno dos valores pretendidos para a forma de onda, tal como esperado. Quando se ajustou a frequência do sinal de entrada e o PLL entrou num estado de sincronismo obtém-se os resultados da Figura \ref{fig:PLL}(b), em que o sinal representado a verde não apresenta dispersão em torno dos valores pretendidos, tal como esperado.
+
+Uma vez verificado o correcto funcionamento do \textit{upper arm} do \textit{Costas Loop}, conectou-se o \textit{lower arm} e testou-se todo o \textit{loop} utilizando também um sinal sinusoidal à entrada. Verificou-se ambos os \textit{arms} apresentam o comportamento esperado.
+
+O passo seguinte corresponde à conexão entre CONTINUAR
 
 \todo{depois desta parte comentamos as imagens que tiramos no ultimo lab}
 
