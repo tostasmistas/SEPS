@@ -296,8 +296,6 @@ De modo a aceder aos 5 \textit{bits} pretendidos da variável de estado, é real
 	...
 \end{lstlisting}
 
-\change{david - aqui o prof tambem se queixou do and com 31}
-
 Foram depois criadas duas variáveis com o objectivo de controlar a amplitude e frequência do sinal sinusoidal. A variável \texttt{delta} representa o controlo da frequência e a variável \texttt{amp} representa o controlo da amplitude. O código que permite implementar este controlo é apresentado de seguida.  
 
 \begin{lstlisting}[language=C]
@@ -689,7 +687,7 @@ O espectro de $y_n$ permite verificar o fenómeno de modulação, na medida em q
 
 Analisando agora a Figura 1 verifica-se que do transmissor BPSK ainda falta implementar o módulo de \textit{scrambler}. Nesta altura do desenvolvimento do projecto já estão implementados os módulos de geração de \textit{bits}, de codificação diferencial e de modulação, estando o sinal BPSK, $x\left(t\right)$, disponível.
 
-A geração de \textit{bits} que se implementou é, no fundo, um simples gerador de uma sequência de \textit{bits} bem definida ($b_n$ = 1, 0, 1, 0, \ldots). No entanto, esta sequência não é apropriada para transmissão e, como tal, a sequência referida anteriormente necessita de ser ``misturada'' de modos a que surja de forma aleatória. Para se efectuar isto recorre-se a um circuito denominado de \textit{scrambler}.
+A geração de \textit{bits} que se implementou é, no fundo, um simples gerador de uma sequência de \textit{bits} bem definida ($b_n$ = 1, 0, 1, 0, \ldots). No entanto, esta sequência não é apropriada para transmissão e, como tal, a sequência referida anteriormente necessita de ser ``misturada'' de modo a que surja de forma aleatória. Para se efectuar isto recorre-se a um circuito denominado de \textit{scrambler}.
 
 O \textit{scrambler} é um dispositivo que inverte a ordem e polaridade dos \textit{bits} da mensagem a ser enviada. A utilização deste dispositivo tem dois principais objectivos, a facilidade de execução dos circuitos de recuperação de relógio, \textit{clock and data recovery},e outros circuitos adaptativos do receptor. Esta melhoria deve-se ao facto do \textit{scambler} eliminar longas sequências constantes de \texttt{0} ou \texttt{1} O outro objectivo deve-se ao facto de eliminar a dependência do sinal a ser transmitido no espectro de potência, ou seja, o sinal transmitido fica mais disperso de forma a maximizar os requisitos do espectro de potência. Pois se a potência for concentrada numa largura de banda limitada pode haver interferência nos canais adjacentes do receptor devido à intermodulação, este fenómeno é conhecido por \textit{cross-modulation}.
 
@@ -711,11 +709,11 @@ Analisando o esquema proposto efectuou-se a implementação do circuito na DSP c
 Começou-se por definir uma variável de 8 \textit{bits}, \texttt{char delay\_scrambler} que guarda os atrasos temporais de até 7 períodos. O código seguinte demonstra a implementação e obtenção dos atrasos necessários para o \textit{scrambler}. É de referir que onde o sinal de entrada consiste na sequência de \textit{bits} \texttt{b\_n} gerada anteriormente:
 
 \begin{lstlisting}[language=C]
-		...
-	 unsigned char delay_scrambler=0,...;
-	 ...
-		delay_scrambler = (delay_scrambler>>1)&0x7f;/*Deslocamento temporal*/
-		delay_scrambler = delay_scrambler | (e_n<<7);/*Actualizacao do novo valor de e_n no vector*/	
+	unsigned char delay_scrambler=0,...;
+	
+	...
+		delay_scrambler = (delay_scrambler>>1)&0x7f; // deslocamento temporal
+		delay_scrambler = delay_scrambler|(e_n<<7); //actualizacao do novo valor de e_n no vector	
 	...
 \end{lstlisting}
 
@@ -741,17 +739,16 @@ Com a actualização do vector \texttt{dela\_scarmbler} realizada a obtenção d
 Começa-se por somar os resultados do \textit{scrambler} referente ao atraso 6 e 7
 \todo{imagem da sequencia aleatoria de bits}
 
+\pagebreak
+
 \section{Projecto $\#$3 - Receptor BPSK}
 
 \todo{descrambler - teddy}
 
-COSTAS LOOP
 
-\todo{1 - teddy}
+\todo{seno e coseno em quadratura}
 
-\todo{2 e 3 - david - nas imagens e bom tirar a LB, para comprovar que esta a funcionar}
-
-O modem BPSK, apresentado na Figura 2, é constituído por vários módulos, sendo que três desses módulos tratam-se de filtros passa-baixo. Esses filtros apresentam um pólo e um zero, satisfazendo a seguinte equação às diferenças:
+O \textit{modem} BPSK, apresentado na Figura 2, é constituído por vários módulos, sendo que três desses módulos tratam-se de filtros passa-baixo. Esses filtros apresentam um pólo e um zero, satisfazendo a seguinte equação às diferenças:
 
 \vspace{-3mm}
 \begin{equation}
@@ -810,7 +807,7 @@ De onde vem:
 \end{equation} 
 
 \vspace{1mm}
-Sabe-se, à \textit{priori}, analisando a função de transferência H(z), já com $\gamma = 1$, que o valor de $\alpha$ tem que estar compreendido entre -1 e 1 para o filtro ser estável, sendo que esse valor, para o filtro ser passa-baixo, tem que estar definido entre 0 e 1. Mais ainda, esse valor vai ser diferente para os dois tipos de filtros, visto que o mesmo é determinado em função da frequência de corte, \textit{$f_c$}. Recorrendo à expressão do ganho do filtro vem:
+Sabe-se, à \textit{priori}, analisando a função de transferência $H(z)$, já com $\gamma = 1$, que o valor de $\alpha$ tem que estar compreendido entre -1 e 1 para o filtro ser estável, sendo que esse valor, para o filtro ser passa-baixo, tem que estar definido entre 0 e 1. Mais ainda, esse valor vai ser diferente para os dois tipos de filtros, visto que o mesmo é determinado em função da frequência de corte, \textit{$f_c$}. Recorrendo à expressão do ganho do filtro vem:
 
 \vspace{-3mm}
 \begin{equation}
@@ -855,10 +852,11 @@ resultando, finalmente:
 \vspace{-3mm}
 \begin{equation}
 \omega_c = \frac{1 - \alpha}{\alpha T_s} = \frac{1 - \alpha}{\alpha} f_s
+\label{eq:alfa}
 \end{equation} 
 
 \vspace{1mm}
-Assim, tendo em conta que $f_s = 16$ kHz, pode-se calcular o valor de $\alpha$ para os filtros \textit{data} e filtro \textit{loop}. Sabendo que o valor vai estar contido no intervalo $]0,1[$, pode-se utilizar a representação numérica mais precisa $Q_{15}$ para representar o valor de $\alpha$, de forma a efectuar a implementação dos filtros. Na tabela seguinte, são apresentados os valores de $\alpha$ e também a sua conversão em $Q_{15}$.
+Assim, tendo em conta que $f_s = 16$ kHz, pode-se calcular o valor de $\alpha$ para os filtros de dados e filtro de \textit{loop}. Sabendo que o valor vai estar contido no intervalo $]0,1[$, pode-se utilizar a representação numérica mais precisa $Q_{15}$ para representar o valor de $\alpha$, de forma a efectuar a implementação dos filtros. Na tabela seguinte, são apresentados os valores de $\alpha$ e também a sua conversão em $Q_{15}$.
 
 \begin{table}[H]
 	\centering
@@ -871,61 +869,64 @@ Assim, conhecendo-se todos os parâmetros das funções de transferência dos fi
 
 \vspace{-3mm}
 \begin{equation}
-y(n) = \alpha y(n-1) +  (1-\alpha)x(n)
+y(n) = \alpha y(n-1) +  (1-\alpha)x(n),
 \end{equation} 
 
-sendo que um dos filtros \textit{Data} tem como entrada o sinal resultante da multiplicação entre o sinal BPSK e o sinal $\cos(2\pi f_0 + \phi_0)$ e o outro tem como entrada o sinal resultante da multiplicação entre o sinal BPSK e o sinal $\sin(2\pi f_0 + \phi_0)$. De seguida, é apresentado o excerto de código que permite implementar os filtros. 
+\vspace{1mm}
+sendo que um dos filtros de dados tem como entrada o sinal resultante da multiplicação entre o sinal BPSK e o sinal $\cos(2\pi f_0 + \phi_0)$ e o outro tem como entrada o sinal resultante da multiplicação entre o sinal BPSK e o sinal $\sin(2\pi f_0 + \phi_0)$. De seguida, é apresentado o excerto de código que permite implementar os filtros. 
 
 \begin{lstlisting}[language=C]
-short x_cos = 0, x_sine = 0, y_cos_datafilter = 0, y_sin_datafilter = 0;  short in_loopfilter = 0, y_loop filter = 0, alpha_1k = 23528; 
-short alpha_10 = 32640, um_menos_alpha_1k = 9240, um_menos_alpha_10 = 127;
+	short x_cos = 0, x_sine = 0, y_cos_datafilter = 0, y_sin_datafilter = 0;  
+	short in_loopfilter = 0, y_loop filter = 0, alpha_1k = 23528; 
+	short alpha_10 = 32640, um_menos_alpha_1k = 9240, um_menos_alpha_10 = 127;
 
-...
- //Data Filter
- x_cos = ((xt_bpsk*y_cos)<<1)>>16;
- x_sine = ((xt_bpsk*y_sin)<<1)>>16;
- y_cos_datafilter=(((alpha_1k*y_cos_datafilter)<<1)+((x_cos*um_menos_alpha_1k)<<1))>>16;
- y_sin_datafilter=(((alpha_1k*y_sin_datafilter)<<1)+((x_sine*um_menos_alpha_1k)<<1))>>16;
-
- //Loop Filter
- in_loopfilter = ((y_cos_datafilter*y_sin_datafilter)<<1)>>16;
- y_loopfilter = (((alpha_10*y_loopfilter)<<1)+ ((in_loopfilter*um_menos_alpha_10)<<1))>>16;
-...
-
+	...
+		//filtro de dados
+		x_cos = ((xt_bpsk*y_cos)<<1)>>16;
+		x_sine = ((xt_bpsk*y_sin)<<1)>>16;
+		y_cos_datafilter = (((alpha_1k*y_cos_datafilter)<<1)
+										 + ((x_cos*um_menos_alpha_1k)<<1))>>16;
+		y_sin_datafilter = (((alpha_1k*y_sin_datafilter)<<1)
+										 + ((x_sine*um_menos_alpha_1k)<<1))>>16;
+	
+		//filtro de loop
+		in_loopfilter = ((y_cos_datafilter*y_sin_datafilter)<<1)>>16;
+		y_loopfilter = (((alpha_10*y_loopfilter)<<1) 
+								 + ((in_loopfilter*um_menos_alpha_10)<<1))>>16;
+	...
 \end{lstlisting}
-\todo{apresentar código de uma forma melhor}
 
-No entanto, antes de ligar todo o sistema, é importante testar o filtro que tem frequência de corte de $f_c = 1 kHz$, pondo à entrada do mesmo um sinal proveniente do gerador de sinais, de forma a comprovar o correcto funcionamento do filtro, não sendo possível testar o filtro com frequência de corte de 10 Hz, já que à entrada da placa se encontra impossível, o que torna impossível verificar que a implementação do \textit{Loop Filter} está correcta. Assim, para o filtro \textit{Data}, visualizou-se a saída do mesmo, apresentada na Figura X, com um sinal de entrada sinusoidal de 250 Hz, de forma a verificar o ganho em baixas frequências.
+No entanto, antes de ligar todo o sistema, é importante testar o filtro que tem frequência de corte de $f_c = 1 kHz$. Para efectuar este teste põe-se à entrada do filtro um sinal proveniente do gerador de sinais, de forma a comprovar o correcto funcionamento deste. É de referir que não é possível testar o filtro com frequência de corte de 10 Hz, já que à entrada da placa se encontra um filtro com frequência de corte 20 Hz, o que torna impossível verificar que a implementação do filtro de \textit{loop} está correcta. Assim, para o filtro de dados, visualizou-se a saída do mesmo, apresentada na Figura X, com um sinal de entrada sinusoidal de 250 Hz, de forma a verificar o ganho em baixas frequências.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.37]{exps/filtro_1k_baixafreq}
-	\caption{Verificação do ganho em baixas frequências - sinal de entrada (a verde) e sinal de saída (a amarelo) do filtro \textit{data}.}
+	\caption{Verificação do ganho em baixas frequências - sinal de entrada (a verde) e sinal de saída (a amarelo) do filtro de dados.}
 	\vspace{-0.8em}
 \end{figure} 
 
-Analisando os valores de amplitude dos dois sinais, pode verificar-se que o ganho é de, aproximadamente, $1/2$, não correspondendo ao ganho unitário pretendido, o que se deve ao facto da placa introduzir um factor de ganho que faz com que o sinal de saída do filtro tenha um ganho inferior a 1. 
-Testou-se ainda a frequência de corte, sendo que para isso aumentou-se a frequência do sinal de entrada até o sinal de saída do filtro apresentar uma queda de 3 dB, ou seja, tendo o ganho em baixa frequência o valor de 1.01 V, pretende-se registar a frequência a que o filtro apresenta no sinal de saída um valor de, aproximadamente, 0.7 V.
+Analisando os valores de amplitude dos sinais, pode verificar-se que o ganho é de, aproximadamente, $1/2$, não correspondendo ao ganho unitário pretendido, o que se deve ao facto da placa introduzir um factor de ganho que faz com que o sinal de saída do filtro tenha um ganho inferior a 1. 
+
+Testou-se ainda a frequência de corte, sendo que, para isso, aumentou-se a frequência do sinal de entrada até o sinal de saída do filtro apresentar uma queda de 3 dB, ou seja, tendo um ganho em baixa frequência de 1.01 V. 
+
+Pretende-se registar a frequência a que o filtro apresenta no sinal de saída um valor de, aproximadamente, 0.7 V.
 
 \vspace{-3mm}
 \begin{equation}
-	|H(j\omega_{-3dB})| = \frac{|H(j\omega \approx 0)|}{\sqrt{2}} = \frac{1}{\sqrt{2}} \approx 0.7 V
+	|H(j\omega_{-3~\text{dB}})| = \frac{|H(j\omega \approx 0)|}{\sqrt{2}} \approx \frac{1}{\sqrt{2}} = 0.7 V
 \end{equation} 
 
-Verificou-se, como se pode observar na Figura X, que a frequência de corte apresentava o valor de 963 Hz, o que se trata de um valor próximo de 1 kHz. A pequena diferença em relação ao valor pretendido pode dever-se a se ter registado uma frequência onde ainda não tinham caído exactamente os 3 dB.
+\vspace{1mm}
+Verificou-se, como se pode observar na Figura X, que a frequência de corte apresenta o valor de 963 Hz, o que se trata de um valor próximo de 1 kHz. A pequena diferença em relação ao valor pretendido pode-se dever a se ter registado uma frequência onde ainda não tinham caído exactamente os 3 dB.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.37]{exps/filtro_1k_freqcorte}
-	\caption{Verificação da frequência de corte - sinal de entrada (a verde) e sinal de saída (a amarelo) do filtro \textit{data}.}
+	\caption{Verificação da frequência de corte - sinal de entrada (a verde) e sinal de saída (a amarelo) do filtro de dados.}
 	\vspace{-0.8em}
 \end{figure} 
 
-
-
 \todo{4 - nao nos lembramos do que era isto}
-
-\todo{5 - margarida}
 
 Com o \textit{Costas Loop} implementado pretende-se testar o seu funcionamento para um sinal de entrada sinusoidal. Numa primeira fase de testes apenas se considera o \textit{upper arm}, de maneira a que o \textit{loop} se comporte como um clássico DPLL (\textit{digital phase locked loop}), tal como se pode observar na figura abaixo. Um DPLL é um tipo de PLL que é realizado com recurso a circuitos lógicos e/ou microprocessadores, tendo a capacidade de processar sinais discretos tanto em tempo como em amplitude.
 
@@ -945,7 +946,7 @@ Posto isto, o PLL pode estar num de dois estados - \textit{locked} (sincronizado
 
 Assim, para testar o correcto funcionamento do PLL projectado é necessário verificar o comportamento do sinal à saída do oscilador controlado e à entrada do detector de fase. No projecto em causa o detector de fase é um multiplicador, que é o adequado para processar sinais do tipo sinusoidal. 
 
-À entrada colocou-se um sinal sinusoidal com amplitude de 1 $V_{PP}$, fazendo-se variar a sua frequência, partindo de um valor inicial de 4 kHz que é a frequência de funcionamento da malha dessincronizada. Nas figuras seguintes apresenta-se o comportamento do PLL para duas situações distintas, estando representado a amarelo o sinal de entrada e a verde o sinal à saída do oscilador controlado.
+À entrada colocou-se um sinal sinusoidal com amplitude de 1 $V_{\text{PP}}$, fazendo-se variar a sua frequência, partindo de um valor inicial de 4 kHz que é a frequência de funcionamento da malha dessincronizada. Nas figuras seguintes apresenta-se o comportamento do PLL para duas situações distintas, estando representado a amarelo o sinal de entrada e a verde o sinal à saída do oscilador controlado.
 
 \begin{figure}[H]
 	\centering
@@ -962,11 +963,13 @@ Para ambas as situações recorreu-se ao modo persistência do osciloscópio, co
 
 Uma vez verificado o correcto funcionamento do \textit{upper arm} do \textit{Costas Loop}, conectou-se o \textit{lower arm} e testou-se todo o \textit{loop} utilizando também um sinal sinusoidal à entrada. Verificou-se que ambos os \textit{arms} apresentam o comportamento esperado. Assim, procede-se à medição da banda de captura e da banda de manutenção do \textit{loop}.
 
-O sinal de entrada deve estar compreendido na banda de captura do \textit{loop}. Uma vez que se adquira o sincronismo, o \textit{loop} manter-se-á nesse estado, dentro de certos limites, que definem a banda de manutenção, sendo que esta banda pode ser diferente da banda de captura. 
+O sinal de entrada deve estar compreendido na banda de captura $\left(\Delta w_{C}\right)$ do \textit{loop}. Uma vez que se adquira o sincronismo, o \textit{loop} manter-se-á nesse estado, dentro de certos limites, que definem a banda de manutenção $\left(\Delta w_{L}\right)$, sendo que esta banda pode ser diferente da banda de captura. 
 
 Para se calcular experimentalmente o valor das bandas é necessário observar o valor médio do sinal de erro, enquanto se faz variar lentamente a frequência do sinal de entrada decrescentemente, partindo de um estado inicial de \textit{loop} dessincronizado, até que ocorre uma captura em $w_{C}^{-}$. De seguida aumenta-se a frequência do sinal de entrada até que se perde o sincronismo em $w_{L}^{+}$. O passo seguinte é efectuar um varrimento no sentido contrário, adquirindo sincronismo em $w_{C}^{+}$ que depois é perdido em $w_{L}^{-}$.
 
 Relativamente ao sinal de erro que se observa nesta medição, considere-se o caso em que o PLL está fora de sincronismo e o oscilador gera uma frequência $f_o$. Quando o \textit{loop} se fecha (ou quando o sinal de entrada tem uma frequência $f_i$) se a diferença entre as duas frequências for pequena o suficiente, então o filtro de  \textit{loop} irá desenvolver um sinal de erro que leva a frequência do oscilador até $f_i$. Eventualmente o \textit{loop} vai adquirir sincronismo e neste estado a frequência média gerada pelo oscilador é igual à frequência média do sinal de entrada.
+
+Na figura seguinte encontra-se uma representação gráfica do valor médio do sinal de erro em função da frequência do sinal de entrada, identificando a banda de captura e de manutenção.
 
 \begin{figure}[H]
 	\centering
@@ -977,7 +980,18 @@ Relativamente ao sinal de erro que se observa nesta medição, considere-se o ca
 
 Da figura anterior verifica-se que, regra geral, $\Delta w_L \geq \Delta w_C$.
 
-\todo{continuar bandas}
+O cálculo das bandas foi feito para situações diferentes da tensão de entrada, $V_{\text{in}} = 1~V_{\text{PP}}$ e $V_{\text{in}} = 3~V_{\text{PP}}$, e também para situações diferentes da frequência de corte do filtro de \textit{loop}, $f_{c} = 10$ Hz e $f_{c} = 100$ Hz.
+
+Como o filtro de \textit{loop} foi projectado para um frequência de corte de 10 Hz, é necessário calcular o valor de $\alpha$ para 100 Hz. Recorrendo à equação (\ref{eq:alfa}) tem-se $\alpha = 0.9622$, cuja representação em $Q_{15}$ é 31529. 
+
+\begin{table}[H]
+	\centering
+	\caption{Cálculo das bandas de captura e de manutenção.}
+	\vspace{-1.5mm}
+	\includegraphics[keepaspectratio=true, scale=0.35]{tabelas/bandas}
+\end{table}
+
+\todo{comentar bandas - tenho a nota do david de que a mallha para sincrozinar precisa de ruido}
 
 O passo seguinte corresponde à conexão entre o modulador do transmissor e o desmodulador do receptor, ou seja, o sinal de entrada do \textit{Costas Loop} é o sinal modelado do tipo BPSK. Este sinal corresponde à multiplicação do sinal $d_n$ com a portadora, como se viu já anteriormente.
 
@@ -985,13 +999,12 @@ O passo seguinte corresponde à conexão entre o modulador do transmissor e o de
 
 \todo{Parte do filtro de 8 k}
 
-Realizando o teste do filtro \textit{Data} com uma entrada sinusoidal de 8 kHz, é possível, observando a Figura X, perceber que o filtro não anula completamente o sinal de entrada, o que causa o problema descrito acima. 
+Realizando o teste do filtro de dados com uma entrada sinusoidal de 8 kHz, é possível, observando a Figura X, perceber que o filtro não anula completamente o sinal de entrada, o que causa o problema descrito acima. 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.50]{exps/FiltroSemZero8k}
+	\includegraphics[keepaspectratio=true, scale=0.37]{exps/FiltroSemZero8k}
 	\caption{Sinal de entrada(verde) e sinal de saída(amarelo) do filtro \textit{Data}}
-	\label{fig:fluxo}
 	\vspace{-0.8em}
 \end{figure} 
 
@@ -1002,7 +1015,7 @@ De forma a solucionar este problema, implementou-se um filtro idêntico ao já i
 H(z) = \frac{\gamma \frac{1-\alpha}{1-\beta} (1-\beta z^{-1})}{1-\alpha z^{-1}} = 0 \Rightarrow \beta z = 1.
 \end{equation}
 
-
+\vspace{1mm}
 e, para a frequência de 8 kHz, sendo $z = e^{j\omega T_s} = e^{j2\pi \frac{8\times 10^3}{16\times 10^3}}$, é possível determinar o valor de $\beta$.
 	
 Resulta então a função de transferência, mantendo-se os valores de $\alpha e \gamma$:
@@ -1012,6 +1025,7 @@ Resulta então a função de transferência, mantendo-se os valores de $\alpha e
 H(z) = \frac{\gamma \frac{1-\alpha}{2} (1+z^{-1})}{1-\alpha z^{-1}}
 \end{equation}
 
+\vspace{1mm}
 concluindo-se que, em relação à implementação anterior, basta dividir o ganho por 2 e utilizar o valor da amostra anterior, somando-a à actual, respeitando a seguinte equação às diferenças:
 
 \vspace{-3mm}
@@ -1019,31 +1033,32 @@ concluindo-se que, em relação à implementação anterior, basta dividir o gan
 y(n) = \alpha y(n-1) +  (1-\alpha)[x(n) + x(n-1)]
 \end{equation} 
 
+\vspace{1mm}
 cujo excerto de código que permite implementar essa equação é apresentado de seguida.
 
 \begin{lstlisting}[language=C]
-short x_cos = 0, x_sine = 0, y_cos_datafilter = 0, y_sin_datafilter = 0;  
-short in_loopfilter = 0, y_loop filter = 0, alpha_1k = 23528; 
-short alpha_10 = 32640, um_menos_alpha_1k = 9240, um_menos_alpha_10 = 127;
-...
- //Data filter com zero em ws/2
- y_cos_datafilter = (((alpha_1k*y_cos_datafilter)<<1) + ((((x_cos + x_cos_old)*um_menos_alpha_1k)>>1)<<1))>>16;
- y_sin_datafilter = (((alpha_1k*y_sin_datafilter)<<1) + ((((x_sine + x_sine_old)*um_menos_alpha_1k)>>1)<<1))>>16;
+	short x_cos = 0, x_sine = 0, y_cos_datafilter = 0, y_sin_datafilter = 0;  
+	short in_loopfilter = 0, y_loop filter = 0, alpha_1k = 23528; 
+	short alpha_10 = 32640, um_menos_alpha_1k = 9240, um_menos_alpha_10 = 127;
+	
+	...
+		//filtro de dados com zero em ws/2
+		y_cos_datafilter = (((alpha_1k*y_cos_datafilter)<<1) 
+										 + ((((x_cos + x_cos_old)*um_menos_alpha_1k)>>1)<<1))>>16;
+		y_sin_datafilter = (((alpha_1k*y_sin_datafilter)<<1) 
+										 + ((((x_sine + x_sine_old)*um_menos_alpha_1k)>>1)<<1))>>16;
 
- x_cos_old = x_cos;
- x_sine_old = x_sin;
-
-...
-
+		x_cos_old = x_cos;
+		x_sine_old = x_sin;
+	...
 \end{lstlisting}
 
 Na Figura X, pode observar-se a saída do filtro digital implementado com um zero em 8 kHz, para um sinal de entrada sinusoidal com essa frequência. 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.50]{exps/FiltroComZero8k}
-	\caption{Sinal de entrada(verde) e sinal de saída(amarelo) do filtro \textit{Data}}
-	\label{fig:fluxo}
+	\includegraphics[keepaspectratio=true, scale=0.37]{exps/FiltroComZero8k}
+	\caption{Sinal de entrada(verde) e sinal de saída(amarelo) do filtro de dados.}
 	\vspace{-0.8em}
 \end{figure} 
 
@@ -1051,9 +1066,8 @@ Conclui-se assim que o filtro implementado anula a componente de 8 kHz, o que co
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.50]{exps/pulse_saida_filtro_Sine_mudancanoFiltro}
-	\caption{Sinal à saída do filtro \textit{Data} com \textit{Costas Loop} completo}
-	\label{fig:fluxo}
+	\includegraphics[keepaspectratio=true, scale=0.37]{exps/pulse_saida_filtro_Sine_mudancanoFiltro}
+	\caption{Sinal à saída do filtro \textit{data} com o \textit{Costas Loop} completo.}
 	\vspace{-0.8em}
 \end{figure}
 
@@ -1158,8 +1172,6 @@ void main(){
 			sine_i= sine_i&3;
 			y = sine[sine_i];
 			sine_i++;
-			y = (32767*y)>>15 ; //esta linha e para tirar?
-			
 			
 			/* implementacao do contador sem recurso a instruccao condicional if */
 				//b_i++;
