@@ -781,22 +781,24 @@ Como se pode observar, a implementação do \textit{scrambler} foi bem sucedida 
 
 \section{Projecto $\#$3 - Receptor BPSK}
 
-
-
 A implementação do \textit{descrambler} tem a função de obter a sequência de \textit{bits} correcta para o PC. Assim sendo, o circuito do \textit{descrambler} tem que conseguir obter toda a sequência de \textit{bits} que entra no \textit{scrambler}.
 Anteriormente foi referido que o \textit{scrambler} segue a seguinte expressão polinomial:
 
+\vspace{-3mm}
 \begin{equation}
-P(x)~= ~1~+~x^{-6}~+~x^{-7}
+P(x)~= ~1~+~x^{-6}~+~x^{-7}.
 \end{equation}
+
+\vspace{1mm}
 Partindo desta equação consegue obter-se a expressão de recuperação do sinal de entrada do \textit{scrambler}:
 
 \vspace{-3mm}
 \begin{equation}
-b_n'~= ~e_n~\oplus~e_{n-6}~\oplus~e_{n-7};
+b_n'~= ~e_n~\oplus~e_{n-6}~\oplus~e_{n-7}.
 \end{equation}  
 
-O sinal $b_n'$ representa a sequência de \textit{bits} recuperada do sinal de saída do \textit{scrambler}, $e_n$. O esquema seguinte mostra a implementação da equação anterior com maior detalhe:
+\vspace{1mm}
+O sinal $b_n'$ representa a sequência de \textit{bits} recuperada do sinal de saída do \textit{scrambler}, $e_n$. O esquema seguinte mostra a implementação da equação anterior com maior detalhe.
 
 \begin{figure}[H]
 	\centering
@@ -805,16 +807,18 @@ O sinal $b_n'$ representa a sequência de \textit{bits} recuperada do sinal de s
 	\vspace{-0.8em}
 \end{figure}
 
-Analisando o esquema e seguido a lógica de implementação do \textit{scrambler}. Começou-se também por definir uma variável de 8 \textit{bits} com o intuito de guardar o sinal de saído do \textit{scrambler} até um máximo de 7 períodos de relógio, \texttt{delay\_descrambler}. A actualização da variável \texttt{delay\_descrambler} é feita de forma semelhante à actualização da variável \texttt{delay\_scrambler}, a diferença ocorre em usar o sinal de entrada a ser guardado em vez do sinal de saída. Pode ser verificado no código seguinte, onde o sinal de entrada é a variável \texttt{e\_n} e o sinal de saída a variável \texttt{b\_nlinha}:
+Analisando o esquema e seguido a lógica de implementação do \textit{scrambler}, começou-se também por definir uma variável de 8 \textit{bits} com o intuito de guardar o sinal de saído do \textit{scrambler} até um máximo de 7 períodos de relógio, \texttt{delay\_descrambler}. A actualização da variável \texttt{delay\_descrambler} é feita de forma semelhante à actualização da variável \texttt{delay\_scrambler}, a diferença ocorre em usar o sinal de entrada a ser guardado em vez do sinal de saída. Isto pode ser verificado no código seguinte, onde o sinal de entrada é a variável \texttt{e\_n} e o sinal de saída a variável \texttt{b\_nlinha}.
+
 \begin{lstlisting}[language=C]
 	short    b_i_RX = 1;
 	short    e_n = 0, xor67 = 0;
 	short    b_nlinha = 1;
 	unsigned char delay_descrambler = 0;
+	
 	...
-		if(b_i_RX>15){
+		if(b_i_RX > 15){
 			b_i_RX = 0;
-			/*Descrambler*/
+			/* descrambler */
 			xor67 = (delay_descrambler&1)^((delay_descrambler&2)>>1);
 			b_nlinha = e_n^xor67;
 			delay_descrambler = (delay_descrambler>>1)&0x7f;
@@ -824,12 +828,16 @@ Analisando o esquema e seguido a lógica de implementação do \textit{scrambler
 	...
 \end{lstlisting}
 
+<<<<<<< HEAD
 É de salientar que no \textit{scrambler} e no \textit{descrambler} existe um \textit{delay} de N \textit{bits}, sendo a saída do \textit{descrambler} não igual á entrada do \textit{scrambler}, mas sim igual à entrada deslocada de N:
+=======
+É de salientar que entre o \textit{scrambler} e o \textit{descrambler} existe um \textit{delay} de N \textit{bits} sendo a saída do \textit{descrambler} não igual à entrada do \textit{scrambler} mas sim igual à entrada deslocada de N.
+>>>>>>> origin/master
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/Ndelay}
-	\caption{Esquema com a implementação do \textit{delay}.}
+	\caption{Esquema que representa \textit{delay} existente entre o \textit{scrambler} e o \textit{descrambler}.}
 	\vspace{-0.8em}
 \end{figure}
 
