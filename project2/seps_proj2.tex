@@ -927,25 +927,18 @@ Assim, considerando o gerador de uma onda sinusoidal implementado na primeira pa
  
  \end{lstlisting}
  
- Para im
+  Para implementação dos quadrantes 2 e 4, Q2 e Q4, foi necessário acrescentar uma verificação referente à variável de	indexação da LUT, analisando a figura verifica-se que os quadrantes pretendidos são referentes à metade superior da LUT, ou seja, quando \texttt{i\_erro} for maior que 15. Sendo necessário inverter o sinal dos valores da LUT. Como referido no código seguinte:
   
- que é possível lendo a LUT com um \textit{offset} de 16 valores. É apresentado o excerto de código que implementa o oscilador, permitindo que sejam geradas as duas saídas em quadratura.
-
 \begin{lstlisting}[language=C]
 
 	short	sine[32] = {0,3212,6393,9512,12540,15447,18205,20788,23170,25330,27246,28899,30274,31357,		32138,32610,32767,32610,32138,31357,30274,28899,27246,25330,23170,20788,18205,	15447,12540,9512,6393,3212}; 
 	short delta_erro = 0, y_loop_filter = 0, status_erro = 0, i_erro = 0, y_cos = 0, y_sin;
 
 	...
-		delta_erro = 16384 + (y_loopfilter >> 2);
-		status_erro = status_erro + delta_erro ;
-		i_erro = status_erro >> 10;
-		i_erro = i_erro & 31;
-
 		y_cos = sine[(i_erro+16)&31]; //coseno
 		y_sin = sine[i_erro]; //seno
 
-		if(i_erro > 15){
+		if(i_erro > 15){ /*Q2 e Q4*/
 			y_cos = -y_cos;
 		}
 		if(status_erro < 0){
