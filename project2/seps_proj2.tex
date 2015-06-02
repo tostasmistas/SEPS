@@ -875,7 +875,11 @@ Inicialmente, pretende-se implementar um NCO (\textit{numerically controlled osc
 \end{equation} 
 
 \vspace{1mm}
-sendo que $f_{ol}$ trata-se da frequência livre do oscilador, que deve ser definida como sendo igual à frequência da portadora do sinal BPSK, ou seja, $f_{ol} = f_0$ e que $\varepsilon (n)$ se trata da saída do filtro \textit{Loop}, que será implementado posteriormente. Assim, considerando o gerador de uma onda sinusoidal implementado na primeira parte do projecto, que usa uma 32 valores de meio período da função seno, é possível implementar este oscilador de forma idêntica, tendo em atenção o valor de $f_ol$ e de $K_0$, que tal como no oscilador implementado anteriormente, tem o valor de $1/4$. É ainda pretendido que seja gerada uma outra saída em quadratura, o que é possível lendo a LUT 16 valores depois. É apresentado o excerto de código que implementa o oscilador, permitindo que sejam geradas as duas saídas em quadratura.
+sendo que $f_{ol}$ trata-se da frequência livre do oscilador, que deve ser definida como sendo igual à frequência da portadora do sinal BPSK, ou seja, $f_{ol} = f_0$. O sinal $\varepsilon (n)$ trata-se da saída do filtro de \textit{loop}, que será implementado posteriormente. 
+
+Assim, considerando o gerador de uma onda sinusoidal implementado na primeira parte do projecto, que usa uma LUT de 32 valores de meio período da função seno, é possível implementar este oscilador de forma idêntica, tendo em atenção o valor de $f_ol$ e de $K_0$, que tal como no oscilador implementado anteriormente, tem o valor de $1/4$. 
+
+É ainda pretendido que seja gerada uma outra saída em quadratura, ou seja, um coseno, o que é possível lendo a LUT com um \textit{offset} de 16 valores. É apresentado o excerto de código que implementa o oscilador, permitindo que sejam geradas as duas saídas em quadratura.
 
 \begin{lstlisting}[language=C]
 
@@ -906,11 +910,11 @@ Na Figura X, encontra-se representado o sinal de saída do oscilador, que é mos
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.37]{exps/SinVsCos}
-	\caption{}
+	\caption{Representação do coseno (a verde) e do seno (a amarelo).}
 	\vspace{-0.8em}
 \end{figure}
 
-\todo{LEGENDA DA FIGURA - Qual é o seno e o coseno? Eu sei que é igual pormos que o verde é um ou o outro, era só para saber se tinham ideia}
+Como se pode ver, a diferença de fase entre as duas formas de onda é de 87.6$^{\circ}$, o que comprova que foi possível gerar os dois sinais em quadratura.
 
 O \textit{modem} BPSK apresentado na Figura 2 é constituído por vários módulos, sendo que três desses módulos tratam-se de filtros passa-baixo. Esses filtros apresentam um pólo e um zero, satisfazendo a seguinte equação às diferenças:
 
