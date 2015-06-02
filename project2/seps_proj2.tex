@@ -1289,9 +1289,22 @@ De seguida analisa-se as formas de onda à saída dos filtros do \textit{upper} 
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.37]{exps/upperandlowerarm}
-	\caption{Sinal à saída do filtro de dados do \textit{lower arm} (a verde) e à saída do filtro dados do \textit{upper arm} (a amarelo).}
+	\caption{Sinal à saída do filtro de dados do \textit{upper arm} (a verde) e à saída do filtro dados do \textit{lower arm} (a amarelo).}
 	\vspace{-0.8em}
 \end{figure}
+
+Os sinais representados na figura anterior, que se tratam das saídas dos filtros do \textit{upper} e \textit{lower arm}, estão de acordo com o previsto teoricamente, já que os mesmos são dados por:
+
+\vspace{-3mm}
+\begin{equation}
+	E[x_1(t)] \approx \frac{1}{2} s(t) \cos(\Delta \phi) \approx \frac{1}{2}s(t)	
+\end{equation} 
+\vspace{-1mm}
+\begin{equation}
+E[x_2(t)] \approx \frac{1}{2} s(t) \sin(\Delta \phi) \approx 0
+\end{equation} 
+
+correspondendo $E[x_1(t)]$ ao sinal de saída do filtro pertence ao \textit{upper arm} e $E[x_2(t)]$ à saída do \textit{data filter} do \textit{lower arm}.
 
 \todo{comentar esta figura}
 
