@@ -1218,10 +1218,11 @@ Para se verificar o correcto funcionamento do \textit{loop} observou-se o sinal 
 	\vspace{-0.8em}
 \end{figure}
 
+Anteriormente foi explicado que para a obtenção da sequência de \textit{bits} do sinal modulado é relizado multiplicando o sinal modulado com sinal de saída do oscilador. Assim sendo, quando se multiplica as duas sinusóides com 8 kHz de frequência surgindo à saída do filtro de dados duas componentes, uma com frequência igual a zero correspondente à subtracção das frequências, ou seja, com $8 - 8 = 0$ kHz e a outra componente tem uma frequência que corresponde à soma das frequências, ou seja, com $2 \times 8 = 16$ kHz. A sequência de \textit{bits} que se quer obter é referente à primeira componente com frequência igual a zero, como se pode observar na Figura 33(a). Mas é de observar a ocorrência de ondulação da segunda componente 
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.4]{teoricas/filtro}
-	\caption{Espectro do filtro para o caso em que não tem zero em $\frac{w_s}{2}$.}
+	\caption{Espectro do filtro de dados.}
 	\vspace{-0.8em}
 \end{figure} 
 \todo{explicar estas imagens}
