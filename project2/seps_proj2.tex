@@ -1215,14 +1215,14 @@ Para se verificar o correcto funcionamento do \textit{loop} observou-se o sinal 
 	\vspace{-0.8em}
 \end{figure}
 
-Anteriormente foi explicado que para a obtenção da sequência de \textit{bits} do sinal modulado é relizado multiplicando o sinal modulado com sinal de saída do oscilador. Assim sendo, quando se multiplica as duas sinusóides com 8 kHz de frequência surgindo à saída do filtro de dados duas componentes, uma com frequência igual a zero correspondente à subtracção das frequências, ou seja, com $8 - 8 = 0$ kHz e a outra componente tem uma frequência que corresponde à soma das frequências, ou seja, com $2 \times 8 = 16$ kHz. A sequência de \textit{bits} que se quer obter é referente à primeira componente com frequência igual a zero, como se pode observar na Figura 33(a). Mas é de observar a ocorrência de ondulação da segunda componente 
+Anteriormente foi explicado que para a obtenção da sequência de \textit{bits} do sinal modulado é relizado multiplicando o sinal modulado com sinal de saída do oscilador. Assim sendo, quando se multiplica as duas sinusóides com 8 kHz de frequência surgindo à saída do filtro de dados duas componentes, uma com frequência igual a zero correspondente à subtracção das frequências, ou seja, com $8 - 8 = 0$ kHz e a outra componente tem uma frequência que corresponde à soma das frequências, ou seja, com $2 \times 8 = 16$ kHz. A sequência de \textit{bits} que se quer obter é referente à primeira componente com frequência igual a zero, como se pode observar na Figura 33(a). Mas é de observar a ocorrência de ondulação na sequência de \textit{bits}, podendo ser observada com melhor pormenor na Figura 33(b). Esta deve à segunda componente com frequência de 8 kHz, este valor pode ser confirmado analisando a imagem. Com a implementação do filtro passa-baixo de dados com uma largura de banda de 1 kHz esperaria-se a anulação desta componente, a não ocorrência da anulação deve-se ao facto, atenuação em 8 kHz ou em $\frac{w_s}{2}$ não ser elevada. Na figura seguinte demonstra o problema adjacente à implementação deste filtro.
+ 
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.4]{teoricas/filtro}
 	\caption{Espectro do filtro de dados.}
 	\vspace{-0.8em}
 \end{figure} 
-\todo{explicar estas imagens}
 
 Com a conexão estabelecida entre o modulador e transmissor testou-se novamente o valor das bandas de captura e de manutenção, como se pode ver na tabela seguinte.
 
