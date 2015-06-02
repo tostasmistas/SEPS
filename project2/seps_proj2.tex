@@ -1293,7 +1293,7 @@ De seguida analisa-se as formas de onda à saída dos filtros do \textit{upper} 
 	\vspace{-0.8em}
 \end{figure}
 
-Os sinais representados na figura anterior, que se tratam das saídas dos filtros do \textit{upper} e \textit{lower arm}, estão de acordo com o previsto teoricamente, já que os mesmos são dados por:
+Os sinais representados na figura anterior, que se tratam das saídas dos filtros do \textit{upper} e \textit{lower arm}, estão de acordo com o previsto teoricamente, já que os mesmos são descritos por:
 
 \vspace{-3mm}
 \begin{equation}
@@ -1308,7 +1308,7 @@ correspondendo $E[x_1(t)]$ ao sinal de saída do filtro pertence ao \textit{uppe
 
 \todo{comentar esta figura}
 
-Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja, o sinal de erro que depois controla o oscilador. Foi analisada esta situação para o caso em que o filtro de dados tem o zero. 
+Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja, o sinal de erro que depois controla o oscilador. Foi analisada esta situação para o caso em que o filtro de dados tem o zero na sua função de transferência. 
 
 \begin{figure}[H]
 	\centering
@@ -1320,7 +1320,7 @@ Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja, o sinal de 
 	\vspace{-0.8em}
 \end{figure}
 
-Quando se analisa as figuras anteriores verifica-se que são bastante semelhantes, não havendo diferenças perceptíveis a ``olho nu''. De facto, quando se multiplica as duas sinusoides CONTINUAR AQUI
+Quando se analisa as figuras anteriores verifica-se que são bastante semelhantes, não havendo diferenças perceptíveis a ``olho nu''. De facto, para o caso do filtro que não tem zero, quando se multiplica as duas sinusoides com 8 kHz de frequência que surgem à saída dos filtros de dados (como se pode ver na Figura \ref{fig:out1}(b)) originam-se duas sinusoides - uma com uma frequência que corresponde à soma das frequências, ou seja, com $2 \times 8 = 16$ kHz e outra com uma frequência que corresponde à subtracção das frequências, ou seja, com $8 - 8 = 0$. Considerando que a primeira sinusoide não é observável no osciloscópio porque não passa na placa e que a segunda sinusoide corresponde a uma componente DC, assim se explica que não haja diferenças no sinal de erro entre haver um zero ou não na função de transferência dos filtros de dados.
 
 De seguida, faz-se uma análise do transitório do processo de aquisição do \textit{loop}. Para se poder contar o tempo que demora a aquisição do sistema implementa-se um contador de amostra que, de 1000 em 1000 amostras, introduz no sistema uma situação de não-sincronismo, colocando o oscilador e o sinal de erro que o controla em extremos opostos, forçando o valor do erro ao seu máximo, 32767. O excerto de código seguinte representa este forçar do sinal de erro.
 
