@@ -1159,7 +1159,7 @@ Como o filtro de \textit{loop} foi projectado para um frequência de corte de 10
 	\includegraphics[keepaspectratio=true, scale=0.35]{tabelas/bandas}
 \end{table}
 
-Analisando a tabela anterior, é possível concluir que para a mesma frequência de corte, o aumento da amplitude do sinal de entrada causa o aumento das bandas de captura e manutenção. Em relação à comparação entre os valores obtidos para as bandas para diferentes frequências, percebe-se que um aumento da frequência de corte, o que provoca um aumento do ruído, as bandas de captura e aquisição têm valores superiores, portanto pode concluir-se que a malha sincroniza para um intervalo maior de frequências com o aumento do ruído.
+Analisando a tabela anterior, é possível concluir que, para a mesma frequência de corte, o aumento da amplitude do sinal de entrada causa o aumento das bandas de captura e manutenção. Em relação à comparação entre os valores obtidos para as bandas para diferentes frequências, percebe-se que um aumento da frequência de corte, que corresponde a um aumento do ruído, faz com que as bandas de captura e aquisição tenham valores superiores, portanto pode concluir-se que a malha sincroniza para um intervalo maior de frequências com o aumento do ruído. De facto, para que a malha possa sincronizar é necessário que haja ruído.
 
 O passo seguinte corresponde à conexão entre o modulador do transmissor e o desmodulador do receptor, ou seja, o sinal de entrada do \textit{Costas Loop} é o sinal modelado do tipo BPSK. Este sinal corresponde à multiplicação do sinal $d_n$ com a portadora, como se viu já anteriormente.
 
@@ -1172,6 +1172,7 @@ O passo seguinte corresponde à conexão entre o modulador do transmissor e o de
 	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/pulse_saida_filtro_Sine_8K}}
 	\vspace{-0.8em}
 	\caption{Sinal à saída do filtro da dados (a) e pormenor feito sobre a zona de amplitude máxima (b).}
+	\label{fig:out1}
 	\vspace{-0.8em}
 \end{figure}
 
@@ -1187,7 +1188,7 @@ Com a conexão estabelecida entre o modulador e transmissor testou-se novamente 
 \end{table}
 
 
-Realizando o teste do filtro de dados com uma entrada sinusoidal de 8 kHz, é possível, observando a Figura X, perceber que o filtro não anula completamente o sinal de entrada, o que causa o problema descrito anteriormente. 
+Realizando o teste do filtro de dados com uma entrada sinusoidal de 8 kHz, é possível, observando a Figura X, perceber que o filtro não anula completamente o sinal de entrada, o que causa o problema descrito anteriormente, aquando da Figura \ref{fig:out1}.
 
 \begin{figure}[H]
 	\centering
