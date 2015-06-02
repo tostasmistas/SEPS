@@ -711,7 +711,7 @@ Os valores de $x^{-6}$ e $x^{-7}$ representam sinal de saída com um atraso de 6
 \end{figure}
 
 Analisando o esquema proposto efectuou-se a implementação do circuito na DSP com o apoio do código C.
-Começou-se por definir uma variável de 8 \textit{bits}, \texttt{delay\_scrambler}, que guarda os atrasos temporais de até 7 períodos. O código seguinte demonstra a implementação e obtenção dos atrasos necessários para o \textit{scrambler}. É de referir que o sinal de entrada corresponde à sequência de \textit{bits} \texttt{b\_n} gerada anteriormente.
+Começou-se por definir uma variável de 8 \textit{bits}, \texttt{delay\_scrambler}, que guarda os atrasos temporais até 7 períodos. O código seguinte demonstra a implementação e obtenção dos atrasos necessários para o \textit{scrambler}. É de referir que o sinal de entrada corresponde à sequência de \textit{bits} \texttt{b\_n} gerada anteriormente.
 
 \begin{lstlisting}[language=C]
 	unsigned char delay_scrambler = 0;
@@ -1341,7 +1341,7 @@ Como se pode ver nas figuras anteriores, o tempo de transitório para um valor d
 
 De facto, durante a aquisição quer-se um transitório rápido, para que se atinja rapidamente o sincronismo, mas na manutenção quer-se uma largura de banda mais pequena para que o sistema não tenha tanto ruído. Assim, é frequente utilizar-se duas larguras de banda diferentes - uma para o transitório (aquisição) e uma para a manutenção.
 
-Saber qual o valor deste tempo de transitório é extremamente importante, pois pode ser utilizado para enviar um cabeçalho para o sistema que contém \textit{bits} piloto que foram previamente estudados de acordo com as funcionalidades do sistema em causa. Uma vez que termine o envio do cabeçalho o sistema encontra-se pronto para adquirir sinais.
+Saber qual o valor deste tempo de transitório é extremamente importante, pois pode ser utilizado para enviar um cabeçalho para o sistema que contém \textit{bits} piloto que foram previamente estudados de acordo com as funcionalidades do sistema em causa. Uma vez que termine o envio do cabeçalho, o sistema encontra-se pronto para adquirir sinais.
 
 \section{Conclusões}
 
