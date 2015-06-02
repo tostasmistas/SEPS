@@ -837,73 +837,71 @@ Analisando o esquema e seguido a lógica de implementação do \textit{scrambler
 	\vspace{-0.8em}
 \end{figure}
 
-Analisando o esquema anterior e as equações do (4.7) e (5.2), consegue-se demonstrar que $b'_n$ é igual a $b_{n-N}$ seguindo os seguintes passos:
+Analisando o esquema anterior e as equações do (4.7) e (5.2), consegue-se demonstrar que $b'_n$ é igual a $b_{n-N}$ seguindo os passos:
 
-\vspace{-3mm}
+\vspace{-5mm}
 \begin{equation}
 e_n~= ~b_n~\oplus~e_{n-6}~\oplus~e_{n-7} \rightarrow \text{delay de N} \rightarrow e_{n-N}~= ~b_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N}
 \end{equation}  
-
-\vspace{-3mm}
+\vspace{-7.5mm}
 \begin{equation}
  b_n'~= ~e_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N};
 \end{equation}  
-
-\vspace{-3mm}
+\vspace{-7.5mm}
 \begin{equation}
 \Leftrightarrow b_n'~= ~b_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N};
 \end{equation}  
-\vspace{-3mm}
+\vspace{-7.5mm}
 \begin{equation}
 \Leftrightarrow b_n'~= ~b_{n-N}; 
 \end{equation}  
 
-De seguida é apresentado o sinal de saída do \textit{descrambler}, $b'_n$ e o sinal de entrado do \textit{scrambler}, $b_n$. Pode-se verificar que os sinais são iguais pois a implementação da conexação dos dois circuitos foi realizada com um \textit{delay} de N igual \texttt{0}.
+De seguida é apresentado o sinal de saída do \textit{descrambler}, $b'_n$ e o sinal de entrada do \textit{scrambler}, $b_n$. Pode-se verificar que os sinais são iguais pois a implementação da conexão dos dois circuitos foi realizada com um \textit{delay} de N igual \texttt{0}.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.40]{exps/DescramblerBnVsBnlinha}
-	\caption{Imagem que demonstra o sinal de entrado do \textit{scrambler}, a amarelo, e do sinal de saída do \textit{descrambler}, a verde.}
+	\includegraphics[keepaspectratio=true, scale=0.37]{exps/DescramblerBnVsBnlinha}
+	\caption{Sinal de entrada do \textit{scrambler} (a amarelo) e sinal de saída do \textit{descrambler} (a verde).}
 	\vspace{-0.8em}
 \end{figure}
 
+Com o \textit{descrambler} implementado procede-se para a fase seguinte no desenvolvimento do \textit{modem} BPSK - implementar o \textit{Costas Loop}. 
 
-\todo{fazer a ponte para esta parte do projecto}
-
-Pretende-se implementar um NCO (\textit{numerically controlled oscillator}) controlado pelo sinal de erro $\varepsilon (t)$ com a seguinte característica:
+Inicialmente, pretende-se implementar um NCO (\textit{numerically controlled oscillator}) controlado pelo sinal de erro, $\varepsilon (t)$, com a seguinte característica:
 
 \vspace{-3mm}
 \begin{equation}
 	f_{osc} = f_{ol} + K_0\varepsilon (n), 
 \end{equation} 
 
+\vspace{1mm}
 sendo que $f_{ol}$ trata-se da frequência livre do oscilador, que deve ser definida como sendo igual à frequência da portadora do sinal BPSK, ou seja, $f_{ol} = f_0$ e que $\varepsilon (n)$ se trata da saída do filtro \textit{Loop}, que será implementado posteriormente. Assim, considerando o gerador de uma onda sinusoidal implementado na primeira parte do projecto, que usa uma 32 valores de meio período da função seno, é possível implementar este oscilador de forma idêntica, tendo em atenção o valor de $f_ol$ e de $K_0$, que tal como no oscilador implementado anteriormente, tem o valor de $1/4$. É ainda pretendido que seja gerada uma outra saída em quadratura, o que é possível lendo a LUT 16 valores depois. É apresentado o excerto de código que implementa o oscilador, permitindo que sejam geradas as duas saídas em quadratura.
 
 \begin{lstlisting}[language=C]
 
-short   sine[32] = {0,3212,6393,9512,12540,15447,18205,20788,23170,25330,27246,28899,30274,31357,32138,32610,32767,32610,32138,31357,30274,28899,27246,25330,23170,20788,18205,15447,12540,9512,6393,3212};
-short delta_erro = 0, y_loop_filter = 0, status_erro = 0, i_erro = 0, y_cos = 0, y_sin;
+	short	sine[32] = {0,3212,6393,9512,12540,15447,18205,20788,23170,25330,27246,28899,30274,31357,		32138,32610,32767,32610,32138,31357,30274,28899,27246,25330,23170,20788,18205,	15447,12540,9512,6393,3212}; 
+	short delta_erro = 0, y_loop_filter = 0, status_erro = 0, i_erro = 0, y_cos = 0, y_sin;
 
-...
-delta_erro = 16384 + (y_loopfilter >> 2);
-status_erro = status_erro + delta_erro ;
-i_erro = status_erro >> 10;
-i_erro = i_erro & 31;
+	...
+		delta_erro = 16384 + (y_loopfilter >> 2);
+		status_erro = status_erro + delta_erro ;
+		i_erro = status_erro >> 10;
+		i_erro = i_erro & 31;
 
-y_cos = sine[(i_erro+16)&31]; //coseno
-y_sin = sine[i_erro]; //seno
+		y_cos = sine[(i_erro+16)&31]; //coseno
+		y_sin = sine[i_erro]; //seno
 
-if(i_erro > 15){
-y_cos = -y_cos;
-}
-if(status_erro < 0){
-y_sin = -y_sin;
-y_cos = -y_cos;
-}	
-...
+		if(i_erro > 15){
+			y_cos = -y_cos;
+		}
+		if(status_erro < 0){
+			y_sin = -y_sin;
+			y_cos = -y_cos;
+		}	
+	...
 \end{lstlisting}
 
-Na Figura X, é representado o sinal de saída do oscilador, que é mostrado aqui apenas para demonstração do correcto funcionamento do oscilador, já que a implementação do filtro donde saí o sinal de erro apenas será explicada posteriormente. 
+Na Figura X, encontra-se representado o sinal de saída do oscilador, que é mostrado aqui apenas para demonstração do correcto funcionamento do oscilador, já que a implementação do filtro de onde sai o sinal de erro apenas será explicada posteriormente. 
 
 \begin{figure}[H]
 	\centering
@@ -914,7 +912,7 @@ Na Figura X, é representado o sinal de saída do oscilador, que é mostrado aqu
 
 \todo{LEGENDA DA FIGURA - Qual é o seno e o coseno? Eu sei que é igual pormos que o verde é um ou o outro, era só para saber se tinham ideia}
 
-O \textit{modem} BPSK, apresentado na Figura 2, é constituído por vários módulos, sendo que três desses módulos tratam-se de filtros passa-baixo. Esses filtros apresentam um pólo e um zero, satisfazendo a seguinte equação às diferenças:
+O \textit{modem} BPSK apresentado na Figura 2 é constituído por vários módulos, sendo que três desses módulos tratam-se de filtros passa-baixo. Esses filtros apresentam um pólo e um zero, satisfazendo a seguinte equação às diferenças:
 
 \vspace{-3mm}
 \begin{equation}
