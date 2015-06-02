@@ -1323,9 +1323,19 @@ Os sinais representados na figura anterior, que se tratam das saídas dos filtro
 E[x_2(t)] \approx \frac{1}{2} s(t) \sin(\Delta \phi) \approx 0
 \end{equation} 
 
-correspondendo $E[x_1(t)]$ ao sinal de saída do filtro pertence ao \textit{upper arm} e $E[x_2(t)]$ à saída do \textit{data filter} do \textit{lower arm}.
+correspondendo $E[x_1(t)]$ ao sinal de saída do filtro pertencente ao \textit{upper arm} e $E[x_2(t)]$ à saída do \textit{data filter} do \textit{lower arm}, sendo que o sinal s(t) é o sinal de informação transmitido e $x_1(t)$ e $x_2(t)$  representam os sinais:
 
-\todo{comentar esta figura}
+\vspace{-3mm}
+\begin{equation}
+x_1(t) = x(t)\cos(2\pi f_0t + \phi_0) = s(t)\cos(2\pi f_0t + \Delta ft + \phi_i)\cos(2\pi f_0t + \phi_0)
+\end{equation}
+\vspace{-1mm}
+\begin{equation}
+ x_2(t) = x(t)\sin(2\pi
+ f_0t + \phi_0) = s(t)\cos(2\pi f_0t + \Delta ft + \phi_i)\sin(2\pi
+ f_0t + \phi_0)	
+ \end{equation}
+
 
 Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja, o sinal de erro que depois controla o oscilador. Foi analisada esta situação para o caso em que o filtro de dados tem o zero. 
 
