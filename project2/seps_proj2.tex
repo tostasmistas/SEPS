@@ -1292,9 +1292,17 @@ Primeiramente, analisa-se o sinal modulado do tipo BPSK, no domínio do tempo e 
 	\vspace{-0.8em}
 \end{figure}
 
-\todo{comentar estas figuras}
+Na Figura 35(a), é possível observar o sinal do tipo BPSK, que apresenta uma forma de onda idêntica à que era suposto obter, tendo em conta que o sinal x(t) é da forma:
 
-De seguida analisa-se as formas de onda à saída dos filtros do \textit{upper} e \textit{lower arm}.
+\vspace{-3mm}
+\begin{equation}
+	x(t) = s(t)\cos(2\pi f_0t + \Delta ft + \phi_0) + noise
+\end{equation} 
+
+sendo que a componente $\Delta ft + \phi_0$ se trata de perturbações angulares introduzidas pelo canal físico que garante a propagação do sinal. No domínio da frequência, estando o SPAN definido como sendo de 10 kHz, pode visualizar-se na Figura 35(b) a componente da frequência fundamental do sinal BPSK, a 4 kHz, e as suas harmónicas.
+
+
+De seguida, analisa-se as formas de onda à saída dos filtros do \textit{upper} e \textit{lower arm}.
 
 \begin{figure}[H]
 	\centering
