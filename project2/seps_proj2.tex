@@ -1324,9 +1324,17 @@ Primeiramente, analisa-se o sinal modulado do tipo BPSK, no domínio do tempo e 
 	\vspace{-0.8em}
 \end{figure}
 
-\todo{comentar estas figuras}
+Na Figura 35(a), é possível observar o sinal do tipo BPSK, que apresenta uma forma de onda idêntica à que era suposto obter, tendo em conta que o sinal x(t) é da forma:
 
-De seguida analisa-se as formas de onda à saída dos filtros do \textit{upper} e \textit{lower arm}.
+\vspace{-3mm}
+\begin{equation}
+	x(t) = s(t)\cos(2\pi f_0t + \Delta ft + \phi_0) + noise
+\end{equation} 
+
+sendo que a componente $\Delta ft + \phi_0$ se trata de perturbações angulares introduzidas pelo canal físico que garante a propagação do sinal. No domínio da frequência, estando o SPAN definido como sendo de 10 kHz, pode visualizar-se na Figura 35(b) a componente da frequência fundamental do sinal BPSK, a 4 kHz, e as suas harmónicas.
+
+
+De seguida, analisa-se as formas de onda à saída dos filtros do \textit{upper} e \textit{lower arm}.
 
 \begin{figure}[H]
 	\centering
@@ -1344,22 +1352,31 @@ De seguida analisa-se as formas de onda à saída dos filtros do \textit{upper} 
 	\vspace{-0.8em}
 \end{figure}
 
-Os sinais representados na figura anterior, que se tratam das saídas dos filtros do \textit{upper} e \textit{lower arm}, estão de acordo com o previsto teoricamente, já que os mesmos são dados por:
+Os sinais representados na figura anterior, que se tratam das saídas dos filtros do \textit{upper} e \textit{lower arm}, estão de acordo com o previsto teoricamente, já que os mesmos são descritos por:
 
 \vspace{-3mm}
 \begin{equation}
-	E[x_1(t)] \approx \frac{1}{2} s(t) \cos(\Delta \phi) \approx \frac{1}{2}s(t)	
+	E[x_1(t)] \approx \frac{1}{2} s(t) \cos(\Delta \phi) \approx \frac{1}{2}s(t);
 \end{equation} 
 \vspace{-1mm}
 \begin{equation}
-E[x_2(t)] \approx \frac{1}{2} s(t) \sin(\Delta \phi) \approx 0
+E[x_2(t)] \approx \frac{1}{2} s(t) \sin(\Delta \phi) \approx 0.
 \end{equation} 
 
-correspondendo $E[x_1(t)]$ ao sinal de saída do filtro pertence ao \textit{upper arm} e $E[x_2(t)]$ à saída do \textit{data filter} do \textit{lower arm}.
+correspondendo $E[x_1(t)]$ ao sinal de saída do filtro pertencente ao \textit{upper arm} e $E[x_2(t)]$ à saída do \textit{data filter} do \textit{lower arm}, sendo que o sinal $s(t)$ é o sinal de informação transmitido e $x_1(t)$ e $x_2(t)$  representam os sinais:
 
-\todo{comentar esta figura}
+\vspace{-3mm}
+\begin{equation}
+x_1(t) = x(t)\cos(2\pi f_0t + \phi_0) = s(t)\cos(2\pi f_0t + \Delta ft + \phi_i)\cos(2\pi f_0t + \phi_0);
+\end{equation}
+\vspace{-4mm}
+\begin{equation}
+ x_2(t) = x(t)\sin(2\pi
+ f_0t + \phi_0) = s(t)\cos(2\pi f_0t + \Delta ft + \phi_i)\sin(2\pi
+ f_0t + \phi_0).
+\end{equation}
 
-Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja, o sinal de erro que depois controla o oscilador. Foi analisada esta situação para o caso em que o filtro de dados tem o zero. 
+Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja, o sinal de erro que depois controla o oscilador. Foi analisada esta situação para o caso em que o filtro de dados tem o zero na sua função de transferência. 
 
 \begin{figure}[H]
 	\centering
@@ -1371,7 +1388,7 @@ Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja, o sinal de 
 	\vspace{-0.8em}
 \end{figure}
 
-Quando se analisa as figuras anteriores verifica-se que são bastante semelhantes, não havendo diferenças perceptíveis a ``olho nu''. De facto, quando se multiplica as duas sinusoides CONTINUAR AQUI
+Quando se analisa as figuras anteriores verifica-se que são bastante semelhantes, não havendo diferenças perceptíveis a ``olho nu''. De facto, para o caso do filtro que não tem zero, quando se multiplica as duas sinusoides com 8 kHz de frequência que surgem à saída dos filtros de dados (como se pode ver na Figura \ref{fig:out1}(b)) originam-se duas sinusoides - uma com uma frequência que corresponde à soma das frequências, ou seja, com $2 \times 8 = 16$ kHz e outra com uma frequência que corresponde à subtracção das frequências, ou seja, com $8 - 8 = 0$. Considerando que a primeira sinusoide não é observável no osciloscópio porque não passa na placa e que a segunda sinusoide corresponde a uma componente DC, assim se explica que não haja diferenças no sinal de erro entre haver um zero ou não na função de transferência dos filtros de dados.
 
 De seguida, faz-se uma análise do transitório do processo de aquisição do \textit{loop}. Para se poder contar o tempo que demora a aquisição do sistema implementa-se um contador de amostra que, de 1000 em 1000 amostras, introduz no sistema uma situação de não-sincronismo, colocando o oscilador e o sinal de erro que o controla em extremos opostos, forçando o valor do erro ao seu máximo, 32767. O excerto de código seguinte representa este forçar do sinal de erro.
 
@@ -1387,7 +1404,7 @@ De seguida, faz-se uma análise do transitório do processo de aquisição do \t
 
 Durante este período de aquisição, o funcionamento do sistema não é linear e, enquanto o sinal de erro não vier a zero, a malha não sincronizará e os \textit{bits} do sinal desmodulado estarão errados.
 
-Calculou-se o tempo de aquisição, com o auxílio dos cursores do osciloscópio, determinando o intervalo de tempo entre o início da situação de não-sincronismo  e o instante em que se pode considerar que o sinal de saída do filtro de dados apresenta os bits bem definidos, sendo perceptível a diferença entre '0' e '1', para duas frequências de corte do filtro de \textit{loop}, 10 Hz e 100 Hz, como se pode ver nas figuras seguintes. O sinal a verde representa a saída do filtro de \textit{loop}, o sinal de erro, e o sinal a amarelo representa a saída do filtro de dados do \textit{lower arm} do \textit{Costas Loop}.
+Calculou-se o tempo de aquisição, com o auxílio dos cursores do osciloscópio, determinando o intervalo de tempo entre o início da situação de não-sincronismo  e o instante em que se pode considerar que o sinal de saída do filtro de dados apresenta os \textit{bits} bem definidos, sendo perceptível a diferença entre \texttt{0} e \texttt{1}, para duas frequências de corte do filtro de \textit{loop}, 10 Hz e 100 Hz, como se pode ver nas figuras seguintes. O sinal a verde representa a saída do filtro de \textit{loop}, o sinal de erro, e o sinal a amarelo representa a saída do filtro de dados do \textit{lower arm} do \textit{Costas Loop}.
 
 \todo{explicar contagem do tempo. vale a pena por as imagens dos 100Hz?}
 
