@@ -874,11 +874,30 @@ Inicialmente, pretende-se implementar um NCO (\textit{numerically controlled osc
 \end{equation} 
 
 \vspace{1mm}
-sendo que $f_{ol}$ trata-se da frequência livre do oscilador, que deve ser definida como sendo igual à frequência da portadora do sinal BPSK, ou seja, $f_{ol} = f_0$. O sinal $\varepsilon (n)$ trata-se da saída do filtro de \textit{loop}, que será implementado posteriormente. 
+sendo que $f_{ol}$ trata-se da frequência livre do oscilador, que deve ser definida como sendo igual à frequência da portadora do sinal BPSK, ou seja, $f_{ol} = f_0$. O sinal $\varepsilon (n)$ trata-se da saída do filtro de \textit{loop}, \texttt{y\_loopfilter}. 
+Assim, considerando o gerador de uma onda sinusoidal implementado na primeira parte do projecto, que usa uma LUT de 32 valores de meio período da função seno, é possível implementar este oscilador de forma idêntica, tendo em atenção o valor de $f_{ol}$ e de $K_0$, que tal como no oscilador implementado anteriormente, tem o valor de $1/4$, no código esta representado por dois \textit{shifts} para a direita.
+\begin{lstlisting}[language=C]
 
-Assim, considerando o gerador de uma onda sinusoidal implementado na primeira parte do projecto, que usa uma LUT de 32 valores de meio período da função seno, é possível implementar este oscilador de forma idêntica, tendo em atenção o valor de $f_ol$ e de $K_0$, que tal como no oscilador implementado anteriormente, tem o valor de $1/4$. 
+	short	sine[32] = {0,3212,6393,9512,12540,15447,18205,20788,23170,25330,27246,28899,30274,31357,		32138,32610,32767,32610,32138,31357,30274,28899,27246,25330,23170,20788,18205,		15447,12540,9512,6393,3212}; 
+	short delta_erro = 0, y_loop_filter = 0, status_erro = 0, i_erro = 0, y_sin = 0;
+	...
+		delta_erro = 16384 + (y_loopfilter >> 2);
+		status_erro = status_erro + delta_erro ;
+		i_erro = status_erro >> 10;
+		i_erro = i_erro & 31;
+		
+		y_sin = sine[i_erro]; //seno
+		
+		if(status_erro < 0){
+			y_sin = -y_sin;
+		}	
+	...
 
-É ainda pretendido que seja gerada uma outra saída em quadratura, ou seja, um coseno, o que é possível lendo a LUT com um \textit{offset} de 16 valores. É apresentado o excerto de código que implementa o oscilador, permitindo que sejam geradas as duas saídas em quadratura.
+\end{lstlisting}
+
+É ainda pretendido que seja gerada uma outra saída em quadratura, ou seja, um coseno. Para a sua implementação baseou-sena seguinte figura:
+ 
+ o que é possível lendo a LUT com um \textit{offset} de 16 valores. É apresentado o excerto de código que implementa o oscilador, permitindo que sejam geradas as duas saídas em quadratura.
 
 \begin{lstlisting}[language=C]
 
