@@ -865,13 +865,7 @@ De seguida é apresentado o sinal de saída do \textit{descrambler}, $b'_n$ e o 
 
 Com o \textit{descrambler} implementado procede-se para a fase seguinte no desenvolvimento do \textit{modem} BPSK - implementar o \textit{Costas Loop}. 
 
-Inicialmente, pretende-se implementar um NCO (\textit{numerically controlled oscillator}) controlado pelo sinal de erro, $\varepsilon (t)$, com a seguinte característica:
-\begin{figure}[H]
-	\centering
-	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/Ndelay}
-	\caption{Esquema que representa \textit{delay} existente entre o \textit{scrambler} e o \textit{descrambler}.}
-	\vspace{-0.8em}
-\end{figure}
+Inicialmente, pretende-se implementar um NCO (\textit{numerically controlled oscillator}) controlado pelo sinal de erro, $\varepsilon (t)$, com a característica presente na próxima página.
 
 \vspace{-3mm}
 \begin{equation}
@@ -903,12 +897,12 @@ Assim, considerando o gerador de uma onda sinusoidal implementado na primeira pa
 É ainda pretendido que seja gerada uma outra saída em quadratura, ou seja, um coseno. Para a sua implementação baseou-se na seguinte figura:
  \begin{figure}[H]
  	\centering
- 	\includegraphics[keepaspectratio=true, scale=0.37]{teoricas/senocoseno}
+ 	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/senocoseno}
  	\caption{Sobreposição de um seno e de um coseno.}
  	\vspace{-0.8em}
  \end{figure}
  
- Sabendo que a LUT tem os valores de meio período da função seno, é possível gerar um coseno seguindo o esquema anterior. O quadrante 1, Q1, representa um quarto de um período partindo da amplitude máxima até zero, sendo este quadrante facilmente implementado  indexando a LUT com um \textit{offset} de 16. Este método também  é utilizado para o quadrante 3, Q3, em que se parte da uma amplitude miníma até zero. A máscara de 31 é utilizada para garantir que não haja acessos à memória indevidos.
+Sabendo que a LUT tem os valores de meio período da função seno, é possível gerar um coseno seguindo o esquema anterior. O quadrante 1, Q1, representa um quarto de um período partindo da amplitude máxima até zero, sendo este quadrante facilmente implementado  indexando a LUT com um \textit{offset} de 16. Este método também  é utilizado para o quadrante 3, Q3, em que se parte da uma amplitude miníma até zero. A máscara de \texttt{31} é utilizada para garantir que não há acessos indevidos à memória.
  
  \begin{lstlisting}[language=C]
  
@@ -1105,11 +1099,11 @@ sendo que um dos filtros de dados tem como entrada o sinal resultante da multipl
 	...
 \end{lstlisting}
 
-No entanto, antes de ligar todo o sistema, é importante testar o filtro que tem frequência de corte de $f_c = 1 kHz$. Para efectuar este teste põe-se à entrada do filtro um sinal proveniente do gerador de sinais, de forma a comprovar o correcto funcionamento deste. É de referir que não é possível testar o filtro com frequência de corte de 10 Hz, já que à entrada da placa se encontra um filtro com frequência de corte 20 Hz, o que torna impossível verificar que a implementação do filtro de \textit{loop} está correcta. Assim, para o filtro de dados, visualizou-se a saída do mesmo, apresentada na Figura X, com um sinal de entrada sinusoidal de 250 Hz, de forma a verificar o ganho em baixas frequências.
+No entanto, antes de ligar todo o sistema, é importante testar o filtro que tem frequência de corte de $f_c = 1 kHz$. Para efectuar este teste põe-se à entrada do filtro um sinal proveniente do gerador de sinais, de forma a comprovar o correcto funcionamento deste. É de referir que não é possível testar o filtro com frequência de corte de 10 Hz, já que à entrada da placa se encontra um filtro com frequência de corte 20 Hz, o que torna impossível verificar que a implementação do filtro de \textit{loop} está correcta. Assim, para o filtro de dados, visualizou-se a saída do mesmo, apresentada na Figura 27, com um sinal de entrada sinusoidal de 250 Hz, de forma a verificar o ganho em baixas frequências.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.37]{exps/filtro_1k_baixafreq}
+	\includegraphics[keepaspectratio=true, scale=0.35]{exps/filtro_1k_baixafreq}
 	\caption{Verificação do ganho em baixas frequências - sinal de entrada (a verde) e sinal de saída (a amarelo) do filtro de dados.}
 	\vspace{-0.8em}
 \end{figure} 
@@ -1126,11 +1120,11 @@ Pretende-se registar a frequência a que o filtro apresenta no sinal de saída u
 \end{equation} 
 
 \vspace{1mm}
-Verificou-se, como se pode observar na Figura X, que a frequência de corte apresenta o valor de 963 Hz, o que se trata de um valor próximo de 1 kHz. A pequena diferença em relação ao valor pretendido pode-se dever a se ter registado uma frequência onde ainda não tinham caído exactamente os 3 dB.
+Verificou-se, como se pode observar na Figura 28, que a frequência de corte apresenta o valor de 963 Hz, o que se trata de um valor próximo de 1 kHz. A pequena diferença em relação ao valor pretendido pode-se dever a se ter registado uma frequência onde ainda não tinham caído exactamente os 3 dB.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.37]{exps/filtro_1k_freqcorte}
+	\includegraphics[keepaspectratio=true, scale=0.35]{exps/filtro_1k_freqcorte}
 	\caption{Verificação da frequência de corte - sinal de entrada (a verde) e sinal de saída (a amarelo) do filtro de dados.}
 	\vspace{-0.8em}
 \end{figure} 
@@ -1233,7 +1227,9 @@ Com a conexão estabelecida entre o modulador e transmissor testou-se novamente 
 	\includegraphics[keepaspectratio=true, scale=0.35]{tabelas/bandascompleto}
 \end{table}
 
-Realizando o teste do filtro de dados com uma entrada sinusoidal de 8 kHz, é possível, observando a Figura X, perceber que o filtro não anula completamente o sinal de entrada, o que causa o problema descrito anteriormente, aquando da Figura \ref{fig:out1}.
+Relativamente ao valor das bandas, face ao caso em que os dois \textit{arms} do Costas Loop não estavam conectados entre si, diminuiu. \todo{why?}
+
+Realizando o teste do filtro de dados com uma entrada sinusoidal de 8 kHz, é possível, observando a Figura 34, perceber que o filtro não anula completamente o sinal de entrada, o que causa o problema descrito anteriormente, aquando da Figura \ref{fig:out1}.
 
 \begin{figure}[H]
 	\centering
@@ -1297,7 +1293,7 @@ cujo excerto de código que permite implementar essa equação é apresentado de
 	...
 \end{lstlisting}
 
-Na Figura X, pode observar-se a saída do filtro digital implementado com um zero em 8 kHz, para um sinal de entrada sinusoidal com essa frequência. 
+Na Figura 36, pode observar-se a saída do filtro digital implementado com um zero em 8 kHz, para um sinal de entrada sinusoidal com essa frequência. 
 
 \begin{figure}[H]
 	\centering
@@ -1306,7 +1302,7 @@ Na Figura X, pode observar-se a saída do filtro digital implementado com um zer
 	\vspace{-0.8em}
 \end{figure} 
 
-Conclui-se assim que o filtro implementado anula a componente de 8 kHz, o que comprova a implementação de forma correcta do mesmo, permitindo que o sinal de saída do filtro, com o \textit{Costas Loop} completo, apresente de uma forma clara uma diferença entre o nível \textit{high} e \textit{low}, tal como representado na Figura X.
+Conclui-se assim que o filtro implementado anula a componente de 8 kHz, o que comprova a implementação de forma correcta do mesmo, permitindo que o sinal de saída do filtro, com o \textit{Costas Loop} completo, apresente de uma forma clara uma diferença entre o nível \textit{high} e \textit{low}, tal como representado na Figura 37.
 
 \begin{figure}[H]
 	\centering
@@ -1338,6 +1334,7 @@ Na Figura 35(a), é possível observar o sinal do tipo BPSK, que apresenta uma f
 
 sendo que a componente $\Delta ft + \phi_0$ se trata de perturbações angulares introduzidas pelo canal físico que garante a propagação do sinal. No domínio da frequência, estando o SPAN definido como sendo de 10 kHz, pode visualizar-se na Figura 35(b) a componente da frequência fundamental do sinal BPSK, a 4 kHz, e as suas harmónicas.
 
+\todo{rever este texto acima}
 
 De seguida, analisa-se as formas de onda à saída dos filtros do \textit{upper} e \textit{lower arm}.
 
