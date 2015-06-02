@@ -181,7 +181,7 @@ Pretende-se primeiramente desenvolver um oscilador de relaxação utilizando uma
 	\vspace{-0.8em}
 \end{figure}
 
-Com recurso à Figura 1 pode-se deduzir que
+Com recurso à Figura 4 pode-se deduzir que
 
 \vspace{-3mm}
 \begin{equation}
@@ -189,9 +189,9 @@ f_{0} = \frac{\Delta}{2^{16}} \times f_{s} \leftrightarrow \Delta = \frac{f_{0}}
 \end{equation}
 
 \vspace{1mm}
-Existe uma variável de estado da rampa que a cada $T_{s}$, período de amostragem, é incrementada de $\Delta$, como se pode ver na Figura 1. A variável de estado da rampa é de 16 \textit{bits} com representação em $Q_{15}$ e, sabendo que o maior número positivo que se pode representar em $Q_{15}$ é $2^{15} - 1 = 32767$ e o menor número negativo que se pode representar é  $-(2^{15} - 1) = -32767$, a variável de estado começa com o valor -32767 e vai até um máximo de 32767. Quando é atingido o valor máximo, 32767, entra em efeito a circularidade da representação em complemento para dois e, assim, a variável de estado não atinge o valor de $2^{15}$, ``dando a volta'' para -32767. 
+Existe uma variável de estado da rampa que a cada $T_{s}$, período de amostragem, é incrementada de $\Delta$, como se pode ver na Figura 4. A variável de estado da rampa é de 16 \textit{bits} com representação em $Q_{15}$ e, sabendo que o maior número positivo que se pode representar em $Q_{15}$ é $2^{15} - 1 = 32767$ e o menor número negativo que se pode representar é  $-(2^{15} - 1) = -32767$, a variável de estado começa com o valor -32767 e vai até um máximo de 32767. Quando é atingido o valor máximo, 32767, entra em efeito a circularidade da representação em complemento para dois e, assim, a variável de estado não atinge o valor de $2^{15}$, ``dando a volta'' para -32767. 
 
-Relativamente à variável $\Delta$ esta encontra-se também representada em $Q_{15}$. O NCO tem como característica uma frequência $f_{0}$ que varia entre 2 kHz e 6 kHz. Estes valores são controlados a partir da amplitude do sinal de entrada. Quando esta for mínima, a frequência $f_{0}$ é de 2 kHz e quando for máxima, a frequência $f_{0}$ é de 6 kHz. Com estas especificações pode-se calcular três valores de $\Delta$ com recurso à equação (2.1), para a frequência mínima, a frequência média e a frequência máxima.
+Relativamente à variável $\Delta$ esta encontra-se também representada em $Q_{15}$. O NCO tem como característica uma frequência $f_{0}$ que varia entre 2 kHz e 6 kHz. Estes valores são controlados a partir da amplitude do sinal de entrada. Quando esta for mínima, a frequência $f_{0}$ é de 2 kHz e quando for máxima, a frequência $f_{0}$ é de 6 kHz. Com estas especificações pode-se calcular três valores de $\Delta$ com recurso à equação (3.1), para a frequência mínima, a frequência média e a frequência máxima.
 
 \begin{table}[H]
 	\centering
@@ -231,7 +231,7 @@ Nas figuras da próxima página pode-se ver o sinal obtido experimentalmente que
 	\vspace{-0.8em}
 \end{figure}
 
-Como se pode ver na Figura 2(c), por comparação com o esperado teoricamente da Figura 1, o oscilador de relaxação implementado funciona de acordo com o previsto. De notar que o sinal que se observa está invertido relativamente ao teórico, o que já é esperado, quando se considera que antes de ser observado no osciloscópio passa por um inversor.
+Como se pode ver na Figura 2(c), por comparação com o esperado teoricamente da Figura 4, o oscilador de relaxação implementado funciona de acordo com o previsto. De notar que o sinal que se observa está invertido relativamente ao teórico, o que já é esperado, quando se considera que antes de ser observado no osciloscópio passa por um inversor.
 
 Com o oscilador implementado pretende-se agora criar uma LUT com 32 valores positivos de meio período da função seno. É necessário começar por determinar esses valores, para que, posteriormente, os mesmos sejam convertidos para o formato mais preciso de representação, $Q_{15}$, uma vez que se encontram no intervalo [-1, 1]. Assim, tendo em conta que meio período da função seno é $\pi$, podemos calcular os valores da seguinte maneira:
 
@@ -275,7 +275,7 @@ Como se pode constatar, a LUT é declarada com 33 valores, o que se deve ao fact
 
 Esta solução faz com que não seja necessário mais memória para criar a LUT, embora seja realizado um maior número de operações.  
 
-Para que se possa agora aceder aos valores da função seno, é utilizada a variável de estado do oscilador, \texttt{status}, como índice da LUT. Apenas 5 \textit{bits} da variável são utilizados para endereçar a LUT, sendo criada a variável \texttt{i}, tal como especificado na Figura 3, onde a variável de estado do oscilador é representada por \textit{x}.
+Para que se possa agora aceder aos valores da função seno, é utilizada a variável de estado do oscilador, \texttt{status}, como índice da LUT. Apenas 5 \textit{bits} da variável são utilizados para endereçar a LUT, sendo criada a variável \texttt{i}, tal como especificado na Figura 6, onde a variável de estado do oscilador é representada por \textit{x}.
 
 \begin{figure}[H]
 	\centering
@@ -386,7 +386,7 @@ O sinal de saída pode ser observado no canal esquerdo da DSP.
 	...
 \end{lstlisting}
 
-Com o oscilador controlado já implementado procede-se à fase de testes. A verificação de funcionamento pode ser vista na Figura 4, onde se utilizou um sinal de entrada, a verde, definido como uma onda quadrada com uma frequência de 200 Hz e uma amplitude próxima de 1 V, no intuito de poder verificar o controlo da frequência do sinal de saída, a amarelo, a partir da amplitude do sinal de entrada. 
+Com o oscilador controlado já implementado procede-se à fase de testes. A verificação de funcionamento pode ser vista na Figura 7, onde se utilizou um sinal de entrada, a verde, definido como uma onda quadrada com uma frequência de 200 Hz e uma amplitude próxima de 1 V, no intuito de poder verificar o controlo da frequência do sinal de saída, a amarelo, a partir da amplitude do sinal de entrada. 
 
 Quando a amplitude do sinal de entrada é máxima pode-se visualizar um aumento da frequência do sinal de saída, ou seja, para um mesmo intervalo de tempo há um maior número de ciclos. Quando a amplitude do sinal de entrada é mínima, a frequência do sinal de saída diminui, ou seja, há um menor número de ciclos para o mesmo intervalo de tempo. Com estes resultados, pode-se concluir que o método de controlo utilizado funciona de modo adequado, ressalvando que existe um atraso de processamento como se pode verificar na figura seguinte em que os sinais apresentam um ligeiro desfazamento face ao que se tinha esperado.
 
@@ -429,7 +429,7 @@ Pode-se agora computar $y$ de acordo com a equação (\ref{eq:interpol}). Quando
 
 O resultado desta subtracção é então multiplicado com $\Delta x$, que toma sempre valores entre 0 e 1, ou seja, está-se a multiplicar dois valores no formato $Q_{15}$, que origina um valor no formato $Q_{30}$ com replicação do \textit{bit} de sinal. Assim, é necessário efectuar um \textit{shift} para a esquerda para remover o \textit{bit} de sinal replicado, resultando num formato final de $Q_{31}$, para 32 bits. Para se poder armazenar numa variável de 16 \textit{bits}, no formato $Q_{15}$, é necessário efectuar um \textit{shift} de 16 posições para a direita, permitindo armazenar os 16 \textit{bits} mais significativos do resultado de 32 \textit{bits}.
 
-O valor da subtracção que é seguida de uma multiplicação é agora somado ao valor de $y_1$, ou seja, está-se a somar dois números no formato $Q_{15}$, o que dá um resultado que seria no formato $Q_{14}$. No entanto, quando se analisa o pior caso em que $y_1$ = 32610, $y_2$ = 32767 e $\Delta x$ = 32767, o resultado da subtracção de $y_2$ com $y_1$ multiplicado por $\Delta x$ é igual a 5144419 em $Q_{31}$ ou 78 em $Q_{15}$, dividindo por $2^{16}$. De seguida soma-se $y_1$ com o resultado anterior, tendo um valor final de 32688, pelo que se pode guardar em $Q_{15}$ o resultado da equação (2.5).
+O valor da subtracção que é seguida de uma multiplicação é agora somado ao valor de $y_1$, ou seja, está-se a somar dois números no formato $Q_{15}$, o que dá um resultado que seria no formato $Q_{14}$. No entanto, quando se analisa o pior caso em que $y_1$ = 32610, $y_2$ = 32767 e $\Delta x$ = 32767, o resultado da subtracção de $y_2$ com $y_1$ multiplicado por $\Delta x$ é igual a 5144419 em $Q_{31}$ ou 78 em $Q_{15}$, dividindo por $2^{16}$. De seguida soma-se $y_1$ com o resultado anterior, tendo um valor final de 32688, pelo que se pode guardar em $Q_{15}$ o resultado da equação (3.5).
 
 O valor do sinal interpolado é agora multiplicado pelo sinal \texttt{amp}, ou seja, é efectuada mais uma multiplicação entre dois números no formato $Q_{15}$, sendo necessário efectuar o \textit{shift} para esquerda e os 16 \textit{shifts} para a direita explicados anteriormente.
 
@@ -581,20 +581,6 @@ De seguida, aplica-se o mapeamento aos \textit{bits} do sinal $c_n$ na constela�
 	 
 A solução implementada consiste em três fases. Na primeira, é efectuado um \textit{shift} de 15 posições para a esquerda, no intuito de o \textit{bit} mais significativo ter o valor do sinal $c_n$. Em segundo, nega-se o vector. E em último, é efectuado um \textit{shift} de 15 posições para a direita. De seguida encontra-se um esquema que demonstra a solução encontrada para a obtenção do $d_n$ como também o código.
 
-\begin{lstlisting}[language=C]
-	...
-		if(b_i>15){
-			...
-				c_n = c_n^b_n;
-				shift15_cn = c_n<<15;	   		// shift de 15 posicoes para a esquerda
-				not_shift15 = ~shift15_cn; // negacao do sinal anterior 
-				d_n = not_shift15>>14;    // shift de 14 posicoes para a direita
-		}
-	...
-\end{lstlisting}
-
-Como se pode ver, esta solução não recorre ao uso de \textit{if's}, não podendo, no entanto, afirmar-se com certezas, que é a solução computacionalmente mais eficiente. De facto, para se perceber se compensa ou não o uso da instrução condicional teria de se efectuar \textit{profiling} ao código. Foi feita uma tentativa de fazer este \textit{profiling} mas, devido à falta de conhecimento da ferramenta por parte dos alunos, acabou por não ser feito, não se podendo retirar conclusões válidas.
-
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/esquema2}
@@ -608,6 +594,20 @@ Como se pode ver, esta solução não recorre ao uso de \textit{if's}, não pode
 	\caption{Representação da situação em que $c_{n} = 1$, resultando num mapeamento de $d_{n} = +1$.}
 	\vspace{-0.8em}
 \end{figure}
+
+\begin{lstlisting}[language=C]
+	...
+		if(b_i>15){
+			...
+				c_n = c_n^b_n;
+				shift15_cn = c_n<<15;	   		// shift de 15 posicoes para a esquerda
+				not_shift15 = ~shift15_cn; // negacao do sinal anterior 
+				d_n = not_shift15>>14;    // shift de 14 posicoes para a direita
+		}
+	...
+\end{lstlisting}
+
+Como se pode ver, esta solução não recorre ao uso de \textit{if's}, não podendo, no entanto, afirmar-se com certezas, que é a solução computacionalmente mais eficiente. De facto, para se perceber se compensa ou não o uso da instrução condicional teria de se efectuar \textit{profiling} ao código. Foi feita uma tentativa de fazer este \textit{profiling} mas, devido à falta de conhecimento da ferramenta por parte dos alunos, acabou por não ser feito, não se podendo retirar conclusões válidas.
 
 Pretende-se agora gerar a portadora com frequência $f_0$  a 4 kHz. De forma a implementar a portadora, que vai ser multiplicada pela sequência $d_n$, originando o sinal modulado, é criada uma LUT idêntica à do Projecto \#1. Neste caso, uma vez que só há 4 amostras por período, já que a frequência de amostragem é 
 $f_0 = 16$ kHz, basta especificar 4 valores da onda sinusoidal. Assim, é declarada a LUT com os valores 0, 1, 0 e -1, representados no formato mais preciso, $Q_{15}$:
@@ -684,7 +684,7 @@ Analisando agora a Figura 1 verifica-se que do transmissor BPSK ainda falta impl
 
 A geração de \textit{bits} que se implementou é, no fundo, um simples gerador de uma sequência de \textit{bits} bem definida ($b_n$ = 1, 0, 1, 0, \ldots). No entanto, esta sequência não é apropriada para transmissão e, como tal, a sequência referida anteriormente necessita de ser ``misturada'' de modo a que surja de forma aleatória. Para se efectuar isto recorre-se a um circuito denominado de \textit{scrambler}.
 
-O \textit{scrambler} é um dispositivo que inverte a ordem e polaridade dos \textit{bits} da mensagem a ser enviada. A utilização deste dispositivo tem dois principais objectivos - a facilidade de execução dos circuitos de recuperação de relógio, \textit{clock and data recovery}, e outros circuitos adaptativos do receptor. Esta melhoria deve-se ao facto do \textit{scrambler} eliminar longas sequências constantes de \texttt{0} ou \texttt{1}. O outro objectivo deve-se ao facto de eliminar a dependência do sinal a ser transmitido no espectro de potência, ou seja, o sinal transmitido fica mais disperso de forma a maximizar os requisitos do espectro de potência. Se a potência for concentrada numa largura de banda limitada pode haver interferência nos canais adjacentes do receptor devido à intermodulação, este fenómeno é conhecido por \textit{cross-modulation}.
+O \textit{scrambler} é um dispositivo que inverte a ordem e polaridade dos \textit{bits} da mensagem a ser enviada. A utilização deste dispositivo tem dois principais objectivos - a facilidade de execução dos circuitos de recuperação de relógio, \textit{clock and data recovery}, e outros circuitos adaptativos do receptor. Esta melhoria deve-se ao facto do \textit{scrambler} eliminar longas sequências constantes de \texttt{0} ou \texttt{1}. O outro objectivo deve-se ao facto de eliminar a dependência do sinal a ser transmitido no espectro de potência, ou seja, o sinal transmitido fica mais disperso de forma a maximizar os requisitos do espectro de potência. Se a potência estiver concentrada numa largura de banda limitada pode haver interferência nos canais adjacentes do receptor devido à intermodulação, este fenómeno é conhecido por \textit{cross-modulation}.
 
 O circuito do dispositivo \textit{scrambler} tem como expressão matemática o seguinte polinómio:
 
@@ -736,7 +736,7 @@ Com a actualização do vector \texttt{delay\_scrambler} realizada, a obtenção
 \begin{figure}[H]
 	\centering
 	\includegraphics[keepaspectratio=true, scale=0.40]{teoricas/calculodeen}
-	\caption{Esquema do cálculo da saída do \texttt{scrambler}.}
+	\caption{Esquema do cálculo da saída do \textit{scrambler}.}
 	\vspace{-0.8em}
 \end{figure}
 
@@ -843,15 +843,15 @@ e_n~= ~b_n~\oplus~e_{n-6}~\oplus~e_{n-7} \rightarrow \text{delay de N} \rightarr
 \end{equation}  
 \vspace{-7.5mm}
 \begin{equation}
- b_n'~= ~e_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N};
+ b_n'~= ~e_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N} \leftrightarrow
 \end{equation}  
 \vspace{-7.5mm}
 \begin{equation}
-\Leftrightarrow b_n'~= ~b_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N};
+\leftrightarrow b_n'~= ~b_{n-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N}~\oplus~e_{n-6-N}~\oplus~e_{n-7-N} \leftrightarrow
 \end{equation}  
 \vspace{-7.5mm}
 \begin{equation}
-\Leftrightarrow b_n'~= ~b_{n-N}; 
+\leftrightarrow b_n'~= ~b_{n-N}.
 \end{equation}  
 
 De seguida é apresentado o sinal de saída do \textit{descrambler}, $b'_n$ e o sinal de entrada do \textit{scrambler}, $b_n$. Pode-se verificar que os sinais são iguais pois a implementação da conexão dos dois circuitos foi realizada com um \textit{delay} de N igual \texttt{0}.
@@ -920,7 +920,7 @@ Sabendo que a LUT tem os valores de meio período da função seno, é possível
  
  \end{lstlisting}
  
-  Para implementação dos quadrantes 2 e 4, Q2 e Q4, foi necessário acrescentar uma verificação referente à variável de	indexação da LUT. Analisando a figura, verifica-se que os quadrantes pretendidos são referentes à metade superior da LUT, ou seja, quando \texttt{i\_erro} for maior que 15, sendo necessário inverter o sinal dos valores da LUT. Como referido no código seguinte:
+  Para implementação dos quadrantes 2 e 4, Q2 e Q4, foi necessário acrescentar uma verificação referente à variável de	indexação da LUT. Analisando a figura, verifica-se que os quadrantes pretendidos são referentes à metade superior da LUT, ou seja, quando \texttt{i\_erro} for maior que 15, sendo necessário inverter o sinal dos valores da LUT. Esta explicação poder ser vista no excerto de código seguinte.
   
 \begin{lstlisting}[language=C]
 
@@ -940,7 +940,7 @@ Sabendo que a LUT tem os valores de meio período da função seno, é possível
 	...
 \end{lstlisting}
 
-Na Figura 26, encontra-se representado o sinal de saída do oscilador, que é mostrado aqui apenas para demonstração do correcto funcionamento do oscilador, já que a implementação do filtro de onde sai o sinal de erro apenas será explicada posteriormente. 
+Na Figura 25, encontra-se representado o sinal de saída do oscilador, que é mostrado aqui apenas para demonstração do correcto funcionamento do oscilador, já que a implementação do filtro de onde sai o sinal de erro apenas será explicada posteriormente. 
 
 \begin{figure}[H]
 	\centering
@@ -1209,11 +1209,15 @@ Para se verificar o correcto funcionamento do \textit{loop} observou-se o sinal 
 	\vspace{-0.8em}
 \end{figure}
 
-Anteriormente foi explicado que para a obtenção da sequência de \textit{bits} do sinal modulado é relizado multiplicando o sinal modulado com sinal de saída do oscilador. Assim sendo, quando se multiplica as duas sinusóides com 8 kHz de frequência surgindo à saída do filtro de dados duas componentes, uma com frequência igual a zero correspondente à subtracção das frequências, ou seja, com $8 - 8 = 0$ kHz e a outra componente tem uma frequência que corresponde à soma das frequências, ou seja, com $2 \times 8 = 16$ kHz. A sequência de \textit{bits} que se quer obter é referente à primeira componente com frequência igual a zero, como se pode observar na Figura 33(a). Mas é de observar a ocorrência de ondulação na sequência de \textit{bits}, podendo ser observada com melhor pormenor na Figura 33(b). Esta deve à segunda componente com frequência de 8 kHz, este valor pode ser confirmado analisando a imagem. Com a implementação do filtro passa-baixo de dados com uma largura de banda de 1 kHz esperaria-se a anulação desta componente, a não ocorrência da anulação deve-se ao facto, atenuação em 8 kHz ou em $\frac{w_s}{2}$ não ser elevada. Na figura seguinte demonstra o problema adjacente à implementação deste filtro.
+Anteriormente, foi explicado que para a obtenção da sequência de \textit{bits} do sinal modulado é realizado¡a uma multiplicação entre o sinal modulado e o sinal de saída do oscilador. Assim sendo, quando se multiplica as duas sinusoides com 8 kHz de frequência surgem na saída do filtro de dados duas componentes - uma com frequência igual a zero, correspondente à subtracção das frequências, ou seja, com $8 - 8 = 0$ kHz e a outra componente tem uma frequência que corresponde à soma das frequências, ou seja, com $2 \times 8 = 16$ kHz. 
+
+A sequência de \textit{bits} que se quer obter é referente à primeira componente com frequência igual a zero, como se pode observar na Figura 32(a). Porém, é de observar a ocorrência de ondulação na sequência de \textit{bits}, podendo ser observada com melhor pormenor na Figura 32(b). Esta deve-se à segunda componente com frequência de 8 kHz, valor que pode ser confirmado analisando a imagem. 
+
+Com a implementação do filtro passa-baixo de dados, com uma largura de banda de 1 kHz, esperar-se-ia a anulação desta componente. A não ocorrência da anulação deve-se ao facto da atenuação em 8 kHz (ou em $w_s/2$) não ser elevada. Na figura seguinte demonstra-se o problema adjacente à implementação deste filtro, ou seja, o facto de a atenuação para a frequência de $w_{s}/2$ ser baixa.
  
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.4]{teoricas/filtro}
+	\includegraphics[keepaspectratio=true, scale=0.34]{teoricas/filtro}
 	\caption{Espectro do filtro de dados.}
 	\vspace{-0.8em}
 \end{figure} 
@@ -1258,7 +1262,7 @@ H(z) = \frac{\gamma \frac{1-\alpha}{1-\beta} (1-\beta z^{-1})}{1-\alpha z^{-1}} 
 \vspace{1mm}
 e, para a frequência de 8 kHz, sendo $z = e^{j\omega T_s} = e^{j2\pi \frac{8\times 10^3}{16\times 10^3}}$, é possível determinar o valor de $\beta$.
 	
-Resulta então a função de transferência, mantendo-se os valores de $\alpha e \gamma$:
+Resulta então a função de transferência, mantendo-se os valores de $\alpha$ e $\gamma$:
 
 \vspace{-3mm}
 \begin{equation}
@@ -1325,14 +1329,15 @@ Primeiramente, analisa-se o sinal modulado do tipo BPSK, no domínio do tempo e 
 	\vspace{-0.8em}
 \end{figure}
 
-Na Figura 35(a), é possível observar o sinal do tipo BPSK, que apresenta uma forma de onda idêntica à que era suposto obter, tendo em conta que o sinal x(t) é da forma:
+Na Figura 38(a), é possível observar o sinal do tipo BPSK, que apresenta uma forma de onda idêntica à que era suposto obter, tendo em conta que o sinal $x(t)$ é da forma:
 
 \vspace{-3mm}
 \begin{equation}
-	x(t) = s(t)\cos(2\pi f_0t + \Delta ft + \phi_0) + noise
+	x(t) = s(t)\cos(2\pi f_0t + \Delta ft + \phi_0) + \text{noise},
 \end{equation} 
 
-sendo que a componente $\Delta ft + \phi_0$ se trata de perturbações angulares introduzidas pelo canal físico que garante a propagação do sinal. No domínio da frequência, estando o SPAN definido como sendo de 10 kHz, pode visualizar-se na Figura 35(b) a componente da frequência fundamental do sinal BPSK, a 4 kHz, e as suas harmónicas.
+\vspace{1mm}
+sendo que a componente $\Delta ft + \phi_0$ se trata de perturbações angulares introduzidas pelo canal físico que garante a propagação do sinal. No domínio da frequência, estando o SPAN definido como sendo de 10 kHz, pode visualizar-se na Figura 38(b) a componente da frequência fundamental do sinal BPSK, a 4 kHz, e as suas harmónicas.
 
 \todo{rever este texto acima}
 
