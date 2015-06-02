@@ -1583,7 +1583,7 @@ void main(){
 	short	x_cos = 0, x_sine = 0, y_cos_datafilter = 0, y_sin_datafilter = 0;
 	short	x_cos_old = 0, x_sine_old = 0;
 	short	in_loopfilter = 0, y_loopfilter;
-	short	b_i_TX = 1, b_i_RX = 1, sine_i = 0, inbuf;
+	short	b_i_TX = 1, b_i_RX = 1, sine_i = 0;
 	short	c_n = 0, e_n = 0, xor67 = 0;
 	short 	i = 0 , delta = 0 ,trans = 0;
 	short	status = -32767;
@@ -1596,7 +1596,6 @@ void main(){
 		if(intflag != FALSE){
 			intflag = FALSE;
 			
-			inbuf = AIC_buffer.channel[LEFT];
 			
 			//////////////////////////////////////
 			////////////// TX	////////////////////
@@ -1649,33 +1648,47 @@ void main(){
 				y_cos = -y_cos;
 			}
 			
-			//filtro de dados com fc = 1 kHz
-			x_cos = (xt_bpsk*y_cos)>>15;
-			x_sine= (xt_bpsk*y_sin)>>15;
-			//x_cos = xt_bpsk;
-			// x_sine= xt_bpsk;
-			y_cos_datafilter = (((alpha_1k*y_cos_datafilter)<<1) + ((x_cos*um_menos_alpha_1k)<<1))>>16;/*Filtro sem zero em ws/2*/
-			y_sin_datafilter = (((alpha_1k*y_sin_datafilter)<<1) + ((x_sine*um_menos_alpha_1k)<<1))>>16;/*Filtro sem zero em ws/2*/
 			
-			// y_cos_datafilter = (((alpha_1k*y_cos_datafilter)<<1) + ((((x_cos + x_cos_old)*um_menos_alpha_1k)>>1)<<1))>>16;/*Filtro com zero em ws/2*/
-			//y_sin_datafilter = (((alpha_1k*y_sin_datafilter)<<1) + ((((x_sine + x_sine_old)*um_menos_alpha_1k)>>1)<<1))>>16;/*Filtro com zero em ws/2*/
 			
+			x_cos = ((xt_bpsk*y_cos)<<1)>>16;
+			x_sine= ((xt_bpsk*y_sin)<<1)>>16;
+			
+			/* filtro de dados com fc = 1 kHz
+			filtros sem zero em ws/2 */
+			//y_cos_datafilter = (((alpha_1k*y_cos_datafilter)<<1)  
+										   //+ ((x_cos*um_menos_alpha_1k)<<1))>>16;
+			//y_sin_datafilter = (((alpha_1k*y_sin_datafilter)<<1)  
+									     //+ ((x_sine*um_menos_alpha_1k)<<1))>>16;
+			
+			/*filtro de dados com fc = 1 kHz
+			filtros com zero com ws/2 */
+			y_cos_datafilter = (((alpha_1k*y_cos_datafilter)<<1) 
+											 + ((((x_cos + x_cos_old)*um_menos_alpha_1k)>>1)<<1))>>16;
+			y_sin_datafilter = (((alpha_1k*y_sin_datafilter)<<1) 
+											 + ((((x_sine + x_sine_old)*um_menos_alpha_1k)>>1)<<1))>>16;
 			x_sine_old = x_sine;
 			x_cos_old  = x_cos;
 			
-			in_loopfilter	= (y_cos_datafilter*y_sin_datafilter)>>15;
-			y_loopfilter = (((alpha_10*y_loopfilter)<<1) + ((in_loopfilter*um_menos_alpha_10)<<1))>>16;
-			//y_loopfilter = (((alpha_100*y_loopfilter)<<1) + ((in_loopfilter*um_menos_alpha_100)<<1))>>16;
 			
+			in_loopfilter = ((y_cos_datafilter*y_sin_datafilter)<<1)>>16;
+			/*Filtro do loop com fc de 10Hz*/
+			y_loopfilter = (((alpha_10*y_loopfilter)<<1) 
+									 + ((in_loopfilter*um_menos_alpha_10)<<1))>>16;
+			/*Filtro do loop com fc de 100Hz*/
+			//y_loopfilter = (((alpha_100*y_loopfilter)<<1) 
+									 //+ ((in_loopfilter*um_menos_alpha_100)<<1))>>16;
+			
+			/* Descrambler */
 			if(b_i_RX>15){
 				b_i_RX = 0;
-				/* descrambler ^/
 				xor67 = (delay_descrambler&1)^((delay_descrambler&2)>>1);
 				b_nlinha = e_n^xor67;
 				delay_descrambler = (delay_descrambler>>1)&0x7f;
 				delay_descrambler = delay_descrambler | (e_n<<7);
 			}
 			b_i_RX++;
+			
+			/*Transitorio*/
 			/*
 			if(trans>1000){
 				trans=0;
@@ -1686,8 +1699,8 @@ void main(){
 			//////////////////////////////////////
 			////////////// OUT ///////////////////
 			//////////////////////////////////////
-			AIC_buffer.channel[LEFT] = y_cos;
-			AIC_buffer.channel[RIGHT] = y_cos_datafilter;		
+			AIC_buffer.channel[LEFT] = b_nlinha<<10; // Saida do Descrambler
+			AIC_buffer.channel[RIGHT] = y_sin_datafilter; // Sinal desmodulado 
 		}
 	}
 }
