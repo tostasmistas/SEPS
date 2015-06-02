@@ -553,7 +553,6 @@ Como se pode observar, ocorre \textit{overflow} quando o contador, \texttt{b\_i}
 
 Na figura anterior pode-se analisar o resultado do sinal $b_n$, verificando-se que é um sinal binário, uma vez que só toma o valor 0 ou 1, com um ritmo de transmissão de 1 kbps. Cada \textit{bit} (quando o sinal representado a amarelo toma o valor máximo ou mínimo) contém 4 ciclos da onda quadrada (onda, a verde,  gerada pelo gerador com uma frequência de 4 kHz com o intuito de saber o número de períodos que \textit{bit} tem), o que resulta numa frequência de \textit{bit} de 4 kHz/4 = 1 kHz. Sabendo que um período do sinal $b_n$ é composto por dois \textit{bits} (valor máximo e mínimo da onda representada a amarelo) conclui-se que se tem um sinal com frequência de 500 Hz, ou seja, 4 kHz/8 = 500 Hz.
 
-
 De seguida, aplica-se a função \texttt{XOR} entre o resultado anterior e a variável \texttt{b\_n}, de forma a obter uma sequência $b_n$ que varia alternadamente entre \texttt{0} e \texttt{1}, ou vice-versa, a uma taxa de $f_b$ = 1 kbps. Com o \textit{bit-rate}, $b_n$, criado aplica-se o codificador diferencial de forma a gerar o sinal $c_n$, de acordo com seguinte equação:
 
 \vspace{-3mm}
@@ -578,23 +577,23 @@ A equação anterior foi implementada no ciclo de criação do \textit{bit-rate}
 	...
 \end{lstlisting}
 		
-De seguida, aplica-se o mapeamento aos \textit{bits} do sinal $c_n$ na constelação BPSK, de forma a obter o sinal $d_n$, ou seja, os dois símbolos da constelação: 1 e $-1$. O mapeamento segue as expressões da equação (\ref{eq:cn0}) e (\ref{eq:cn1}).
+De seguida, aplica-se o mapeamento aos \textit{bits} do sinal $c_n$ na constelação BPSK, de forma a obter o sinal $d_n$, ou seja, os dois símbolos da constelação: 1 e $-1$. O mapeamento segue as expressões da equação (\ref{eq:cn0}) e da equação (\ref{eq:cn1}).
 	 
-A solução computacional mais eficiente que se encontrou consiste em três fases. Na primeira, é efectuado um \textit{shift} de 15 posições para a esquerda, no intuito de o \textit{bit} mais significativo ter o valor do sinal $c_n$. Em segundo, nega-se o vector. E em último, é efectuado um \textit{shift} de 15 posições para a direita. De seguida encontra-se um esquema que demonstra a solução encontrada para a obtenção do $d_n$ como também o código.
+A solução implementada consiste em três fases. Na primeira, é efectuado um \textit{shift} de 15 posições para a esquerda, no intuito de o \textit{bit} mais significativo ter o valor do sinal $c_n$. Em segundo, nega-se o vector. E em último, é efectuado um \textit{shift} de 15 posições para a direita. De seguida encontra-se um esquema que demonstra a solução encontrada para a obtenção do $d_n$ como também o código.
 
 \begin{lstlisting}[language=C]
 	...
 		if(b_i>15){
 			...
 				c_n = c_n^b_n;
-				shift15_cn = c_n<<15;	   // shift de 15 posicoes para a esquerda
+				shift15_cn = c_n<<15;	   		// shift de 15 posicoes para a esquerda
 				not_shift15 = ~shift15_cn; // negacao do sinal anterior 
-				d_n = not_shift15 >>14;    // shift de 14 posicoes para a direita
+				d_n = not_shift15>>14;    // shift de 14 posicoes para a direita
 		}
 	...
 \end{lstlisting}
 
-\change{rever se compensa o if ou nao - profiling do codigo?}
+Como se pode ver, esta solução não recorre ao uso de \textit{if's}, não podendo, no entanto, afirmar-se com certezas, que é a solução computacionalmente mais eficiente. De facto, para se perceber se compensa ou não o uso da instrução condicional teria de se efectuar \textit{profiling} ao código. Foi feita uma tentativa de fazer este \textit{profiling} mas, devido à falta de conhecimento da ferramenta por parte dos alunos, acabou por não ser feito, não se podendo retirar conclusões válidas.
 
 \begin{figure}[H]
 	\centering
@@ -647,7 +646,7 @@ Analisando a figuras seguinte verifica-se que o modulador está a funcionar corr
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[keepaspectratio=true, scale=0.10]{exps/dn_com_y}
+	\includegraphics[keepaspectratio=true, scale=0.09]{exps/dn_com_y}
 	\caption{Sobreposição do sinal modulado (a amarelo) com o sinal $d_n$ (a verde).}
 	\vspace{-0.8em}
 \end{figure}
@@ -1136,8 +1135,6 @@ Verificou-se, como se pode observar na Figura X, que a frequência de corte apre
 	\vspace{-0.8em}
 \end{figure} 
 
-\todo{4 - nao nos lembramos do que era isto}
-
 Com o \textit{Costas Loop} implementado pretende-se testar o seu funcionamento para um sinal de entrada sinusoidal. Numa primeira fase de testes apenas se considera o \textit{upper arm}, de maneira a que o \textit{loop} se comporte como um clássico DPLL (\textit{digital phase locked loop}), tal como se pode observar na figura abaixo. Um DPLL é um tipo de PLL que é realizado com recurso a circuitos lógicos e/ou microprocessadores, tendo a capacidade de processar sinais discretos tanto em tempo como em amplitude.
 
 \begin{figure}[H]
@@ -1414,8 +1411,6 @@ Durante este período de aquisição, o funcionamento do sistema não é linear 
 
 Calculou-se o tempo de aquisição, com o auxílio dos cursores do osciloscópio, determinando o intervalo de tempo entre o início da situação de não-sincronismo  e o instante em que se pode considerar que o sinal de saída do filtro de dados apresenta os \textit{bits} bem definidos, sendo perceptível a diferença entre \texttt{0} e \texttt{1}, para duas frequências de corte do filtro de \textit{loop}, 10 Hz e 100 Hz, como se pode ver nas figuras seguintes. O sinal a verde representa a saída do filtro de \textit{loop}, o sinal de erro, e o sinal a amarelo representa a saída do filtro de dados do \textit{lower arm} do \textit{Costas Loop}.
 
-\todo{explicar contagem do tempo. vale a pena por as imagens dos 100Hz?}
-
 \begin{figure}[H]
 	\centering
 	\subfloat[]{\includegraphics[keepaspectratio=true, scale=0.284]{exps/calculo_tempo_aquisicao_10Hz}}
@@ -1432,18 +1427,17 @@ De facto, durante a aquisição quer-se um transitório rápido, para que se ati
 
 Saber qual o valor deste tempo de transitório é extremamente importante, pois pode ser utilizado para enviar um cabeçalho para o sistema que contém \textit{bits} piloto que foram previamente estudados de acordo com as funcionalidades do sistema em causa. Uma vez que termine o envio do cabeçalho, o sistema encontra-se pronto para adquirir sinais.
 
+\pagebreak
+
 \section{Conclusões}
 
 Relativamente ao Projecto \#1, pode-se concluir que um oscilador controlado feito com recurso ao método da interpolação apresenta resultados com mais qualidade, isto para casos em que o valor de $\Delta$ representa frequências que não são múltiplos da frequência de amostragem. 
 
-Já em relação ao Projecto \#2, este correu de acordo com o esperado, sendo que se procedeu a uma melhoria ao nível da eficiência do código para que apenas houvesse o \textit{if} do contador. Verificou-se que retirar este último \textit{if} não compensava pois era necessário replicar o código e a eficiência computacional seria equiparável.
+Já em relação ao Projecto \#2, este correu de acordo com o esperado, não se podendo afirmar com certeza se a implementação com ou sem recurso à instrução condicional \textit{if} é a solução mais eficiente do transmissor. Nestas situações percebe-se a importância de fazer \textit{profiling} ao código.
 
-Relativamente ao Projecto \#3, em que o objectivo era desenvolver um receptor BPSK, o mesmo foi implementado da forma esperada, tendo sido analisados várias características do receptor. A implementação dos filtros \textit{Data} do \textit{Costas Loop} com um zero em 8 kHz, o que anula uma componente com essa frequência que estava à entrada dos filtros, garante que à saída do sistema se tenha um sinal em que se podem distinguir claramente os bits '0' e '1', o que é de extrema importância. Em relação ao regime transitório, onde é avaliada a capacidade do sistema adquirir o sincronismo, após o ter perdido, pôde concluir-se que o processo de aquisição do sincronismo apresenta um tempo de transição que varia com o mesmo factor de variação da frequência de corte do \textit{loop filter}. 
+Relativamente ao Projecto \#3, em que o objectivo era desenvolver um receptor BPSK, o mesmo foi implementado da forma esperada, tendo sido analisados várias características do receptor. A implementação dos filtros de dados e do filtro de \textit{loop} com um zero em 8 kHz, o que anula uma componente com essa frequência que estava à entrada dos filtros, garante que à saída do sistema se tenha um sinal em que se podem distinguir claramente os \textit{bits} \texttt{0} e \texttt{1}, o que é de extrema importância. Em relação ao regime transitório, onde é avaliada a capacidade do sistema adquirir o sincronismo, pode-se concluir-se que o processo de aquisição do sincronismo apresenta um tempo de transitório que varia de uma maneira inversamente proporcional com frequência de corte do \textit{loop filter}. 
 
-\todo{Vejam o que escrevi e alterem/acrescentem o que acharem necessário}
-
-
-\todo{conclusao geral e conclusao do projecto 3}
+No geral, a implementação do \textit{modem} BPSK que se pretendia efectuar foi bem sucedida e, sempre que possível, apostou-se em melhor a eficiência do código e em perceber quais as melhores soluções. Ao nível dos testes efectuados tentou-se tirar o máximo partido das ferramentas do osciloscópio, e.g., modo persistência e também do analisador de espectros.
 
 \pagebreak
 
