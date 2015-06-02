@@ -1316,26 +1316,25 @@ Os sinais representados na figura anterior, que se tratam das saídas dos filtro
 
 \vspace{-3mm}
 \begin{equation}
-	E[x_1(t)] \approx \frac{1}{2} s(t) \cos(\Delta \phi) \approx \frac{1}{2}s(t)	
+	E[x_1(t)] \approx \frac{1}{2} s(t) \cos(\Delta \phi) \approx \frac{1}{2}s(t);
 \end{equation} 
 \vspace{-1mm}
 \begin{equation}
-E[x_2(t)] \approx \frac{1}{2} s(t) \sin(\Delta \phi) \approx 0
+E[x_2(t)] \approx \frac{1}{2} s(t) \sin(\Delta \phi) \approx 0.
 \end{equation} 
 
-correspondendo $E[x_1(t)]$ ao sinal de saída do filtro pertencente ao \textit{upper arm} e $E[x_2(t)]$ à saída do \textit{data filter} do \textit{lower arm}, sendo que o sinal s(t) é o sinal de informação transmitido e $x_1(t)$ e $x_2(t)$  representam os sinais:
+correspondendo $E[x_1(t)]$ ao sinal de saída do filtro pertencente ao \textit{upper arm} e $E[x_2(t)]$ à saída do \textit{data filter} do \textit{lower arm}, sendo que o sinal $s(t)$ é o sinal de informação transmitido e $x_1(t)$ e $x_2(t)$  representam os sinais:
 
 \vspace{-3mm}
 \begin{equation}
-x_1(t) = x(t)\cos(2\pi f_0t + \phi_0) = s(t)\cos(2\pi f_0t + \Delta ft + \phi_i)\cos(2\pi f_0t + \phi_0)
+x_1(t) = x(t)\cos(2\pi f_0t + \phi_0) = s(t)\cos(2\pi f_0t + \Delta ft + \phi_i)\cos(2\pi f_0t + \phi_0);
 \end{equation}
-\vspace{-1mm}
+\vspace{-4mm}
 \begin{equation}
  x_2(t) = x(t)\sin(2\pi
  f_0t + \phi_0) = s(t)\cos(2\pi f_0t + \Delta ft + \phi_i)\sin(2\pi
- f_0t + \phi_0)	
- \end{equation}
-
+ f_0t + \phi_0).
+\end{equation}
 
 Veja-se agora o sinal de saída do filtro de \textit{loop}, ou seja, o sinal de erro que depois controla o oscilador. Foi analisada esta situação para o caso em que o filtro de dados tem o zero na sua função de transferência. 
 
@@ -1365,7 +1364,7 @@ De seguida, faz-se uma análise do transitório do processo de aquisição do \t
 
 Durante este período de aquisição, o funcionamento do sistema não é linear e, enquanto o sinal de erro não vier a zero, a malha não sincronizará e os \textit{bits} do sinal desmodulado estarão errados.
 
-Calculou-se o tempo de aquisição, com o auxílio dos cursores do osciloscópio, determinando o intervalo de tempo entre o início da situação de não-sincronismo  e o instante em que se pode considerar que o sinal de saída do filtro de dados apresenta os bits bem definidos, sendo perceptível a diferença entre '0' e '1', para duas frequências de corte do filtro de \textit{loop}, 10 Hz e 100 Hz, como se pode ver nas figuras seguintes. O sinal a verde representa a saída do filtro de \textit{loop}, o sinal de erro, e o sinal a amarelo representa a saída do filtro de dados do \textit{lower arm} do \textit{Costas Loop}.
+Calculou-se o tempo de aquisição, com o auxílio dos cursores do osciloscópio, determinando o intervalo de tempo entre o início da situação de não-sincronismo  e o instante em que se pode considerar que o sinal de saída do filtro de dados apresenta os \textit{bits} bem definidos, sendo perceptível a diferença entre \texttt{0} e \texttt{1}, para duas frequências de corte do filtro de \textit{loop}, 10 Hz e 100 Hz, como se pode ver nas figuras seguintes. O sinal a verde representa a saída do filtro de \textit{loop}, o sinal de erro, e o sinal a amarelo representa a saída do filtro de dados do \textit{lower arm} do \textit{Costas Loop}.
 
 \todo{explicar contagem do tempo. vale a pena por as imagens dos 100Hz?}
 
