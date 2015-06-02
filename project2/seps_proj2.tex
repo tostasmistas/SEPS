@@ -932,8 +932,7 @@ Assim, considerando o gerador de uma onda sinusoidal implementado na primeira pa
 \begin{lstlisting}[language=C]
 
 	short	sine[32] = {0,3212,6393,9512,12540,15447,18205,20788,23170,25330,27246,28899,30274,31357,		32138,32610,32767,32610,32138,31357,30274,28899,27246,25330,23170,20788,18205,	15447,12540,9512,6393,3212}; 
-	short delta_erro = 0, y_loop_filter = 0, status_erro = 0, i_erro = 0, y_cos = 0, y_sin;
-
+	short delta_erro = 0, y_loop_filter = 0, status_erro = 0, i_erro = 0, y_cos = 0, y_sin = 0;
 	...
 		y_cos = sine[(i_erro+16)&31]; //coseno
 		y_sin = sine[i_erro]; //seno
@@ -948,7 +947,7 @@ Assim, considerando o gerador de uma onda sinusoidal implementado na primeira pa
 	...
 \end{lstlisting}
 
-Na Figura X, encontra-se representado o sinal de saída do oscilador, que é mostrado aqui apenas para demonstração do correcto funcionamento do oscilador, já que a implementação do filtro de onde sai o sinal de erro apenas será explicada posteriormente. 
+Na Figura 26, encontra-se representado o sinal de saída do oscilador, que é mostrado aqui apenas para demonstração do correcto funcionamento do oscilador, já que a implementação do filtro de onde sai o sinal de erro apenas será explicada posteriormente. 
 
 \begin{figure}[H]
 	\centering
@@ -1170,7 +1169,7 @@ Assim, para testar o correcto funcionamento do PLL projectado é necessário ver
 	\vspace{-0.8em}
 \end{figure}
 
-Para ambas as situações recorreu-se ao modo persistência do osciloscópio, com o objectivo de ajudar a reconhecer a situação de dessincronismo do PLL. De facto, na Figura \ref{fig:PLL}(a) verifica-se que o sinal â saída do oscilador apresenta bastante dispersão em torno dos valores pretendidos para a forma de onda, tal como esperado. Quando se ajustou a frequência do sinal de entrada e o PLL entrou num estado de sincronismo obtém-se os resultados da Figura \ref{fig:PLL}(b), em que o sinal representado a verde não apresenta dispersão em torno dos valores pretendidos, tal como esperado.
+Para ambas as situações recorreu-se ao modo persistência do osciloscópio, com o objectivo de ajudar a reconhecer a situação de dessincronismo do PLL. De facto, na Figura \ref{fig:PLL}(a) verifica-se que o sinal à saída do oscilador apresenta bastante dispersão em torno dos valores pretendidos para a forma de onda, tal como esperado. Quando se ajustou a frequência do sinal de entrada e o PLL entrou num estado de sincronismo obtém-se os resultados da Figura \ref{fig:PLL}(b), em que o sinal representado a verde não apresenta dispersão em torno dos valores pretendidos, tal como esperado.
 
 Uma vez verificado o correcto funcionamento do \textit{upper arm} do \textit{Costas Loop}, conectou-se o \textit{lower arm} e testou-se todo o \textit{loop} utilizando também um sinal sinusoidal à entrada. Verificou-se que ambos os \textit{arms} apresentam o comportamento esperado. Assim, procede-se à medição da banda de captura e da banda de manutenção do \textit{loop}.
 
