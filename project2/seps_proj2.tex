@@ -551,9 +551,8 @@ Como se pode observar, ocorre \textit{overflow} quando o contador, \texttt{b\_i}
 	\vspace{-0.8em}
 \end{figure} 
 
-Na figura anterior pode-se analisar o resultado do sinal $b_n$, verificando-se que é um sinal binário, uma vez que só toma o valor 0 ou 1, com um ritmo de transmissão de 1 kbps. Cada \textit{bit} (quando o sinal representado a amarelo toma o valor máximo ou mínimo) contém 4 ciclos da onda quadrada (onda representada a verde que tem uma frequência de 4 kHz), o que resulta numa frequência de \textit{bit} de 4 kHz/4 = 1 kHz. Sabendo que um período do sinal $b_n$ é composto por dois \textit{bits} (valor máximo e mínimo da onda representada a amarelo) conclui-se que se tem um sinal com frequência de 500 Hz, ou seja, 4 kHz/8 = 500 Hz.
+Na figura anterior pode-se analisar o resultado do sinal $b_n$, verificando-se que é um sinal binário, uma vez que só toma o valor 0 ou 1, com um ritmo de transmissão de 1 kbps. Cada \textit{bit} (quando o sinal representado a amarelo toma o valor máximo ou mínimo) contém 4 ciclos da onda quadrada (onda, a verde,  gerada pelo gerador com uma frequência de 4 kHz com o intuito de saber o número de períodos que \textit{bit} tem), o que resulta numa frequência de \textit{bit} de 4 kHz/4 = 1 kHz. Sabendo que um período do sinal $b_n$ é composto por dois \textit{bits} (valor máximo e mínimo da onda representada a amarelo) conclui-se que se tem um sinal com frequência de 500 Hz, ou seja, 4 kHz/8 = 500 Hz.
 
-\change{o prof diz que nao sabe o que e aquela onda de 4k}
 
 De seguida, aplica-se a função \texttt{XOR} entre o resultado anterior e a variável \texttt{b\_n}, de forma a obter uma sequência $b_n$ que varia alternadamente entre \texttt{0} e \texttt{1}, ou vice-versa, a uma taxa de $f_b$ = 1 kbps. Com o \textit{bit-rate}, $b_n$, criado aplica-se o codificador diferencial de forma a gerar o sinal $c_n$, de acordo com seguinte equação:
 
