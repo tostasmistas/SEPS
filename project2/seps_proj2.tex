@@ -1231,7 +1231,7 @@ Com a conexão estabelecida entre o modulador e transmissor testou-se novamente 
 	\includegraphics[keepaspectratio=true, scale=0.35]{tabelas/bandascompleto}
 \end{table}
 
-Relativamente ao valor das bandas, face ao caso em que os dois \textit{arms} do Costas Loop não estavam conectados entre si, diminuiu. \todo{why?}
+Relativamente ao valor das bandas, face ao caso em que os dois \textit{arms} do Costas Loop não estavam conectados entre si, diminuiu. 
 
 Realizando o teste do filtro de dados com uma entrada sinusoidal de 8 kHz, é possível, observando a Figura 34, perceber que o filtro não anula completamente o sinal de entrada, o que causa o problema descrito anteriormente, aquando da Figura \ref{fig:out1}.
 
@@ -1339,8 +1339,6 @@ Na Figura 38(a), é possível observar o sinal do tipo BPSK, que apresenta uma f
 \vspace{1mm}
 sendo que a componente $\Delta ft + \phi_0$ se trata de perturbações angulares introduzidas pelo canal físico que garante a propagação do sinal. No domínio da frequência, estando o SPAN definido como sendo de 10 kHz, pode visualizar-se na Figura 38(b) a componente da frequência fundamental do sinal BPSK, a 4 kHz, e as suas harmónicas.
 
-\todo{rever este texto acima}
-
 De seguida, analisa-se as formas de onda à saída dos filtros do \textit{upper} e \textit{lower arm}.
 
 \begin{figure}[H]
@@ -1350,7 +1348,10 @@ De seguida, analisa-se as formas de onda à saída dos filtros do \textit{upper}
 	\vspace{-0.8em}
 \end{figure}
 
-\todo{comentar esta figura de cima - notas no caderno da margarida}
+Pode-se verificar na figura anterior que o sinal de entrada do filtro representa a multiplicação do sinal BPSK com o sinal de saída do oscilador. Como já foi referenciado anteriormente, a multiplicação de duas sinusoides origina a soma de duas componentes, uma com a diferença das frequências e outra com a soma das frequências de cada um dos sinais sinusoidais. Como o sinal BPSK tem como frequência de portadora o mesmo valor da frequência do sinal de saída do oscilador, a primeira componente seria o sinal $s(t)cos(2\pi t(f_0-f_{ol})$ e a segunda componente $s(t)\cos(2\pi t(f_0+f_{ol}))$. 
+A primeira componente corresponde ao envolvente do sinal de entrada do filtro e a segunda componente corresponde às oscilações que se visualização no sinal. 
+A função do filtro de dados é retirar as oscilações do sinal de entrada obtendo assim a sua envolvente, esta conclusão pode ser visualizada na Figura 39.
+
 
 \begin{figure}[H]
 	\centering
