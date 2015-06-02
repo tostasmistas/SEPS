@@ -824,7 +824,7 @@ Analisando o esquema e seguido a lógica de implementação do \textit{scrambler
 	...
 \end{lstlisting}
 
-É de salientar que o \textit{scrambler} e o \textit{descrambler} existe um \textit{delay} de N \textit{bits} sendo a saída do \textit{descrambler} não igual á entrada do \textit{scrambler} mas sim igual à entrada deslocada de N:
+É de salientar que no \textit{scrambler} e no \textit{descrambler} existe um \textit{delay} de N \textit{bits}, sendo a saída do \textit{descrambler} não igual á entrada do \textit{scrambler}, mas sim igual à entrada deslocada de N:
 
 \begin{figure}[H]
 	\centering
@@ -854,7 +854,7 @@ e_n~= ~b_n~\oplus~e_{n-6}~\oplus~e_{n-7} \rightarrow \text{delay de N} \rightarr
 \Leftrightarrow b_n'~= ~b_{n-N}; 
 \end{equation}  
 
-De seguida é apresentado o sinal de saída do \textit{descrambler}, $b'_n$ e o sinal de entrado do \textit{scrambler}, $b_n$. Pode-se verificar que os sinais são iguais pois a implementação da conexação dos dois circuitos foi realizada com um \textit{delay} de N igual \texttt{0}.
+De seguida, é apresentado o sinal de saída do \textit{descrambler}, $b'_n$ e o sinal de entrado do \textit{scrambler}, $b_n$. Pode verificar-se que os sinais são iguais, pois a implementação da conexação dos dois circuitos foi realizada com um \textit{delay} de N igual \texttt{0}.
 
 \begin{figure}[H]
 	\centering
@@ -1127,9 +1127,9 @@ Uma vez verificado o correcto funcionamento do \textit{upper arm} do \textit{Cos
 
 O sinal de entrada deve estar compreendido na banda de captura $\left(\Delta w_{C}\right)$ do \textit{loop}. Uma vez que se adquira o sincronismo, o \textit{loop} manter-se-á nesse estado, dentro de certos limites, que definem a banda de manutenção $\left(\Delta w_{L}\right)$, sendo que esta banda pode ser diferente da banda de captura. 
 
-Para se calcular experimentalmente o valor das bandas é necessário observar o valor médio do sinal de erro, enquanto se faz variar lentamente a frequência do sinal de entrada decrescentemente, partindo de um estado inicial de \textit{loop} dessincronizado, até que ocorre uma captura em $w_{C}^{-}$. De seguida aumenta-se a frequência do sinal de entrada até que se perde o sincronismo em $w_{L}^{+}$. O passo seguinte é efectuar um varrimento no sentido contrário, adquirindo sincronismo em $w_{C}^{+}$ que depois é perdido em $w_{L}^{-}$.
+Para se calcular experimentalmente o valor das bandas, é necessário observar o valor médio do sinal de erro, enquanto se faz variar lentamente a frequência do sinal de entrada crescentemente, partindo de um estado inicial de \textit{loop} dessincronizado, até que ocorre uma captura em $w_{C}^{-}$. De seguida, aumenta-se a frequência do sinal de entrada até que se perde o sincronismo em $w_{L}^{+}$. O passo seguinte é efectuar um varrimento no sentido contrário, adquirindo sincronismo em $w_{C}^{+}$, que depois é perdido em $w_{L}^{-}$.
 
-Relativamente ao sinal de erro que se observa nesta medição, considere-se o caso em que o PLL está fora de sincronismo e o oscilador gera uma frequência $f_o$. Quando o \textit{loop} se fecha (ou quando o sinal de entrada tem uma frequência $f_i$) se a diferença entre as duas frequências for pequena o suficiente, então o filtro de  \textit{loop} irá desenvolver um sinal de erro que leva a frequência do oscilador até $f_i$. Eventualmente o \textit{loop} vai adquirir sincronismo e neste estado a frequência média gerada pelo oscilador é igual à frequência média do sinal de entrada.
+Relativamente ao sinal de erro que se observa nesta medição, considere-se o caso em que o PLL está fora de sincronismo e o oscilador gera uma frequência $f_o$. Quando o \textit{loop} se fecha (ou quando o sinal de entrada tem uma frequência $f_i$), se a diferença entre as duas frequências for pequena o suficiente, então o filtro de  \textit{loop} irá desenvolver um sinal de erro que leva a frequência do oscilador até $f_i$. Eventualmente, o \textit{loop} vai adquirir sincronismo e neste estado a frequência média gerada pelo oscilador é igual à frequência média do sinal de entrada.
 
 Na figura seguinte encontra-se uma representação gráfica do valor médio do sinal de erro em função da frequência do sinal de entrada, identificando a banda de captura e de manutenção.
 
