@@ -1181,7 +1181,7 @@ Analisando a tabela anterior, é possível concluir que, para a mesma frequênci
 
 O passo seguinte corresponde à conexão entre o modulador do transmissor e o desmodulador do receptor, ou seja, o sinal de entrada do \textit{Costas Loop} é o sinal modelado do tipo BPSK. Este sinal corresponde à multiplicação do sinal $d_n$ com a portadora, como se viu já anteriormente.
 
-\todo{introduzir estas imagens}
+Para se verificar o correcto funcionamento do \textit{loop} observou-se o sinal à saída do filtro de dados, esperando obter um sinal desmodulado compreendido entre \texttt{1} e \texttt{-1}, com valor médio \texttt{0}.
 
 \begin{figure}[H]
 	\centering
@@ -1205,7 +1205,6 @@ Com a conexão estabelecida entre o modulador e transmissor testou-se novamente 
 	\includegraphics[keepaspectratio=true, scale=0.35]{tabelas/bandascompleto}
 \end{table}
 
-
 Realizando o teste do filtro de dados com uma entrada sinusoidal de 8 kHz, é possível, observando a Figura X, perceber que o filtro não anula completamente o sinal de entrada, o que causa o problema descrito anteriormente, aquando da Figura \ref{fig:out1}.
 
 \begin{figure}[H]
@@ -1215,7 +1214,17 @@ Realizando o teste do filtro de dados com uma entrada sinusoidal de 8 kHz, é po
 	\vspace{-0.8em}
 \end{figure} 
 
-De forma a solucionar este problema, implementou-se um filtro idêntico ao já implementado, adicionando um zero na frequência de 8 kHz, o que permite anular essa componente no sinal de saída. Assim, de forma a implementar esta solução, é necessário que $\beta = -1$, que vem de:
+De forma a solucionar este problema, implementou-se um filtro idêntico ao já implementado, adicionando um zero na frequência de 8 kHz, o que permite anular essa componente no sinal de saída. Na figura seguinte apresenta-se o ganho do filtro para as duas situações de presença e ausência de zero.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/filtro1}
+	\caption{Ganho do filtro para o caso em que não tem um zero (a vermelho) e melhoria na função de transferência aquando da adição de um zero em 8 kHz (a azul).}
+	\vspace{-0.8em}
+\end{figure} 
+
+
+Assim, de forma a implementar esta solução, é necessário que $\beta = -1$, que vem de:
 
 \vspace{-3mm}
 \begin{equation}
