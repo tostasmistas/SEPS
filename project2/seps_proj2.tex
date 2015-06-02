@@ -867,6 +867,12 @@ De seguida é apresentado o sinal de saída do \textit{descrambler}, $b'_n$ e o 
 Com o \textit{descrambler} implementado procede-se para a fase seguinte no desenvolvimento do \textit{modem} BPSK - implementar o \textit{Costas Loop}. 
 
 Inicialmente, pretende-se implementar um NCO (\textit{numerically controlled oscillator}) controlado pelo sinal de erro, $\varepsilon (t)$, com a seguinte característica:
+\begin{figure}[H]
+	\centering
+	\includegraphics[keepaspectratio=true, scale=0.30]{teoricas/Ndelay}
+	\caption{Esquema que representa \textit{delay} existente entre o \textit{scrambler} e o \textit{descrambler}.}
+	\vspace{-0.8em}
+\end{figure}
 
 \vspace{-3mm}
 \begin{equation}
@@ -895,9 +901,35 @@ Assim, considerando o gerador de uma onda sinusoidal implementado na primeira pa
 
 \end{lstlisting}
 
-É ainda pretendido que seja gerada uma outra saída em quadratura, ou seja, um coseno. Para a sua implementação baseou-sena seguinte figura:
+É ainda pretendido que seja gerada uma outra saída em quadratura, ou seja, um coseno. Para a sua implementação baseou-se na seguinte figura:
+ \begin{figure}[H]
+ 	\centering
+ 	\includegraphics[keepaspectratio=true, scale=0.37]{teoricas/senocoseno}
+ 	\caption{Sobreposição de um seno e de um coseno.}
+ 	\vspace{-0.8em}
+ \end{figure}
  
- o que é possível lendo a LUT com um \textit{offset} de 16 valores. É apresentado o excerto de código que implementa o oscilador, permitindo que sejam geradas as duas saídas em quadratura.
+ Sabendo que a LUT tem os valores de meio período da função seno, é possível gerar um coseno seguindo o esquema anterior. O quadrante 1, Q1, representa um quarto de um período partindo da amplitude máxima até zero, sendo este quadrante facilmente implementado  indexando a LUT com um \textit{offset} de 16. Este método também  é utilizado para o quadrante 3, Q3, em que se parte da uma amplitude miníma até zero. A máscara de 31 é utilizada para garantir que não haja acessos à memória indevidos.
+ 
+ \begin{lstlisting}[language=C]
+ 
+	 short	sine[32] = {0,3212,6393,9512,12540,15447,18205,20788,23170,25330,27246,28899,30274,31357,		32138,32610,32767,32610,32138,31357,30274,28899,27246,25330,23170,20788,18205,		15447,12540,9512,6393,3212}; 
+	 short delta_erro = 0, y_loop_filter = 0, status_erro = 0, i_erro = 0, y_sin = 0,y_coseno = 0;
+	 ...
+	 y_sin = sine[i_erro]; //seno
+	 y_cos = sine[(i_erro+16)&31]; //coseno
+	 
+	 if(status_erro < 0){
+		 y_sin = -y_sin;
+		 y_cos = -y_cos;/*Quadrante Q1 e Q3*/
+	 }	
+	 ...
+ 
+ \end{lstlisting}
+ 
+ Para im
+  
+ que é possível lendo a LUT com um \textit{offset} de 16 valores. É apresentado o excerto de código que implementa o oscilador, permitindo que sejam geradas as duas saídas em quadratura.
 
 \begin{lstlisting}[language=C]
 
